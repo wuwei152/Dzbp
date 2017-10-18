@@ -1,0 +1,347 @@
+package com.md.dzbp.ui.activity;
+
+import android.app.Dialog;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
+import android.widget.EditText;
+import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
+import com.apkfuns.logutils.LogUtils;
+import com.bumptech.glide.Glide;
+import com.md.dzbp.Base.BaseActivity;
+import com.md.dzbp.R;
+import com.md.dzbp.constants.APIConfig;
+import com.md.dzbp.data.Meetingbean;
+import com.md.dzbp.data.SignEvent;
+import com.md.dzbp.model.NetWorkRequest;
+import com.md.dzbp.model.TimeListener;
+import com.md.dzbp.model.TimeUtils;
+import com.md.dzbp.model.UIDataListener;
+import com.md.dzbp.tcp.TcpService;
+import com.md.dzbp.ui.view.MainDialog;
+import com.md.dzbp.ui.view.MyProgressDialog;
+import com.md.dzbp.ui.view.myToast;
+import com.md.dzbp.constants.Constant;
+import com.md.dzbp.utils.Log4j;
+import com.zhy.adapter.abslistview.CommonAdapter;
+import com.zhy.adapter.abslistview.ViewHolder;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import butterknife.BindView;
+
+public class MeetingActivity extends BaseActivity implements TimeListener, UIDataListener {
+
+    @BindView(R.id.meet_cardNum)
+    EditText mCardNum;
+    @BindView(R.id.meet_time)
+    TextView mTime;
+    @BindView(R.id.meet_date)
+    TextView mDate;
+    @BindView(R.id.meet_temp)
+    TextView mTemp;
+    @BindView(R.id.meeting_GridView)
+    GridView mGridView;
+    @BindView(R.id.meet_mainAddr)
+    TextView mMainAddr;
+    @BindView(R.id.meet_mainTitle)
+    TextView mMainTitle;
+    @BindView(R.id.meet_mainSub)
+    TextView mMainSub;
+    @BindView(R.id.meet_mainDate)
+    TextView mMainDate;
+    @BindView(R.id.meet_host)
+    TextView mHost;
+    @BindView(R.id.meet_Num)
+    TextView mNum;
+    @BindView(R.id.meet_listTitle)
+    TextView mListTitle;
+    @BindView(R.id.meet_listTime)
+    TextView mListTime;
+    @BindView(R.id.meet_listAddr)
+    TextView mListAddr;
+    @BindView(R.id.meet_listHost)
+    TextView mListHost;
+    @BindView(R.id.meet_listSub)
+    TextView mListSub;
+    @BindView(R.id.meet_QRcode)
+    ImageView mQRcode;
+    @BindView(R.id.meet_QRcodeText)
+    TextView mQRcodeText;
+
+    private Handler card_handler = null;
+    private Handler foucus_handler = null;
+    private String card_stringTemp;
+    private MainDialog mainDialog;
+    private GestureDetector gestureDetector;
+    private Dialog dialog;
+    private NetWorkRequest netWorkRequest;
+    private List<Meetingbean.MeetingUserListBean> meetingUserList;
+    private Meetingbean meetingbean;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected int getLayoutResID() {
+        return R.layout.activity_meeting;
+    }
+
+    @Override
+    protected void initUI() {
+        //主菜单
+        mainDialog = new MainDialog(this);
+        gestureDetector = new GestureDetector(MeetingActivity.this, onGestureListener);
+        //获取时间日期
+        new TimeUtils(MeetingActivity.this, this);
+        //进度
+        dialog = MyProgressDialog.createLoadingDialog(this, "", this);
+        netWorkRequest = new NetWorkRequest(this, this);
+
+        EventBus.getDefault().register(this);
+    }
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        getUIdata();
+    }
+    @Override
+    protected void initData() {
+        getCardNum();
+        mDate.setText(TimeUtils.getStringDate());
+
+        getUIdata();
+    }
+
+    /**
+     * 获取UI数据
+     */
+    private void getUIdata() {
+        Map map = new HashMap();
+        map.put("deviceId", Constant.getDeviceId(MeetingActivity.this));
+        netWorkRequest.doGetRequest(0, Constant.getUrl(this, APIConfig.GET_MEETING), true, map);
+    }
+
+    /**
+     * 设置界面数据
+     */
+    private void setUIData(Meetingbean meetingbean) {
+        meetingUserList = meetingbean.getMeetingUserList();
+        Meetingbean.MeetingUserListBean host = null;
+        String hostName = "无";
+        if (meetingUserList!=null){
+            for (Meetingbean.MeetingUserListBean m : meetingUserList) {
+                if (m.getHost()) {
+                    host = m;
+                }
+            }
+            if (host != null) {
+                hostName = host.getAccountName();
+            }
+        }
+        mMainAddr.setText(meetingbean.getAddress());
+        mMainTitle.setText(meetingbean.getName());
+        mMainSub.setText(meetingbean.getSummary());
+        mMainDate.setText(meetingbean.getStartTime() + "        " + meetingbean.getAddress());
+        mHost.setText("会议主持：" + hostName);
+        mNum.setText("参会人员：" + meetingUserList.size() + "人");
+        mListTitle.setText(meetingbean.getName());
+        mListTime.setText(meetingbean.getStartTime());
+        mListAddr.setText(meetingbean.getAddress());
+        mListHost.setText(hostName);
+        mListSub.setText(meetingbean.getSummary());
+        Glide.with(MeetingActivity.this).load(meetingbean.getQrcodeUrl()).into(mQRcode);
+        mQRcodeText.setText("扫码签到");
+        setGridData(meetingUserList);
+    }
+
+    /**
+     * 设置人员数据
+     */
+    private void setGridData(List meetingUserList) {
+        mGridView.setAdapter(new CommonAdapter<Meetingbean.MeetingUserListBean>(MeetingActivity.this, R.layout.item_meeting_grid, meetingUserList) {
+            @Override
+            protected void convert(ViewHolder viewHolder, Meetingbean.MeetingUserListBean item, int position) {
+                viewHolder.setText(R.id.item_meetgrid_name, item.getAccountName());
+                if (item.getSigninStatus() == 1) {
+                    viewHolder.setTextColor(R.id.item_meetgrid_name, getResources().getColor(R.color.green));
+                } else {
+                    viewHolder.setTextColor(R.id.item_meetgrid_name, getResources().getColor(R.color.text_black));
+                }
+            }
+        });
+    }
+
+    /**
+     * 获取刷卡卡号
+     */
+    private void getCardNum() {
+        mCardNum.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2,
+                                      int arg3) {
+                card_stringTemp = arg0.toString();
+//                LogUtils.i("卡号"+arg0);
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1,
+                                          int arg2, int arg3) {
+                if (card_handler == null) {
+                    card_handler = new Handler();
+                    card_handler.postDelayed(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            LogUtils.d(card_stringTemp);
+                            if (!TextUtils.isEmpty(card_stringTemp)&&meetingbean!=null) {
+                                Intent intent = new Intent(MeetingActivity.this, TcpService.class);
+                                intent.putExtra("Num", card_stringTemp);
+                                intent.putExtra("Act", 6);
+                                intent.putExtra("ext", meetingbean.getId());
+                                startService(intent);
+                            }else {
+                                Log4j.d("MeetingActivity","获取卡号失败或会议为空");
+                            }
+                            mCardNum.setText("");
+                            card_handler = null;
+
+                        }
+                    }, 1000);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable arg0) {
+//                LogUtils.d(arg0);
+            }
+        });
+        foucus_handler = new Handler();
+        foucus_handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mCardNum.requestFocus();
+                foucus_handler.postDelayed(this, 1000);
+            }
+        }, 1000);
+    }
+
+    /**
+     * 手势滑动弹出框
+     */
+    private GestureDetector.OnGestureListener onGestureListener =
+            new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+                                       float velocityY) {
+                    float x = e2.getX() - e1.getX();
+                    float y = e2.getY() - e1.getY();
+
+                    if (x > 500 && Math.abs(x) > Math.abs(y)) {
+                        mainDialog.dismiss();
+                    } else if (x < -500 && Math.abs(x) > Math.abs(y)) {
+                        mainDialog.show();
+                    }
+                    return true;
+                }
+            };
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return gestureDetector.onTouchEvent(event);
+    }
+
+    @Override
+    public void getTime(String time) {
+        mTime.setText(time);
+    }
+
+    @Override
+    public void loadDataFinish(int code, Object data) {
+        if (code == 0) {
+            if (data != null) {
+                meetingbean = JSON.parseObject(data.toString(), new TypeReference<Meetingbean>() {
+                });
+                if (meetingbean != null) {
+                    setUIData(meetingbean);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void showToast(String message) {
+        myToast.toast(MeetingActivity.this, message);
+    }
+
+    @Override
+    public void showDialog() {
+        if (dialog != null) {
+            dialog.show();
+        }
+    }
+
+    @Override
+    public void dismissDialog() {
+        if (dialog != null && !isFinishing()) {
+            dialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onError(final int errorCode, String errorMessage) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (errorCode == 0) {
+                    getUIdata();
+                }
+            }
+        }, 5000);
+    }
+
+    @Override
+    public void cancelRequest() {
+        netWorkRequest.CancelPost();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
+    public void onDataStatusEvent(SignEvent event) {
+        if (event.isStatus()){
+            if (meetingUserList!=null) {
+                for (Meetingbean.MeetingUserListBean m : meetingUserList) {
+                    if (m.getAccountId().equals(event.getId())) {
+                        m.setSigninStatus(1);
+                        Log4j.d("MeetingActivity","匹配成功，签到成功！");
+                    }
+                }
+                setGridData(meetingUserList);
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+}

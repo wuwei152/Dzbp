@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginRight="75dp"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="80dp"
+        android:layout_height="70dp">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/item_img"
+            android:layout_width="95dp"
+            android:layout_height="95dp"
+            android:layout_alignParentBottom="true"
+            fresco:actualImageScaleType="fitXY"
+            fresco:placeholderImage="@drawable/pic_not_found"
+            fresco:placeholderImageScaleType="fitXY"
+            fresco:roundAsCircle="true"
+            fresco:roundingBorderColor="@color/text_gray"
+            fresco:roundingBorderWidth="1dp"
+            fresco:viewAspectRatio="1" />
+
+        <TextView
+            android:id="@+id/item_num"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/blue_strack_back"
+            android:gravity="center"
+            android:text="3"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/text_black"
+        android:textSize="16sp" />
+</LinearLayout>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dm="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/kc_bj"
+    android:orientation="vertical"
+    tools:context="com.md.dzbp.ui.activity.SettingActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="160"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:id="@+id/set_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="45dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/arr_black_left" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="返回"
+                android:textColor="@color/text_black"
+                android:textSize="35sp" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="设置"
+            android:textColor="@color/text_black"
+            android:textSize="40sp" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="890"
+        android:gravity="center"
+        android:orientation="vertical">
+
+
+        <com.md.dzbp.ui.view.dropdownmenu.DropdownMenu
+            android:id="@+id/set_school"
+            android:layout_width="500dp"
+            android:layout_height="50dp"
+            dm:iconColor="#777"
+            dm:titleBgColor="#eee"
+            dm:titleText="请选择学校"
+            dm:titleTextSize="14sp" />
+
+        <com.md.dzbp.ui.view.dropdownmenu.DropdownMenu
+            android:id="@+id/set_area"
+            android:layout_width="500dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp"
+            dm:iconColor="#777"
+            dm:titleBgColor="#eee"
+            dm:titleText="请选择区域"
+            dm:titleTextSize="14sp" />
+
+        <TextView
+            android:id="@+id/set_confirm"
+            android:layout_width="500dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/patrol_strack_back"
+            android:gravity="center"
+            android:text="提交"
+            android:textColor="@color/white"
+            android:textSize="22sp" />
+
+    </LinearLayout>
+</LinearLayout>

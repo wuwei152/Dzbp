@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context="com.md.dzbp.ui.activity.MeetingActivity">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1380"
+        android:background="@drawable/kc_bj"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_marginTop="15dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/exam_cardNum"
+                    android:layout_width="1dp"
+                    android:layout_height="0dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true" />
+
+                <TextView
+                    android:id="@+id/exam_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="9:30"
+                    android:textColor="@color/white"
+                    android:textSize="42sp" />
+
+                <TextView
+                    android:id="@+id/exam_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2017年8月14日 星期一"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/exam_temp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="18℃-29℃"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="3楼-A305教室"
+                android:textColor="@color/white"
+                android:textSize="30sp" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/exam_white_back"
+            android:paddingBottom="15dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="200dp"
+            android:paddingTop="15dp"
+            android:text="九月高一年级综合测试"
+            android:textColor="@color/white"
+            android:textSize="30sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingLeft="260dp"
+            android:paddingRight="260dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="第5考场"
+                android:textColor="@color/white"
+                android:textSize="80sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="100dp"
+                android:layout_marginRight="100dp"
+                android:layout_marginTop="30dp"
+                android:gravity="center"
+                android:text="高中数学"
+                android:textColor="@color/white"
+                android:textSize="40sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:gravity="center"
+                android:text="考号：20173435101000-2017343512090"
+                android:textColor="@color/white"
+                android:textSize="25sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="25dp"
+            android:orientation="horizontal"
+            android:paddingLeft="100dp"
+            android:paddingRight="100dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="考试时间：10:00 - 12:00"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="监考老师：刘晓红"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="540"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:gravity="center"
+            android:text="考场时间安排表"
+            android:textColor="@color/text_black"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="9.11--9.12七场考试安排"
+            android:textColor="@color/text_black"
+            android:textSize="20sp" />
+
+        <ListView
+            android:id="@+id/exam_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:headerDividersEnabled="true"
+            android:divider="@color/line"
+            android:dividerHeight="0.5dp" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="#ECE2E1"
+            android:layout_weight="1">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:padding="15dp"
+                android:lineSpacingExtra="5dp"
+                android:text="                                               考 场 纪 律 要 求\n\n一、 考生应提前10分钟进入考场，按时参加考试，开考10分钟后，不得进入考场。\n二、 考生进入考场后，按座位号入座，并将《准考证》、《身份证》放在桌子右上角,以备查对，证件不齐者不准进入考场。 \n三、 进入考场，有关物品放在指定地点。不得携带与考试有关的书籍、资料及其它物品到考生座位。 \n四、 进入考场关闭通讯工具，如在考试中使用通讯工具，一律按违反考试纪律处理。 \n五、 考生应保持考场安静，不得吸烟，不得交头接耳，乱窜座位。 \n六、 考生违反考场纪律，经三次提示后，仍不改正，取消考试成绩。 \n七、 考试中不得以任何方式作弊或帮助他人作弊，违者将取消考试成绩，并对违纪者进行通报批评。 \n八、 考试中发现替考等严重违反考试纪律的考生在全局通报批评，并在三年内不得参加职称评审或者考试。 九、 考试中出现计算机设备故障，考生应举手示意，由考场工作人员进行处理。考生不得随意解决，不得进行与考试无关的计算机操作。 \n十、 考试时间为50分钟，到达规定时间系统将自动结束考试。考生交卷后不得在考场内逗留，应迅速离开考场。"
+                android:textColor="@color/text_black"
+                android:textSize="16sp" />
+        </ScrollView>
+
+    </LinearLayout>
+
+</LinearLayout>
