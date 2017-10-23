@@ -5,16 +5,34 @@ import java.io.Serializable;
 /**
  * Created by Administrator on 2017/9/13.
  */
-public class SignEvent implements Serializable{
+public class SignEvent implements Serializable {
+    private int type;
     private boolean status;
     private String id;
+    private String name;
 
     public SignEvent() {
     }
 
-    public SignEvent(boolean status, String id) {
+    public SignEvent(int type, boolean status, String id, String name) {
         this.status = status;
         this.id = id;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public boolean isStatus() {

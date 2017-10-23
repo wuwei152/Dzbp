@@ -20,6 +20,7 @@ import com.md.dzbp.ui.activity.MainActivity;
 import com.md.dzbp.ui.activity.MeetingActivity;
 import com.md.dzbp.ui.activity.NoticeActivity;
 import com.md.dzbp.ui.activity.PatrolActivity;
+import com.md.dzbp.ui.activity.SignActivity;
 import com.md.dzbp.ui.activity.StudentActivity;
 import com.md.dzbp.ui.activity.TeacherActivity;
 import com.md.dzbp.utils.ACache;
@@ -29,7 +30,7 @@ import com.md.dzbp.utils.ACache;
  */
 public class MainDialog extends Dialog {
 
-    private TextView act1, act2, act3, act4, act5, act6, act7, bt1, bt2;
+    private TextView act1, act2, act3, act4, act5, act6, act7, act8, bt1, bt2;
     private Context context;
     private final SmdtManager smdt;
     private EditText et;
@@ -86,6 +87,7 @@ public class MainDialog extends Dialog {
         act5 = (TextView) findViewById(R.id.act5);
         act6 = (TextView) findViewById(R.id.act6);
         act7 = (TextView) findViewById(R.id.act7);
+        act8 = (TextView) findViewById(R.id.act8);
 
         bt1 = (TextView) findViewById(R.id.bt1);
         bt2 = (TextView) findViewById(R.id.bt2);
@@ -138,6 +140,13 @@ public class MainDialog extends Dialog {
             @Override
             public void onClick(View view) {
                 context.startActivity(new Intent(context, MeetingActivity.class));
+                dismiss();
+            }
+        });
+        act8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                context.startActivity(new Intent(context, SignActivity.class));
                 dismiss();
             }
         });

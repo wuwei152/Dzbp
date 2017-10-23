@@ -29,6 +29,7 @@ public class Constant {
     public static String Ftp_Screenshot = "/Screenshot";
     public static String Ftp_Broadcast = "/Broadcast";
     public static String Ftp_Upgrade = "/Upgrade/";
+    public static String Ftp_Snapshot = "/Snapshot/";
 
     /**
      * 服务器地址

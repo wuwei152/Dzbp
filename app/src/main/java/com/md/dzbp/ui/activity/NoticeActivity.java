@@ -188,10 +188,6 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
                 }
             };
 
-//    @Override
-//    public boolean onTouchEvent(MotionEvent event) {
-//        return gestureDetector.onTouchEvent(event);
-//    }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -314,6 +310,14 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
             Log4j.d(TAG, "关闭声音");
         } else {
             finish();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mp != null) {
+            mp.stop();
         }
     }
 }

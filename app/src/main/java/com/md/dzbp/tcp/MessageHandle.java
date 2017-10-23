@@ -28,6 +28,7 @@ import com.md.dzbp.ui.activity.MainActivity;
 import com.md.dzbp.ui.activity.MeetingActivity;
 import com.md.dzbp.ui.activity.NoticeActivity;
 import com.md.dzbp.ui.activity.PatrolActivity;
+import com.md.dzbp.ui.activity.SignActivity;
 import com.md.dzbp.ui.activity.StudentActivity;
 import com.md.dzbp.ui.activity.TeacherActivity;
 import com.md.dzbp.ui.view.myToast;
@@ -122,17 +123,17 @@ public class MessageHandle {
                 int IsEnable = tcpMessage.ReadInt();
                 Log4j.d(TAG, "0xA501收到开关机指令：" + guanji + "/" + kaiji + "/" + IsEnable);
                 smdtManager.smdtSetTimingSwitchMachine(guanji, kaiji, IsEnable + "");
-                yingda(0xA501, true, deviceId,msgid501);
+                yingda(0xA501, true, deviceId, msgid501);
                 break;
             case 0xA502://关闭系统
                 int msgid502 = tcpMessage.ReadInt();
                 try {
                     Log4j.d(TAG, "0xA502收到关机指令");
-                    yingda(0xA502, true, deviceId,msgid502);
+                    yingda(0xA502, true, deviceId, msgid502);
                     smdtManager.shutDown();
                 } catch (Exception e) {
                     Log4j.d(TAG, e.getMessage());
-                    yingda(0xA502, false, deviceId,msgid502);
+                    yingda(0xA502, false, deviceId, msgid502);
                     Log4j.d(TAG, "关机失败");
                 }
                 break;
@@ -140,11 +141,11 @@ public class MessageHandle {
                 int msgid503 = tcpMessage.ReadInt();
                 try {
                     Log4j.d(TAG, "0xA503收到重启指令");
-                    yingda(0xA503, true, deviceId,msgid503);
+                    yingda(0xA503, true, deviceId, msgid503);
                     smdtManager.smdtReboot("reboot");
                 } catch (Exception e) {
                     Log4j.d(TAG, e.getMessage());
-                    yingda(0xA503, false, deviceId,msgid503);
+                    yingda(0xA503, false, deviceId, msgid503);
                     Log4j.d(TAG, "重启失败");
                 }
                 break;
@@ -157,7 +158,7 @@ public class MessageHandle {
                 int IsEnable2 = tcpMessage.ReadInt();
                 Log4j.d(TAG, "0xA504收到开关机时间间隔指令" + gHours + "/" + gMinute + "/" + kHours + "/" + kMinute + "/" + IsEnable2);
                 smdtManager.smdtSetPowerOnOff((char) gHours, (char) gMinute, (char) kHours, (char) kMinute, (char) IsEnable2);
-                yingda(0xA504, true, deviceId,msgid504);
+                yingda(0xA504, true, deviceId, msgid504);
                 break;
             case 0xA505://截屏
                 final int msgid505 = tcpMessage.ReadInt();
@@ -188,20 +189,20 @@ public class MessageHandle {
                                 public void onSuccess(File file) {
                                     // TODO 压缩成功后调用，返回压缩后的图片文件
                                     Log4j.d(TAG, "压缩截屏文件成功！");
-                                    uploadFile(file.getAbsolutePath(), FileUtils.getDiskCacheDir(context) + "Screenshot/screenshot_" + timeStr + ".png", Constant.Ftp_Screenshot, 0xA505,msgid505);
+                                    uploadFile(file.getAbsolutePath(), FileUtils.getDiskCacheDir(context) + "Screenshot/screenshot_" + timeStr + ".png", Constant.Ftp_Screenshot, 0xA505, msgid505);
                                 }
 
                                 @Override
                                 public void onError(Throwable e) {
                                     // TODO 当压缩过程出现问题时调用
                                     Log4j.d(TAG, "压缩截屏文件失败！" + e.getMessage());
-                                    yingda(0xA505, false, deviceId,msgid505);
+                                    yingda(0xA505, false, deviceId, msgid505);
                                 }
                             }).launch();    //启动压缩
 
                 } else {
                     Log4j.d(TAG, "获取截屏文件失败！sn");
-                    yingda(0xA505, false, deviceId,msgid505);
+                    yingda(0xA505, false, deviceId, msgid505);
                 }
                 break;
 
@@ -211,10 +212,10 @@ public class MessageHandle {
                 Log4j.d(TAG, "0xA506收到开关屏指令" + result2);
                 if (result2) {
                     smdtManager.smdtSetLcdBackLight(1);//打开背光
-                    yingda(0xA506, 1, true, deviceId,msgid506);
+                    yingda(0xA506, 1, true, deviceId, msgid506);
                 } else {
                     smdtManager.smdtSetLcdBackLight(0);//关闭背光
-                    yingda(0xA506, 0, true, deviceId,msgid506);
+                    yingda(0xA506, 0, true, deviceId, msgid506);
                 }
                 break;
             case 0xA507://亮度调节
@@ -222,21 +223,21 @@ public class MessageHandle {
                 int result3 = tcpMessage.ReadInt();
                 Log4j.d(TAG, "0xA507收到亮度调节指令" + result3);
                 smdtManager.setBrightness(context.getContentResolver(), result3);
-                yingda(0xA507, true, deviceId,msgid507);
+                yingda(0xA507, true, deviceId, msgid507);
                 break;
             case 0xA508://设置声音
                 int msgid508 = tcpMessage.ReadInt();
                 int voice = tcpMessage.ReadInt();
                 Log4j.d(TAG, "0xA508收到设置声音指令" + voice);
                 smdtManager.smdtSetVolume(context, voice);
-                yingda(0xA508, true, deviceId,msgid508);
+                yingda(0xA508, true, deviceId, msgid508);
                 break;
             case 0xA509://远程升级
                 int msgid509 = tcpMessage.ReadInt();
                 int length9 = tcpMessage.ReadInt();
                 String path9 = tcpMessage.ReadString(length9);
                 Log4j.d(TAG, "0xA509收到远程升级指令" + path9);
-                downloadFile(0xA509, Constant.Ftp_Upgrade + path9,msgid509);
+                downloadFile(0xA509, Constant.Ftp_Upgrade + path9, msgid509);
                 break;
             case 0xA510://设置以太网IP
                 int msgid510 = tcpMessage.ReadInt();
@@ -251,11 +252,11 @@ public class MessageHandle {
                 Log4j.d(TAG, "0xA510收到设置以太网IP指令" + ip + "/" + mask + "/" + gateway + "/" + dns);
                 try {
                     smdtManager.smdtSetEthIPAddress(ip, mask, gateway, dns);
-                    yingda(0xA510, true, deviceId,msgid510);
+                    yingda(0xA510, true, deviceId, msgid510);
                     Log4j.d(TAG, "设置以太网IP成功！");
                 } catch (Exception e) {
                     Log4j.d(TAG, e.getMessage());
-                    yingda(0xA510, false, deviceId,msgid510);
+                    yingda(0xA510, false, deviceId, msgid510);
                     Log4j.d(TAG, "设置以太网IP失败！");
                 }
 
@@ -278,11 +279,11 @@ public class MessageHandle {
 //                LogUtils.d(calendar.get(Calendar.YEAR) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + (calendar.get(Calendar.DAY_OF_MONTH)) + "/" + calendar.get(Calendar.HOUR_OF_DAY) + "/" + calendar.get(Calendar.MINUTE));
                 try {
                     smdtManager.setTime(context, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
-                    yingda(0xA511, true, deviceId,msgid511);
+                    yingda(0xA511, true, deviceId, msgid511);
                     Log4j.d(TAG, "设置系统时间成功");
                 } catch (Exception e) {
                     Log4j.d(TAG, e.getMessage());
-                    yingda(0xA511, false, deviceId,msgid511);
+                    yingda(0xA511, false, deviceId, msgid511);
                     Log4j.d(TAG, "设置系统时间失败");
                 }
                 EventBus.getDefault().post(new UpdateDate());
@@ -303,16 +304,16 @@ public class MessageHandle {
                     });
                     //取出第一个(即最新修改的)文件
                     Log4j.d(TAG, "开始上传" + files[0].getAbsolutePath());
-                    uploadFile(files[0].getAbsolutePath(), Constant.Ftp_Log, 0xA512,msgid512);
+                    uploadFile(files[0].getAbsolutePath(), Constant.Ftp_Log, 0xA512, msgid512);
                 } else {
-                    yingda(0xA512, false, deviceId,msgid512);
+                    yingda(0xA512, false, deviceId, msgid512);
                     Log4j.d(TAG, "未查询到log文件");
                 }
                 break;
             case 0xA513://发送版本信息
                 Log4j.d(TAG, "0xA513收到发送版本信息指令");
                 int msgid513 = tcpMessage.ReadInt();
-                sendVersionInfo(0xA513, true, deviceId,msgid513);
+                sendVersionInfo(0xA513, true, deviceId, msgid513);
                 break;
             case 0xA550://刷卡屏幕跳转
                 int status = tcpMessage.ReadInt();
@@ -366,7 +367,7 @@ public class MessageHandle {
                 int length602 = tcpMessage.ReadInt();
                 String broadcastUrl = tcpMessage.ReadString(length602);
                 Log4j.d(TAG, "0xA602收到广播消息：" + broadcastUrl);
-                downloadBroadcast(0xA602, Constant.Ftp_Broadcast + "/" + broadcastUrl, broadcastUrl,msgid602);
+                downloadBroadcast(0xA602, Constant.Ftp_Broadcast + "/" + broadcastUrl, broadcastUrl, msgid602);
                 break;
             case 0xA605://会议签到
                 int status605 = tcpMessage.ReadInt();
@@ -378,18 +379,36 @@ public class MessageHandle {
                     int length6052 = tcpMessage.ReadInt();
                     String ext = tcpMessage.ReadString(length6052);
                     Log4j.d(TAG, "签到：" + id);
-                    EventBus.getDefault().post(new SignEvent(true, id));
+                    EventBus.getDefault().post(new SignEvent(0, true, id, ""));
                 } else {
                     Log4j.d(TAG, "签到失败");
                     handleFail(status605, 605);
-                    EventBus.getDefault().post(new SignEvent(false, ""));
+                    EventBus.getDefault().post(new SignEvent(0, false, "", ""));
                 }
+                break;
             case 0xA606://页面更新
                 int msgid606 = tcpMessage.ReadInt();
                 int status606 = tcpMessage.ReadInt();
                 Log4j.d(TAG, "0xA606收到页面更新指令" + status606);
                 EventBus.getDefault().post(new MainUpdateEvent(status606, ""));
-                yingda(0xA606, true, deviceId,msgid606);
+                yingda(0xA606, true, deviceId, msgid606);
+                break;
+            case 0xA608://页面更新
+                int status608 = tcpMessage.ReadInt();
+                Log4j.d(TAG, "0xA608收到班级签到指令" + status608);
+                if (status608 == 0) {
+                    int type = tcpMessage.ReadInt();
+                    int length608 = tcpMessage.ReadInt();
+                    String id = tcpMessage.ReadString(length608);
+                    int length6082 = tcpMessage.ReadInt();
+                    String ext = tcpMessage.ReadString(length6082);
+                    Log4j.d(TAG, "签到：" + id + ext);
+                    EventBus.getDefault().post(new SignEvent(1, true, id, ext));
+                } else {
+                    Log4j.d(TAG, "签到失败");
+                    handleFail(status608, 608);
+                    EventBus.getDefault().post(new SignEvent(1, false, "", ""));
+                }
                 break;
             default:
                 break;
@@ -441,7 +460,7 @@ public class MessageHandle {
      * @param type 类型
      * @param b
      */
-    private void yingda(int xyh, int type, boolean b,String diviceId,int msgid) {
+    private void yingda(int xyh, int type, boolean b, String diviceId, int msgid) {
         try {
             TCPMessage message = new TCPMessage(xyh);
             message.Write(msgid);
@@ -460,7 +479,7 @@ public class MessageHandle {
      * @param xyh 协议号
      * @param b
      */
-    private void yingda(int xyh, boolean b, String diviceId,int id) {
+    private void yingda(int xyh, boolean b, String diviceId, int id) {
         try {
             TCPMessage message = new TCPMessage(xyh);
             message.Write(id);
@@ -474,6 +493,7 @@ public class MessageHandle {
             e.printStackTrace();
         }
     }
+
     /**
      * 通用应答
      *
@@ -500,7 +520,7 @@ public class MessageHandle {
      * @param xyh 协议号
      * @param b
      */
-    private void yingda(int xyh, boolean b, String diviceId, String path,int id) {
+    private void yingda(int xyh, boolean b, String diviceId, String path, int id) {
         try {
             TCPMessage message = new TCPMessage(xyh);
             message.Write(id);
@@ -567,7 +587,7 @@ public class MessageHandle {
                             Log4j.d(TAG, currentStep);
                             if (currentStep.equals(ERRORTYPE.FTP_UPLOAD_SUCCESS)) {
                                 Log4j.d(TAG, fileName + "-----shanchuan-log-successful");
-                                yingda(xyh, true, deviceId, file.getName(),id);
+                                yingda(xyh, true, deviceId, file.getName(), id);
                             } else if (currentStep.equals(ERRORTYPE.FTP_UPLOAD_LOADING)) {
                                 long fize = file.length();
                                 float num = (float) uploadSize / (float) fize;
@@ -575,7 +595,7 @@ public class MessageHandle {
                                 Log4j.d(TAG, "-----shangchuan--log-" + result + "%");
                             } else if (currentStep.equals(ERRORTYPE.FTP_UPLOAD_FAIL)) {
                                 Log4j.d(TAG, "-----shangchuan-log-fail---");
-                                yingda(xyh, false, deviceId,id);
+                                yingda(xyh, false, deviceId, id);
                             }
                         }
                     });
@@ -583,7 +603,7 @@ public class MessageHandle {
                     // TODO Auto-generated catch block  
                     e.printStackTrace();
                     Log4j.e(TAG, e.getMessage());
-                    yingda(xyh, false, deviceId,id);
+                    yingda(xyh, false, deviceId, id);
                 }
             }
         }).start();
@@ -615,7 +635,7 @@ public class MessageHandle {
                             Log4j.d(TAG, currentStep);
                             if (currentStep.equals(ERRORTYPE.FTP_UPLOAD_SUCCESS)) {
                                 Log4j.d(TAG, fileName + "-----shanchuan-log-successful");
-                                yingda(xyh, true, deviceId, file.getName(),id);
+                                yingda(xyh, true, deviceId, file.getName(), id);
                             } else if (currentStep.equals(ERRORTYPE.FTP_UPLOAD_LOADING)) {
                                 long fize = file.length();
                                 float num = (float) uploadSize / (float) fize;
@@ -623,7 +643,7 @@ public class MessageHandle {
                                 Log4j.d(TAG, "-----shangchuan--log-" + result + "%");
                             } else if (currentStep.equals(ERRORTYPE.FTP_UPLOAD_FAIL)) {
                                 Log4j.d(TAG, "-----shangchuan-log-fail---");
-                                yingda(xyh, false, deviceId,id);
+                                yingda(xyh, false, deviceId, id);
                             }
                         }
                     });
@@ -631,7 +651,7 @@ public class MessageHandle {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                     Log4j.e(TAG, e.getMessage());
-                    yingda(xyh, false, deviceId,id);
+                    yingda(xyh, false, deviceId, id);
                 } finally {
                     File file1 = new File(fileName);
                     File file2 = new File(fileName2);
@@ -730,14 +750,14 @@ public class MessageHandle {
                             Log.d(TAG, currentStep);
                             if (currentStep.equals(ERRORTYPE.FTP_DOWN_SUCCESS)) {
                                 Log4j.d(TAG, "-----xiazai-apk-successful" + FileUtils.getDiskCacheDir(context) + "Apk/dzbp.apk");
-                                yingda(xyh, true, deviceId,id);
+                                yingda(xyh, true, deviceId, id);
 //                                smdtManager. smdtSetTimingSwitchMachine ("9:50", "20:10"，1);
                                 smdtManager.smdtSilentInstall(FileUtils.getDiskCacheDir(context) + "Apk/dzbp.apk", context);
                             } else if (currentStep.equals(ERRORTYPE.FTP_DOWN_LOADING)) {
                                 Log4j.d(TAG, "-----xiazai-apk--" + downProcess + "%");
                             } else if (currentStep.equals(ERRORTYPE.FTP_DOWN_FAIL)) {
                                 Log4j.d(TAG, "-----xiazai-apk-fail---");
-                                yingda(xyh, false, deviceId,id);
+                                yingda(xyh, false, deviceId, id);
                             }
                         }
 
@@ -746,7 +766,7 @@ public class MessageHandle {
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
-                    yingda(xyh, false, deviceId,id);
+                    yingda(xyh, false, deviceId, id);
                 }
 
             }
@@ -774,13 +794,13 @@ public class MessageHandle {
                             Log.d(TAG, currentStep);
                             if (currentStep.equals(ERRORTYPE.FTP_DOWN_SUCCESS)) {
                                 Log4j.d(TAG, "-----xiazai-guangbo-successful");
-                                yingda(xyh, true, deviceId,id);
+                                yingda(xyh, true, deviceId, id);
                                 playBroad(FileUtils.getDiskCacheDir(context) + "BroadCast/" + fileName);
                             } else if (currentStep.equals(ERRORTYPE.FTP_DOWN_LOADING)) {
                                 Log4j.d(TAG, "-----xiazai-guangbo--" + downProcess + "%");
                             } else if (currentStep.equals(ERRORTYPE.FTP_DOWN_FAIL)) {
                                 Log4j.d(TAG, "-----xiazai-guangbo-fail---");
-                                yingda(xyh, false, deviceId,id);
+                                yingda(xyh, false, deviceId, id);
                             }
                         }
 
@@ -789,7 +809,7 @@ public class MessageHandle {
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
-                    yingda(xyh, false, deviceId,id);
+                    yingda(xyh, false, deviceId, id);
                 }
 
             }
@@ -843,7 +863,7 @@ public class MessageHandle {
                         try {
                             is.close();
                             File file = new File(path);
-                            if (file.exists()){
+                            if (file.exists()) {
                                 file.delete();
                             }
                         } catch (IOException e) {
@@ -861,7 +881,7 @@ public class MessageHandle {
     /**
      * 发送版本信息
      */
-    private void sendVersionInfo(int xyh, boolean b, String diviceId,int id) {
+    private void sendVersionInfo(int xyh, boolean b, String diviceId, int id) {
         String androidModel = smdtManager.getAndroidModel();//获取目前设备的型号。
         String AndroidDisplay = smdtManager.getAndroidDisplay();//固件系统版本和编译日期
         String apiversion = smdtManager.smdtGetAPIVersion();//获取目前API的平台-版本-日期信息。
@@ -998,6 +1018,9 @@ public class MessageHandle {
                 break;
             case 6:
                 intent = new Intent(context, MeetingActivity.class);
+                break;
+            case 7:
+                intent = new Intent(context, SignActivity.class);
                 break;
             default:
                 break;

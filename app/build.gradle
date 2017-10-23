@@ -46,21 +46,24 @@ dependencies {
         }
     }
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
+    compile files('libs/smdt.jar')
+    compile files('libs/commons-net-3.6.jar')
+    compile files('libs/android-logging-log4j-1.0.3.jar')
     compile 'com.android.support:appcompat-v7:25.0.0'
     compile 'com.android.support:support-v4:25.0.0'
     compile 'com.android.support:design:25.0.0'
     compile 'com.apkfuns.logutils:library:1.2.2'
     compile 'cn.finalteam:okhttpfinal:2.0.7'
     compile 'com.jakewharton:butterknife:8.4.0'
-    apt 'com.jakewharton:butterknife-compiler:8.4.0'
     compile 'com.zhy:base-adapter:3.0.3'
     compile 'com.github.bumptech.glide:glide:3.5.2'
     compile 'com.facebook.fresco:fresco:0.10.0'
     compile 'com.facebook.fresco:imagepipeline-okhttp:0.10.0'
-    compile files('libs/smdt.jar')
-    compile files('libs/commons-net-3.6.jar')
-    compile files('libs/android-logging-log4j-1.0.3.jar')
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.alibaba:fastjson:1.2.37'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    testCompile 'junit:junit:4.12'
+    apt 'com.jakewharton:butterknife-compiler:8.4.0'
+    compile 'com.github.nanchen2251:CompressHelper:1.0.5'
+    compile files('libs/Msc.jar')
 }

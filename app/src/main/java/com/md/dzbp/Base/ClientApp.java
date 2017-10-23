@@ -5,7 +5,6 @@ import android.app.Application;
 import com.apkfuns.logutils.LogLevel;
 import com.apkfuns.logutils.LogUtils;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.md.dzbp.utils.CrashHandler;
 import com.md.dzbp.utils.Log4jConfigure;
 
 import cn.finalteam.okhttpfinal.OkHttpFinal;
@@ -32,7 +31,6 @@ public class ClientApp extends Application {
 //        CrashHandler crashHandler = CrashHandler.getInstance();
 //        crashHandler.init(this);
         Log4jConfigure.configure(this);
-
     }
 
     public static ClientApp getInstance() {
