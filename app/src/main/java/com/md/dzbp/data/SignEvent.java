@@ -15,8 +15,10 @@ public class SignEvent implements Serializable {
     }
 
     public SignEvent(int type, boolean status, String id, String name) {
+        this.type = type;
         this.status = status;
         this.id = id;
+        this.name=name;
     }
 
     public int getType() {

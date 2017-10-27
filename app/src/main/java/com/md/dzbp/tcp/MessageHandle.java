@@ -982,6 +982,9 @@ public class MessageHandle {
             case 5:
                 msg = "保存数据异常！";
                 break;
+            case 6:
+                msg = "不允许此操作！";
+                break;
             default:
                 break;
         }

@@ -121,6 +121,16 @@ public class ServerManager {
             message.Write(deviceId, 36);
             message.Write(2);
             client.getTransceiver().send(message);
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (!messageHandle.IsEnable){
+                        Log4j.e(TAG,"登录无回应，断开重试！");
+                        Stop();
+                    }
+                }
+            },retryTime);
         } catch (Exception e) {
             Log4j.d(TAG, "登录失败"+e.getMessage());
         }
@@ -158,7 +168,7 @@ public class ServerManager {
      * 停止
      */
     public void Stop() {
-        if (client != null || client.isConnected()) {
+        if (client != null && client.isConnected()) {
             client.disconnect();
         }
     }

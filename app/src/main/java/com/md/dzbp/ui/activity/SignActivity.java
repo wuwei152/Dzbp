@@ -12,17 +12,15 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.apkfuns.logutils.LogUtils;
 import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
-import com.md.dzbp.constants.Constant;
-import com.md.dzbp.constants.ERRORTYPE;
-import com.md.dzbp.data.Meetingbean;
 import com.md.dzbp.data.SignEvent;
-import com.md.dzbp.ftp.FTP;
 import com.md.dzbp.model.NetWorkRequest;
 import com.md.dzbp.model.TimeListener;
 import com.md.dzbp.model.TimeUtils;
@@ -43,7 +41,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.LinkedList;
 
 import butterknife.BindView;
 
@@ -55,6 +52,9 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
     TextView mTime;
     @BindView(R.id.sign_date)
     TextView mDate;
+    @BindView(R.id.sign_surface)
+    SurfaceView mSurface;
+    private SurfaceHolder.Callback callback;
     private Camera camera;
     private String TAG = "SignActivity";
     private Handler card_handler = null;
@@ -65,10 +65,13 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
     private Dialog dialog;
     private NetWorkRequest netWorkRequest;
     private Camera.Parameters parameters;
+    private int Pwidth = 240;
+    private int Phight = 320;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LogUtils.d("onCreate");
     }
 
     @Override
@@ -85,54 +88,113 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
         //进度
         dialog = MyProgressDialog.createLoadingDialog(this, "", this);
         netWorkRequest = new NetWorkRequest(this, this);
+
+        callback = new SurfaceHolder.Callback() {
+            @Override
+            public void surfaceCreated(SurfaceHolder holder) {
+                initCamera(); // 用于启动摄像头
+
+            }
+
+            @Override
+            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+            }
+
+            @Override
+            public void surfaceDestroyed(SurfaceHolder holder) {
+                stopCamera(); // 用于关闭摄像头
+
+            }
+        };
+        mSurface.getHolder().setFixedSize(Pwidth, Phight);
+        //下面设置surfaceView不维护自己的缓冲区,而是等待屏幕的渲染引擎将内容推送到用户面前
+        mSurface.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        mSurface.getHolder().addCallback(callback); // 将Callback绑定到SurfaceView
+
+    }
+
+    private void stopCamera() {
+        if (camera != null) {
+            LogUtils.d("stopcamera");
+            camera.stopPreview();
+            camera.release();
+            camera = null;
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        LogUtils.d("onResume");
         EventBus.getDefault().register(this);
-        try {
-            camera = Camera.open();
-        } catch (Exception e) {
-            Log4j.e(TAG, e.getMessage());
-            camera = Camera.open(Camera.getNumberOfCameras() - 1);
-        }
 
-        initCamera();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        LogUtils.d("onPause");
         EventBus.getDefault().unregister(this);
-        if (camera != null) {
-            camera.stopPreview();
-            camera.release();
-            camera = null;
-        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        LogUtils.d("onStop");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        LogUtils.d("onStart");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        LogUtils.d("onRestart");
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        LogUtils.d("onNewIntent");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (camera != null) {
-            camera.stopPreview();
-            camera.release();
-            camera = null;
-        }
+        LogUtils.d("onDestroy");
     }
 
     //相机参数的初始化设置
     private void initCamera() {
-        parameters = camera.getParameters();
-        parameters.setPictureFormat(PixelFormat.JPEG);
-        parameters.setPictureSize(320, 320);  // 部分定制手机，无法正常识别该方法。
-        parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);//1连续对焦
-        camera.setParameters(parameters);
-        camera.startPreview();
-        camera.cancelAutoFocus();// 2如果要实现连续的自动对焦，这一句必须加上
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(300);
+//                    camera = Camera.open();
+                    LogUtils.d("initCamera");
+                    camera = Camera.open(Camera.getNumberOfCameras() - 1);
+                    camera.setPreviewDisplay(mSurface.getHolder());
+                    //        camera.setDisplayOrientation(90);
+                    parameters = camera.getParameters();
+                    parameters.setPictureFormat(PixelFormat.JPEG);
+                    parameters.setPictureSize(Pwidth, Phight);  // 部分定制手机，无法正常识别该方法。
+                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);//1连续对焦
+                    camera.setParameters(parameters);
+                    camera.startPreview();
+                    camera.cancelAutoFocus();// 2如果要实现连续的自动对焦，这一句必须加上
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log4j.e(TAG, e.getMessage());
+                }
+            }
+        }).start();
     }
 
     @Override
@@ -156,35 +218,38 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
      * 拍照
      */
     private void TakePicture(final String cardNum) {
-        Log4j.d(TAG,"开始拍照！");
-        camera.takePicture(null, null, new Camera.PictureCallback() {
-            @Override
-            public void onPictureTaken(byte[] data, Camera camera) {
-                try {
-                    File filePath = new File(FileUtils.getDiskCacheDir(SignActivity.this), "sign");
-                    if (!filePath.exists()) {
-                        filePath.mkdirs();
+        Log4j.d(TAG, "开始拍照！");
+        if (camera != null) {
+            camera.takePicture(null, null, new Camera.PictureCallback() {
+                @Override
+                public void onPictureTaken(byte[] data, Camera camera) {
+                    try {
+                        File filePath = new File(FileUtils.getDiskCacheDir(SignActivity.this), "sign");
+                        if (!filePath.exists()) {
+                            filePath.mkdirs();
+                        }
+                        File fileName = new File(filePath, System.currentTimeMillis() + (int) (Math.random() * 1000) + ".jpg");
+                        fileName.createNewFile();
+                        FileOutputStream fos = new FileOutputStream(fileName);
+                        fos.write(data);
+                        fos.flush();
+                        fos.close();
+
+                        Log4j.d(TAG, "拍照成功！");
+                        Intent intent = new Intent(SignActivity.this, TcpService.class);
+                        intent.putExtra("Num", cardNum);
+                        intent.putExtra("Act", 7);
+                        intent.putExtra("ext", fileName.getName());
+                        startService(intent);
+                        compress(fileName);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                    File fileName = new File(filePath, System.currentTimeMillis() + (int) (Math.random() * 1000) + ".jpg");
-                    fileName.createNewFile();
-                    FileOutputStream fos = new FileOutputStream(fileName);
-                    fos.write(data);
-                    fos.flush();
-                    fos.close();
-
-                    Log4j.d(TAG,"拍照成功！");
-                    Intent intent = new Intent(SignActivity.this, TcpService.class);
-                    intent.putExtra("Num", cardNum);
-                    intent.putExtra("Act", 7);
-                    intent.putExtra("ext", fileName.getName());
-                    startService(intent);
-                    compress(fileName);
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
-
-            }
-        });
+            });
+        }else {
+            showToast("相机初始化失败！");
+        }
     }
 
     /**
@@ -194,15 +259,15 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
      */
     private void compress(File oldFile) {
         File newFile = new CompressHelper.Builder(this)
-                .setMaxWidth(320)  // 默认最大宽度为720
-                .setMaxHeight(320) // 默认最大高度为960
+                .setMaxWidth(Pwidth)  // 默认最大宽度为720
+                .setMaxHeight(Phight) // 默认最大高度为960
                 .setQuality(70)    // 默认压缩质量为80
                 .setFileName(oldFile.getName().substring(0, oldFile.getName().indexOf("."))) // 设置你需要修改的文件名
                 .setCompressFormat(Bitmap.CompressFormat.JPEG) // 设置默认压缩为jpg格式
                 .setDestinationDirectoryPath(FileUtils.getDiskCacheDir(SignActivity.this) + "sign_compress")
                 .build()
                 .compressToFile(oldFile);
-        Log4j.d(TAG,"压缩图片！");
+        Log4j.d(TAG, "压缩图片！");
         Intent intent = new Intent(SignActivity.this, UploadService.class);
         intent.putExtra("file", newFile);
         startService(intent);
@@ -343,9 +408,10 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
 
     @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
     public void onDataStatusEvent(SignEvent event) {
+        LogUtils.d("收到签到回应"+event.getType()+event.isStatus());
         if (event.getType() == 1 && event.isStatus()) {
             showToast(event.getName() + "签到成功！");
-        }else if (event.getType() == 1 && !event.isStatus()){
+        } else if (event.getType() == 1 && !event.isStatus()) {
             showToast("签到失败！");
         }
     }

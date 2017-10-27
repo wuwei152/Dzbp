@@ -74,6 +74,13 @@
             android:paddingLeft="260dp"
             android:paddingRight="260dp">
 
+            <SurfaceView
+                android:id="@+id/sign_surface"
+                android:layout_width="320dp"
+                android:layout_height="320dp"
+
+                />
+
             <TextView
                 android:id="@+id/sign_mainTitle"
                 android:layout_width="wrap_content"
@@ -92,7 +99,7 @@
                 android:layout_marginRight="100dp"
                 android:layout_marginTop="30dp"
                 android:gravity="center"
-                android:text="早自习签到"
+                android:text=""
                 android:textColor="@color/white"
                 android:textSize="24sp" />
 
@@ -112,7 +119,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:text="班主任：王晓梅"
+                android:text=""
                 android:textColor="@color/white"
                 android:textSize="20sp" />
 
@@ -121,7 +128,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="总人数30人"
+                android:text=""
                 android:textColor="@color/white"
                 android:textSize="20sp" />
 

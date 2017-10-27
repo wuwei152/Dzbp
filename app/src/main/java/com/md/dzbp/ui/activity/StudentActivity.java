@@ -57,7 +57,9 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -223,6 +225,27 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
                 getHistoryMsg(studentInfo.getStudent().getAccountid(), studentInfo.getParents().get(position).getAccountid());
             }
         });
+
+
+//        Date d = new Date();
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        String dateNowStr = sdf.format(d);
+//        String clearCache = mAcache.getAsString("clearCache");
+//        if (TextUtils.isEmpty(clearCache)){
+//            mAcache.put("clearCache","");
+//        }
+    }
+
+    /**
+     * 通过时间秒毫秒数判断两个时间的间隔
+     * @param date1
+     * @param date2
+     * @return
+     */
+    public static int differentDaysByMillisecond(Date date1,Date date2)
+    {
+        int days = (int) ((date2.getTime() - date1.getTime()) / (1000*3600*24));
+        return days;
     }
 
     /**

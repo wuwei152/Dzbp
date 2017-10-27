@@ -55,7 +55,7 @@ public class NetWorkRequest {
             //请求网络前
             @Override
             public void onStart() {
-                if (isShowDialog)
+                if (context!=null&&isShowDialog)
                     uiDataListener.showDialog();
             }
 
