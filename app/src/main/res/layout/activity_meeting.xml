@@ -47,13 +47,12 @@
                     android:textSize="20sp" />
 
                 <TextView
-                    android:visibility="gone"
                     android:id="@+id/meet_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="18℃-29℃"
+                    android:text=""
                     android:textColor="@color/white"
-                    android:textSize="20sp" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <TextView

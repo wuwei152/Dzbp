@@ -211,15 +211,15 @@ public class MainDialog extends Dialog {
     }
 
     private boolean YZ(){
-        if (TextUtils.isEmpty(et.getText().toString())) {
-            myToast.toast(context, "请输入管理密码！");
-            return false;
-        }
-        String adminPsw = mAcache.getAsString("AdminPsw");
-        if (!et.getText().toString().equals(adminPsw)) {
-            myToast.toast(context, "密码错误！");
-            return false;
-        }
+//        if (TextUtils.isEmpty(et.getText().toString())) {
+//            myToast.toast(context, "请输入管理密码！");
+//            return false;
+//        }
+//        String adminPsw = mAcache.getAsString("AdminPsw");
+//        if (!et.getText().toString().equals(adminPsw)) {
+//            myToast.toast(context, "密码错误！");
+//            return false;
+//        }
         return true;
     }
 

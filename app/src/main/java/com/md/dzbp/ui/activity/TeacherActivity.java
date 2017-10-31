@@ -21,6 +21,7 @@ import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
 import com.md.dzbp.constants.APIConfig;
 import com.md.dzbp.data.CourseBean;
+import com.md.dzbp.data.LoginEvent;
 import com.md.dzbp.model.NetWorkRequest;
 import com.md.dzbp.model.TimeListener;
 import com.md.dzbp.model.TimeUtils;
@@ -30,7 +31,11 @@ import com.md.dzbp.ui.view.MainDialog;
 import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.constants.Constant;
+import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.Log4j;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -70,6 +75,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     private GestureDetector gestureDetector;
     private Dialog dialog;
     private NetWorkRequest netWorkRequest;
+    private ACache mAcache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +91,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     protected void initUI() {
         mainDialog = new MainDialog(this);
         gestureDetector = new GestureDetector(TeacherActivity.this, onGestureListener);
-
+        mAcache = ACache.get(this);
         dialog = MyProgressDialog.createLoadingDialog(TeacherActivity.this, "", this);
         netWorkRequest = new NetWorkRequest(this, this);
     }
@@ -104,6 +110,19 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         getUIdata();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        boolean cons = (boolean) mAcache.getAsObject("conStatus");
+        if (cons) {
+            mTemp.setText("连接状态：已连接");
+            mTemp.setTextColor(getResources().getColor(R.color.white));
+        } else {
+            mTemp.setText("连接状态：已断开");
+            mTemp.setTextColor(getResources().getColor(R.color.conf));
+        }
     }
 
     /**
@@ -257,5 +276,22 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     @Override
     public void cancelRequest() {
         netWorkRequest.CancelPost();
+    }
+
+    /**
+     * 接收到连接信息
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
+    public void onUpdateSynEvent2(LoginEvent event) {
+        LogUtils.d("MainActivity接收到连接状态信息" + event.getType() + event.isStatus());
+        if (event.isStatus()) {
+            mTemp.setText("连接状态：已连接");
+            mTemp.setTextColor(getResources().getColor(R.color.white));
+        } else {
+            mTemp.setText("连接状态：已断开");
+            mTemp.setTextColor(getResources().getColor(R.color.conf));
+        }
     }
 }

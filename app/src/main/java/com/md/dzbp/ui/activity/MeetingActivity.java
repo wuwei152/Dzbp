@@ -22,6 +22,7 @@ import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
 import com.md.dzbp.constants.APIConfig;
 import com.md.dzbp.constants.Constant;
+import com.md.dzbp.data.LoginEvent;
 import com.md.dzbp.data.Meetingbean;
 import com.md.dzbp.data.SignEvent;
 import com.md.dzbp.model.NetWorkRequest;
@@ -32,6 +33,7 @@ import com.md.dzbp.tcp.TcpService;
 import com.md.dzbp.ui.view.MainDialog;
 import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.myToast;
+import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.Log4j;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
@@ -97,6 +99,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
     private NetWorkRequest netWorkRequest;
     private List<Meetingbean.MeetingUserListBean> meetingUserList;
     private Meetingbean meetingbean;
+    private ACache mAcache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +115,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
     protected void initUI() {
         //主菜单
         mainDialog = new MainDialog(this);
+        mAcache = ACache.get(this);
         gestureDetector = new GestureDetector(MeetingActivity.this, onGestureListener);
         //获取时间日期
         new TimeUtils(MeetingActivity.this, this);
@@ -138,6 +142,14 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
     protected void onResume() {
         super.onResume();
         EventBus.getDefault().register(this);
+        boolean cons = (boolean) mAcache.getAsObject("conStatus");
+        if (cons) {
+            mTemp.setText("连接状态：已连接");
+            mTemp.setTextColor(getResources().getColor(R.color.cons));
+        } else {
+            mTemp.setText("连接状态：已断开");
+            mTemp.setTextColor(getResources().getColor(R.color.conf));
+        }
     }
 
     @Override
@@ -351,6 +363,23 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
                 }
                 setGridData(meetingUserList);
             }
+        }
+    }
+
+    /**
+     * 接收到连接信息
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
+    public void onUpdateSynEvent2(LoginEvent event) {
+        LogUtils.d("MainActivity接收到连接状态信息" + event.getType() + event.isStatus());
+        if (event.isStatus()) {
+            mTemp.setText("连接状态：已连接");
+            mTemp.setTextColor(getResources().getColor(R.color.cons));
+        } else {
+            mTemp.setText("连接状态：已断开");
+            mTemp.setTextColor(getResources().getColor(R.color.conf));
         }
     }
 }

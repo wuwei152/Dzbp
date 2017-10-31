@@ -25,6 +25,7 @@ import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
 import com.md.dzbp.constants.APIConfig;
 import com.md.dzbp.constants.Constant;
+import com.md.dzbp.data.LoginEvent;
 import com.md.dzbp.data.SignEvent;
 import com.md.dzbp.data.SignInfoBean;
 import com.md.dzbp.model.NetWorkRequest;
@@ -36,6 +37,7 @@ import com.md.dzbp.tcp.TcpService;
 import com.md.dzbp.ui.view.MainDialog;
 import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.myToast;
+import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.FileUtils;
 import com.md.dzbp.utils.Log4j;
 import com.nanchen.compresshelper.CompressHelper;
@@ -84,6 +86,8 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
     TextView mListsub;
     @BindView(R.id.signing_GridView)
     GridView mGridView;
+    @BindView(R.id.sign_temp)
+    TextView mTemp;
     private SurfaceHolder.Callback callback;
     private Camera camera;
     private String TAG = "SignActivity";
@@ -100,6 +104,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
     private int retry = 0;
     private SignInfoBean signInfoBean;
     private List<SignInfoBean.StudentBean> studentsList;
+    private ACache mAcache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +120,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
     @Override
     protected void initUI() {
         mainDialog = new MainDialog(this);
+        mAcache = ACache.get(this);
         gestureDetector = new GestureDetector(SignActivity.this, onGestureListener);
         //获取时间日期
         new TimeUtils(SignActivity.this, this);
@@ -161,7 +167,14 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
         super.onResume();
         LogUtils.d("onResume");
         EventBus.getDefault().register(this);
-
+        boolean cons = (boolean) mAcache.getAsObject("conStatus");
+        if (cons) {
+            mTemp.setText("连接状态：已连接");
+            mTemp.setTextColor(getResources().getColor(R.color.cons));
+        } else {
+            mTemp.setText("连接状态：已断开");
+            mTemp.setTextColor(getResources().getColor(R.color.conf));
+        }
     }
 
     @Override
@@ -506,5 +519,20 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
             showToast("签到失败！");
         }
     }
-
+    /**
+     * 接收到连接信息
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
+    public void onUpdateSynEvent2(LoginEvent event) {
+        LogUtils.d("MainActivity接收到连接状态信息" + event.getType() + event.isStatus());
+        if (event.isStatus()) {
+            mTemp.setText("连接状态：已连接");
+            mTemp.setTextColor(getResources().getColor(R.color.cons));
+        } else {
+            mTemp.setText("连接状态：已断开");
+            mTemp.setTextColor(getResources().getColor(R.color.conf));
+        }
+    }
 }

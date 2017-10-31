@@ -207,8 +207,10 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         boolean cons = (boolean) mAcache.getAsObject("conStatus");
         if (cons) {
             mConStatus.setText("连接状态：已连接");
+            mConStatus.setTextColor(getResources().getColor(R.color.cons));
         } else {
             mConStatus.setText("连接状态：已断开");
+            mConStatus.setTextColor(getResources().getColor(R.color.conf));
         }
         getUIdata();
     }
@@ -605,8 +607,10 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         LogUtils.d("MainActivity接收到连接状态信息" + event.getType() + event.isStatus());
         if (event.isStatus()) {
             mConStatus.setText("连接状态：已连接");
+            mConStatus.setTextColor(getResources().getColor(R.color.cons));
         } else {
             mConStatus.setText("连接状态：已断开");
+            mConStatus.setTextColor(getResources().getColor(R.color.conf));
         }
     }
 }

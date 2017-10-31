@@ -15,4 +15,6 @@
     <color name="chooseRed">#FF00</color>
     <color name="defaultRed">#FFF</color>
     <color name="line">#B6C5CD</color>
+    <color name="cons">#5B666A</color>
+    <color name="conf">#FF00</color>
 </resources>
