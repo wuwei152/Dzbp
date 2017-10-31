@@ -14,6 +14,7 @@ import com.md.dzbp.constants.Constant;
 import com.md.dzbp.constants.ERRORTYPE;
 import com.md.dzbp.data.FtpParams;
 import com.md.dzbp.data.ImageReceiveMessage;
+import com.md.dzbp.data.LoginEvent;
 import com.md.dzbp.data.MainUpdateEvent;
 import com.md.dzbp.data.MessageBase;
 import com.md.dzbp.data.MsgSendStatus;
@@ -67,6 +68,7 @@ public class MessageHandle {
     private MediaPlayer mp;
     private String deviceId = "";
     private Runnable x_runnable;
+    private int XTfailNum = 0;
 
     public MessageHandle(Context context, TcpClient client) {
         this.context = context;
@@ -81,6 +83,7 @@ public class MessageHandle {
         switch (tcpMessage.Type) {
             case 0xA001://通用应答
                 Log4j.d(TAG, "0xA001收到通用应答消息");
+//                XTfailNum = 0;
                 break;
             case 0xA002://登录应答，发心跳
                 int result1 = tcpMessage.ReadInt();
@@ -426,12 +429,14 @@ public class MessageHandle {
             public void run() {
                 Log4j.d(TAG, "发送心跳");
                 try {
-                    if (client == null || !IsEnable) {
+                    if (client == null || !IsEnable || XTfailNum > 10) {
                         x_handler.removeCallbacks(this);
+                        Stop();
                         return;
                     }
                     TCPMessage message = new TCPMessage(0xA000);
                     client.getTransceiver().send(message);
+//                    XTfailNum++;
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log4j.d(TAG, e.getMessage());
@@ -441,6 +446,15 @@ public class MessageHandle {
             }
         };
         x_handler.postDelayed(x_runnable, xintiaoTime);
+    }
+
+    /**
+     * 停止
+     */
+    public void Stop() {
+        if (client != null && client.isConnected()) {
+            client.disconnect();
+        }
     }
 
     /**

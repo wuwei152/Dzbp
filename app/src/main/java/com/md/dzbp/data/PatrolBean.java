@@ -14,7 +14,7 @@ public class PatrolBean {
      * inspectionParameters : [{"id":"c4bab186-730f-11e6-9296-74d435939039","parametername":"教师是否按时到岗"},{"id":"c4babab3-730f-11e6-9296-74d435939039","parametername":"教师授课行为是否符合规范"},{"id":"c4babc6b-730f-11e6-9296-74d435939039","parametername":"教师授课用语是否符合规范"},{"id":"c4babdc6-730f-11e6-9296-74d435939039","parametername":"学生出勤是否正常"},{"id":"c4babf19-730f-11e6-9296-74d435939039","parametername":"课堂纪律是否正常"}]
      * classManager : {"accountId":"02eaae7a-926e-49f2-a593-6330cf11caa3","accountName":"赵鹏","subjects":["语文"],"photo":null}
      */
-
+    private AttendanceBean attendance;
     private ClassInfoBean classInfo;
     private TeacherBean teacher;
     private ClassManagerBean classManager;
@@ -52,6 +52,50 @@ public class PatrolBean {
         this.inspectionParameters = inspectionParameters;
     }
 
+    public AttendanceBean getAttendance() {
+        return attendance;
+    }
+
+    public void setAttendance(AttendanceBean attendance) {
+        this.attendance = attendance;
+    }
+
+    public static class AttendanceBean {
+
+        /**
+         * yindao : 3
+         * shidao : 3
+         * weidao : 0
+         */
+
+        private int yindao;
+        private int shidao;
+        private int weidao;
+
+        public int getYindao() {
+            return yindao;
+        }
+
+        public void setYindao(int yindao) {
+            this.yindao = yindao;
+        }
+
+        public int getShidao() {
+            return shidao;
+        }
+
+        public void setShidao(int shidao) {
+            this.shidao = shidao;
+        }
+
+        public int getWeidao() {
+            return weidao;
+        }
+
+        public void setWeidao(int weidao) {
+            this.weidao = weidao;
+        }
+    }
 
     public static class TeacherBean {
         /**

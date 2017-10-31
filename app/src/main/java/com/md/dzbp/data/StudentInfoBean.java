@@ -134,6 +134,7 @@ public class StudentInfoBean implements Serializable{
         private String photo;
         private String relationship;
         private boolean sex;
+        private boolean select;
 
         public String getAccountid() {
             return accountid;
@@ -181,6 +182,14 @@ public class StudentInfoBean implements Serializable{
 
         public void setSex(boolean sex) {
             this.sex = sex;
+        }
+
+        public boolean isSelect() {
+            return select;
+        }
+
+        public void setSelect(boolean select) {
+            this.select = select;
         }
     }
 

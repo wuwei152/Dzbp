@@ -1,6 +1,7 @@
 package com.md.dzbp.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
 
+import com.apkfuns.logutils.LogUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.md.dzbp.R;
 import com.md.dzbp.data.StudentInfoBean;
@@ -92,6 +94,11 @@ public class ParentListAdapter extends RecyclerView.Adapter<ParentListAdapter.Vi
 
         StudentInfoBean.ParentsBean parentsBean = mDatas.get(i);
         viewHolder.mName.setText(parentsBean.getAccountname());
+        if (parentsBean.isSelect()){
+            viewHolder.mName.setTextColor(context.getResources().getColor(R.color.green));
+        }else {
+            viewHolder.mName.setTextColor(context.getResources().getColor(R.color.text_black));
+        }
 
         if (parentsBean.getMsgcount() > 99) {
             viewHolder.mNum.setVisibility(View.VISIBLE);
@@ -115,6 +122,14 @@ public class ParentListAdapter extends RecyclerView.Adapter<ParentListAdapter.Vi
                 @Override
                 public void onClick(View v) {
                     mOnItemClickLitener.onItemClick(viewHolder.itemView, i);
+                    for (int k=0;k<mDatas.size();k++){
+                        if (k==i){
+                            mDatas.get(k).setSelect(true);
+                        }else {
+                            mDatas.get(k).setSelect(false);
+                        }
+                    }
+                    notifyDataSetChanged();
                 }
             });
         }

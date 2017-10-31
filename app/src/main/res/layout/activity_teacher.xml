@@ -3,39 +3,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
     tools:context=".ui.activity.TeacherActivity">
+
     <ImageView
         android:id="@+id/teacher_img"
         android:layout_width="0dp"
-        android:layout_weight="1380"
         android:layout_height="match_parent"
+        android:layout_weight="1380"
         android:scaleType="fitXY"
-        android:src="@drawable/teacher"
-        />
+        android:src="@drawable/teacher" />
+
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_weight="540"
         android:layout_height="match_parent"
+        android:layout_weight="540"
         android:background="@drawable/main_back"
         android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:layout_marginLeft="30dp"
+            android:layout_marginTop="20dp"
             android:orientation="vertical">
+
             <EditText
                 android:id="@+id/teacher_cardNum"
                 android:layout_width="1dp"
                 android:layout_height="0dp"
                 android:focusable="true"
-                android:focusableInTouchMode="true"
-                />
+                android:focusableInTouchMode="true" />
+
             <TextView
                 android:id="@+id/teacher_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:baselineAligned="false"
                 android:textColor="@color/white"
                 android:textSize="42sp" />
 
@@ -52,19 +55,20 @@
                 android:layout_height="wrap_content"
                 android:text="18℃-29℃"
                 android:textColor="@color/white"
-                android:textSize="20sp" />
+                android:textSize="20sp"
+                android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/black_strack_back"
+            android:layout_marginBottom="200dp"
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp"
             android:layout_marginTop="30dp"
-            android:layout_marginBottom="200dp"
-            android:paddingLeft="25dp"
-            android:orientation="vertical">
+            android:background="@drawable/black_strack_back"
+            android:orientation="vertical"
+            android:paddingLeft="25dp">
 
             <TextView
                 android:id="@+id/teacher_className"
@@ -74,6 +78,7 @@
                 android:layout_marginTop="50dp"
                 android:textColor="@color/white"
                 android:textSize="50sp" />
+
             <TextView
                 android:id="@+id/teacher_courseName"
                 android:layout_width="wrap_content"
@@ -82,6 +87,7 @@
                 android:layout_marginTop="100dp"
                 android:textColor="@color/white"
                 android:textSize="26sp" />
+
             <TextView
                 android:id="@+id/teacher_teacherName"
                 android:layout_width="wrap_content"
@@ -90,6 +96,7 @@
                 android:layout_marginTop="30dp"
                 android:textColor="@color/white"
                 android:textSize="26sp" />
+
             <TextView
                 android:id="@+id/teacher_periodName"
                 android:layout_width="wrap_content"
@@ -98,6 +105,7 @@
                 android:layout_marginTop="30dp"
                 android:textColor="@color/white"
                 android:textSize="26sp" />
+
             <TextView
                 android:id="@+id/teacher_addr"
                 android:layout_width="wrap_content"

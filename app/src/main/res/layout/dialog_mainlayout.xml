@@ -6,6 +6,7 @@
     android:gravity="right">
 
     <LinearLayout
+        android:id="@+id/ll"
         android:layout_width="400dp"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
@@ -25,6 +26,7 @@
                 android:background="@drawable/gray_strack_back"
                 android:hint="请输入管理员密码"
                 android:padding="10dp"
+                android:inputType="textPassword"
                 android:textColor="@color/text_black"
                 android:textSize="16sp" />
         </LinearLayout>

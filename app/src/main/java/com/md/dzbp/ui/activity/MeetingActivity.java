@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
 import com.md.dzbp.constants.APIConfig;
+import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.Meetingbean;
 import com.md.dzbp.data.SignEvent;
 import com.md.dzbp.model.NetWorkRequest;
@@ -31,7 +32,6 @@ import com.md.dzbp.tcp.TcpService;
 import com.md.dzbp.ui.view.MainDialog;
 import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.myToast;
-import com.md.dzbp.constants.Constant;
 import com.md.dzbp.utils.Log4j;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
@@ -46,6 +46,9 @@ import java.util.Map;
 
 import butterknife.BindView;
 
+/**
+ * 会议模式
+ */
 public class MeetingActivity extends BaseActivity implements TimeListener, UIDataListener {
 
     @BindView(R.id.meet_cardNum)
@@ -116,11 +119,13 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
         dialog = MyProgressDialog.createLoadingDialog(this, "", this);
         netWorkRequest = new NetWorkRequest(this, this);
     }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         getUIdata();
     }
+
     @Override
     protected void initData() {
         getCardNum();
@@ -157,7 +162,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
         meetingUserList = meetingbean.getMeetingUserList();
         Meetingbean.MeetingUserListBean host = null;
         String hostName = "无";
-        if (meetingUserList!=null){
+        if (meetingUserList != null) {
             for (Meetingbean.MeetingUserListBean m : meetingUserList) {
                 if (m.getHost()) {
                     host = m;
@@ -223,14 +228,14 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
                         @Override
                         public void run() {
                             LogUtils.d(card_stringTemp);
-                            if (!TextUtils.isEmpty(card_stringTemp)&&meetingbean!=null) {
+                            if (!TextUtils.isEmpty(card_stringTemp) && meetingbean != null) {
                                 Intent intent = new Intent(MeetingActivity.this, TcpService.class);
                                 intent.putExtra("Num", card_stringTemp);
                                 intent.putExtra("Act", 6);
                                 intent.putExtra("ext", meetingbean.getId());
                                 startService(intent);
-                            }else {
-                                Log4j.d("MeetingActivity","获取卡号失败或会议为空");
+                            } else {
+                                Log4j.d("MeetingActivity", "获取卡号失败或会议为空");
                             }
                             mCardNum.setText("");
                             card_handler = null;
@@ -336,12 +341,12 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
 
     @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
     public void onDataStatusEvent(SignEvent event) {
-        if (event.getType()==0&&event.isStatus()){
-            if (meetingUserList!=null) {
+        if (event.getType() == 0 && event.isStatus()) {
+            if (meetingUserList != null) {
                 for (Meetingbean.MeetingUserListBean m : meetingUserList) {
                     if (m.getAccountId().equals(event.getId())) {
                         m.setSigninStatus(1);
-                        Log4j.d("MeetingActivity","匹配成功，签到成功！");
+                        Log4j.d("MeetingActivity", "匹配成功，签到成功！");
                     }
                 }
                 setGridData(meetingUserList);

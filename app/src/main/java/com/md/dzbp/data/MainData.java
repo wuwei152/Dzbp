@@ -17,6 +17,7 @@ public class MainData implements Serializable {
      */
 
     private ClassInfoBean classInfo;
+    private AttendanceBean attendance;
     private ClassManagerBean classManager;
     private List<NoticeBean> notice;
     private List<ChatBean> chat;
@@ -78,6 +79,14 @@ public class MainData implements Serializable {
 
     public void setMoralScore(List<MoralScoreBean> moralScore) {
         this.moralScore = moralScore;
+    }
+
+    public AttendanceBean getAttendance() {
+        return attendance;
+    }
+
+    public void setAttendance(AttendanceBean attendance) {
+        this.attendance = attendance;
     }
 
     public static class NoticeBean {
@@ -218,6 +227,42 @@ public class MainData implements Serializable {
         }
     }
 
+    public static class AttendanceBean {
+
+        /**
+         * yindao : 3
+         * shidao : 3
+         * weidao : 0
+         */
+
+        private int yindao;
+        private int shidao;
+        private int weidao;
+
+        public int getYindao() {
+            return yindao;
+        }
+
+        public void setYindao(int yindao) {
+            this.yindao = yindao;
+        }
+
+        public int getShidao() {
+            return shidao;
+        }
+
+        public void setShidao(int shidao) {
+            this.shidao = shidao;
+        }
+
+        public int getWeidao() {
+            return weidao;
+        }
+
+        public void setWeidao(int weidao) {
+            this.weidao = weidao;
+        }
+    }
     public static class PhotosBean {
 
         /**

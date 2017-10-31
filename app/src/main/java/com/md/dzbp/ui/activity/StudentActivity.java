@@ -70,22 +70,6 @@ import butterknife.OnClick;
 public class StudentActivity extends BaseActivity implements UIDataListener {
 
 
-    @BindView(R.id.student_arr1)
-    ImageView mArr1;
-    @BindView(R.id.student_arr2)
-    ImageView mArr2;
-    @BindView(R.id.student_arr3)
-    ImageView mArr3;
-    @BindView(R.id.student_arr4)
-    ImageView mArr4;
-    @BindView(R.id.student_arr5)
-    ImageView mArr5;
-    @BindView(R.id.student_arr6)
-    ImageView mArr6;
-    @BindView(R.id.student_arr7)
-    ImageView mArr7;
-    @BindView(R.id.student_arr8)
-    ImageView mArr8;
     @BindView(R.id.student_chatlist)
     ListView mChatlist;
     @BindView(R.id.student_audioRecorder)
@@ -203,15 +187,6 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
 
     @Override
     protected void initData() {
-        setFlickerAnimation(1000, mArr1);
-        setFlickerAnimation(1000, mArr2);
-        setFlickerAnimation(1000, mArr3);
-        setFlickerAnimation(1000, mArr4);
-        setFlickerAnimation(1000, mArr5);
-        setFlickerAnimation(1000, mArr6);
-        setFlickerAnimation(1000, mArr7);
-        setFlickerAnimation(1000, mArr8);
-
 
         getUIdata();
 
@@ -467,6 +442,9 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
         }
         List<StudentInfoBean.ParentsBean> parents = studentInfo.getParents();
         if (parents != null) {
+            if (parents.size()>0){
+                parents.get(0).setSelect(true);
+            }
             parentListAdapter.setDatas((ArrayList<StudentInfoBean.ParentsBean>) parents);
         }
         if (parents != null && parents.size() > 0 && student != null) {

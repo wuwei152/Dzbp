@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.md.dzbp.R;
@@ -32,9 +33,11 @@ public class MainDialog extends Dialog {
 
     private TextView act1, act2, act3, act4, act5, act6, act7, act8, bt1, bt2;
     private Context context;
+    private LinearLayout ll;
     private final SmdtManager smdt;
     private EditText et;
     private final ACache mAcache;
+    private InputMethodManager imm;
 
     public MainDialog(Context context) {
         super(context, R.style.MyDialog);
@@ -92,11 +95,23 @@ public class MainDialog extends Dialog {
         bt1 = (TextView) findViewById(R.id.bt1);
         bt2 = (TextView) findViewById(R.id.bt2);
         et = (EditText) findViewById(R.id.et);
+        ll = (LinearLayout) findViewById(R.id.ll);
 
+        imm = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        ll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imm.hideSoftInputFromWindow(et.getWindowToken(),0);
+            }
+        });
 
         act1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!YZ()){
+                    return;
+                }
                 context.startActivity(new Intent(context, MainActivity.class));
                 dismiss();
             }
@@ -104,6 +119,9 @@ public class MainDialog extends Dialog {
         act2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!YZ()){
+                    return;
+                }
                 context.startActivity(new Intent(context, TeacherActivity.class));
                 dismiss();
             }
@@ -111,6 +129,9 @@ public class MainDialog extends Dialog {
         act3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!YZ()){
+                    return;
+                }
                 context.startActivity(new Intent(context, StudentActivity.class));
                 dismiss();
             }
@@ -118,6 +139,9 @@ public class MainDialog extends Dialog {
         act4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!YZ()){
+                    return;
+                }
                 context.startActivity(new Intent(context, ExamActivity.class));
                 dismiss();
             }
@@ -125,6 +149,9 @@ public class MainDialog extends Dialog {
         act5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!YZ()){
+                    return;
+                }
                 context.startActivity(new Intent(context, PatrolActivity.class));
                 dismiss();
             }
@@ -132,6 +159,9 @@ public class MainDialog extends Dialog {
         act6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!YZ()){
+                    return;
+                }
                 context.startActivity(new Intent(context, NoticeActivity.class));
                 dismiss();
             }
@@ -139,6 +169,9 @@ public class MainDialog extends Dialog {
         act7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!YZ()){
+                    return;
+                }
                 context.startActivity(new Intent(context, MeetingActivity.class));
                 dismiss();
             }
@@ -146,6 +179,9 @@ public class MainDialog extends Dialog {
         act8.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!YZ()){
+                    return;
+                }
                 context.startActivity(new Intent(context, SignActivity.class));
                 dismiss();
             }
@@ -154,13 +190,7 @@ public class MainDialog extends Dialog {
         bt1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (TextUtils.isEmpty(et.getText().toString())) {
-                    myToast.toast(context, "请输入管理密码！");
-                    return;
-                }
-                String adminPsw = mAcache.getAsString("AdminPsw");
-                if (!et.getText().toString().equals(adminPsw)) {
-                    myToast.toast(context, "密码错误！");
+                if (!YZ()){
                     return;
                 }
                 //显示状态栏
@@ -178,6 +208,19 @@ public class MainDialog extends Dialog {
         });
 
 
+    }
+
+    private boolean YZ(){
+        if (TextUtils.isEmpty(et.getText().toString())) {
+            myToast.toast(context, "请输入管理密码！");
+            return false;
+        }
+        String adminPsw = mAcache.getAsString("AdminPsw");
+        if (!et.getText().toString().equals(adminPsw)) {
+            myToast.toast(context, "密码错误！");
+            return false;
+        }
+        return true;
     }
 
 }

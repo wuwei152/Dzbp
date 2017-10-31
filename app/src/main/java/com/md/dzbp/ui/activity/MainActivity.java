@@ -1,13 +1,11 @@
 package com.md.dzbp.ui.activity;
 
 import android.app.Dialog;
-import android.app.smdt.SmdtManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.GestureDetector;
@@ -32,6 +30,7 @@ import com.md.dzbp.constants.APIConfig;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.ClassInfoBean;
 import com.md.dzbp.data.ClassManagerBean;
+import com.md.dzbp.data.LoginEvent;
 import com.md.dzbp.data.MainData;
 import com.md.dzbp.data.MainUpdateEvent;
 import com.md.dzbp.data.MessageBase;
@@ -107,6 +106,14 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     ListViewForScrollView mNoticeListView;
     //通知滚动
     private final Handler noticeScroll_handler = new Handler();
+    @BindView(R.id.main_conStatus)
+    TextView mConStatus;
+    @BindView(R.id.main_yingdao)
+    TextView mYingdao;
+    @BindView(R.id.main_shidao)
+    TextView mShidao;
+    @BindView(R.id.main_weidao)
+    TextView mWeidao;
     private Runnable ScrollRunnable = new Runnable() {
         @Override
         public void run() {
@@ -197,6 +204,12 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         super.onResume();
         LogUtils.d("注册EventBus");
         EventBus.getDefault().register(this);
+        boolean cons = (boolean) mAcache.getAsObject("conStatus");
+        if (cons) {
+            mConStatus.setText("连接状态：已连接");
+        } else {
+            mConStatus.setText("连接状态：已断开");
+        }
         getUIdata();
     }
 
@@ -482,6 +495,12 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         if (mainData.getMoralScore() != null) {
             setHonorList(mainData.getMoralScore());
         }
+        MainData.AttendanceBean attendance = mainData.getAttendance();
+        if (attendance != null) {
+            mYingdao.setText(attendance.getYindao() + "人");
+            mShidao.setText(attendance.getShidao() + "人");
+            mWeidao.setText(attendance.getWeidao() + "人");
+        }
     }
 
     /**
@@ -573,6 +592,21 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
                 break;
             default:
                 break;
+        }
+    }
+
+    /**
+     * 接收到连接信息
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
+    public void onUpdateSynEvent2(LoginEvent event) {
+        LogUtils.d("MainActivity接收到连接状态信息" + event.getType() + event.isStatus());
+        if (event.isStatus()) {
+            mConStatus.setText("连接状态：已连接");
+        } else {
+            mConStatus.setText("连接状态：已断开");
         }
     }
 }

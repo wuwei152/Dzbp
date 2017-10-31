@@ -37,11 +37,12 @@
                 android:textSize="16sp" />
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/main_temp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:text="18℃-29℃"
+                android:text=""
                 android:textColor="@color/text_black"
                 android:textSize="16sp" />
         </LinearLayout>
@@ -54,14 +55,32 @@
             android:textColor="@color/text_black"
             android:textSize="40sp" />
 
-        <TextView
-            android:id="@+id/main_loction"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="right"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:textColor="@color/text_black"
-            android:textSize="30sp" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/main_loction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_black"
+                android:textSize="30sp" />
+
+
+            <TextView
+                android:id="@+id/main_conStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="连接状态:已断开"
+                android:textColor="@color/text_black"
+                android:textSize="12sp" />
+
+        </LinearLayout>
 
         <EditText
             android:id="@+id/main_cardNum"
@@ -152,71 +171,54 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
                         android:text="应到："
                         android:textColor="@color/text_gray"
                         android:textSize="18sp" />
 
                     <TextView
-                        android:layout_width="50dp"
+                        android:id="@+id/main_yingdao"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:text="47人"
+                        android:text=" "
                         android:textColor="@color/text_black"
                         android:textSize="18sp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="60dp"
+                        android:layout_marginLeft="30dp"
                         android:text="实到："
                         android:textColor="@color/text_gray"
                         android:textSize="18sp" />
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:id="@+id/main_shidao"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:text="44人"
+                        android:text=" "
                         android:textColor="@color/text_black"
                         android:textSize="18sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
                         android:text="未到："
                         android:textColor="@color/text_gray"
                         android:textSize="18sp" />
 
                     <TextView
-                        android:layout_width="50dp"
+                        android:id="@+id/main_weidao"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
-                        android:text="2人"
-                        android:textColor="@color/text_black"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="60dp"
-                        android:text="请假："
-                        android:textColor="@color/text_gray"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:text="1人"
+                        android:text=" "
                         android:textColor="@color/text_black"
                         android:textSize="18sp" />
                 </LinearLayout>
@@ -333,6 +335,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="25dp"
+                    android:visibility="gone"
                     android:orientation="horizontal">
 
                     <TextView
@@ -369,6 +372,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
+                    android:visibility="gone"
                     android:orientation="horizontal">
 
                     <TextView
@@ -405,7 +409,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginBottom="30dp"
-                    android:layout_marginTop="25dp"
+                    android:layout_marginTop="60dp"
                     android:background="@drawable/gray_strack_back"
                     android:orientation="vertical"
                     android:padding="30dp">
@@ -492,19 +496,18 @@
                     android:id="@+id/main_noticeListView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:scrollbars="none"
                     android:divider="#10000000"
                     android:dividerHeight="0.3dp"
-                    />
+                    android:scrollbars="none" />
 
                 <!--<TextView-->
-                    <!--android:id="@+id/main_notice"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:gravity="center_vertical"-->
-                    <!--android:lineSpacingExtra="8dp"-->
-                    <!--android:textColor="@color/text_black"-->
-                    <!--android:textSize="18sp" />-->
+                <!--android:id="@+id/main_notice"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:lineSpacingExtra="8dp"-->
+                <!--android:textColor="@color/text_black"-->
+                <!--android:textSize="18sp" />-->
             </ScrollView>
 
         </LinearLayout>

@@ -37,6 +37,9 @@ import java.util.Map;
 
 import butterknife.BindView;
 
+/**
+ * 上课页面
+ */
 public class TeacherActivity extends BaseActivity implements TimeListener, UIDataListener {
 
     @BindView(R.id.teacher_time)

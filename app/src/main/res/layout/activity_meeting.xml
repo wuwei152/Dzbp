@@ -47,6 +47,7 @@
                     android:textSize="20sp" />
 
                 <TextView
+                    android:visibility="gone"
                     android:id="@+id/meet_temp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

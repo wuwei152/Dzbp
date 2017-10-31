@@ -15,12 +15,18 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.apkfuns.logutils.LogUtils;
 import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
+import com.md.dzbp.constants.APIConfig;
+import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.SignEvent;
+import com.md.dzbp.data.SignInfoBean;
 import com.md.dzbp.model.NetWorkRequest;
 import com.md.dzbp.model.TimeListener;
 import com.md.dzbp.model.TimeUtils;
@@ -33,6 +39,8 @@ import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.FileUtils;
 import com.md.dzbp.utils.Log4j;
 import com.nanchen.compresshelper.CompressHelper;
+import com.zhy.adapter.abslistview.CommonAdapter;
+import com.zhy.adapter.abslistview.ViewHolder;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -41,9 +49,15 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 
+/**
+ * 班级签到
+ */
 public class SignActivity extends BaseActivity implements TimeListener, UIDataListener {
 
     @BindView(R.id.sign_cardNum)
@@ -54,6 +68,22 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
     TextView mDate;
     @BindView(R.id.sign_surface)
     SurfaceView mSurface;
+    @BindView(R.id.sign_mainAddr)
+    TextView mMainAddr;
+    @BindView(R.id.sign_mainTitle)
+    TextView mMainTitle;
+    @BindView(R.id.sign_mainSub)
+    TextView mMainSub;
+    @BindView(R.id.sign_host)
+    TextView mHost;
+    @BindView(R.id.sign_Num)
+    TextView mNum;
+    @BindView(R.id.sign_listTitle)
+    TextView mListTitle;
+    @BindView(R.id.sign_listsub)
+    TextView mListsub;
+    @BindView(R.id.signing_GridView)
+    GridView mGridView;
     private SurfaceHolder.Callback callback;
     private Camera camera;
     private String TAG = "SignActivity";
@@ -67,6 +97,9 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
     private Camera.Parameters parameters;
     private int Pwidth = 240;
     private int Phight = 320;
+    private int retry = 0;
+    private SignInfoBean signInfoBean;
+    private List<SignInfoBean.StudentBean> studentsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -192,6 +225,15 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log4j.e(TAG, e.getMessage());
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            retry++;
+                            if (retry < 5) {
+                                initCamera();
+                            }
+                        }
+                    }, 5000);
                 }
             }
         }).start();
@@ -209,9 +251,9 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
      * 获取UI数据
      */
     private void getUIdata() {
-//        Map map = new HashMap();
-//        map.put("deviceId", Constant.getDeviceId(SignActivity.this));
-//        netWorkRequest.doGetRequest(0, Constant.getUrl(this, APIConfig.GET_MEETING), true, map);
+        Map map = new HashMap();
+        map.put("deviceId", Constant.getDeviceId(SignActivity.this));
+        netWorkRequest.doGetRequest(0, Constant.getUrl(this, APIConfig.GET_SIGN), true, map);
     }
 
     /**
@@ -235,21 +277,27 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
                         fos.flush();
                         fos.close();
 
-                        Log4j.d(TAG, "拍照成功！");
                         Intent intent = new Intent(SignActivity.this, TcpService.class);
                         intent.putExtra("Num", cardNum);
                         intent.putExtra("Act", 7);
                         intent.putExtra("ext", fileName.getName());
                         startService(intent);
+
+                        Log4j.d(TAG, "拍照成功！");
                         compress(fileName);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             });
-        }else {
-            showToast("相机初始化失败！");
+        } else {
+            Intent intent = new Intent(SignActivity.this, TcpService.class);
+            intent.putExtra("Num", cardNum);
+            intent.putExtra("Act", 7);
+            intent.putExtra("ext", "");
+            startService(intent);
         }
+
     }
 
     /**
@@ -361,13 +409,48 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
     public void loadDataFinish(int code, Object data) {
         if (code == 0) {
             if (data != null) {
-//                meetingbean = JSON.parseObject(data.toString(), new TypeReference<Meetingbean>() {
-//                });
-//                if (meetingbean != null) {
-//                    setUIData(meetingbean);
-//                }
+                signInfoBean = JSON.parseObject(data.toString(), new TypeReference<SignInfoBean>() {
+                });
+                if (signInfoBean != null) {
+                    setUIData(signInfoBean);
+                }
             }
         }
+    }
+
+    /**
+     * 设置界面数据
+     */
+    private void setUIData(SignInfoBean signInfoBean) {
+        SignInfoBean.ClassInfoBean classInfo = signInfoBean.getClassInfo();
+        studentsList = signInfoBean.getStudent();
+        if (classInfo != null) {
+            mMainAddr.setText(classInfo.getAddress());
+            mMainSub.setText(classInfo.getGradeName() + classInfo.getClassName());
+            mListTitle.setText(classInfo.getGradeName() + classInfo.getClassName());
+            ;
+            mListsub.setText(classInfo.getAddress());
+        }
+        if (studentsList != null && studentsList.size() > 0) {
+            setGridData(studentsList);
+        }
+    }
+
+    /**
+     * 设置人员数据
+     */
+    private void setGridData(List students) {
+        mGridView.setAdapter(new CommonAdapter<SignInfoBean.StudentBean>(SignActivity.this, R.layout.item_meeting_grid, students) {
+            @Override
+            protected void convert(ViewHolder viewHolder, SignInfoBean.StudentBean item, int position) {
+                viewHolder.setText(R.id.item_meetgrid_name, item.getAccountname());
+                if (item.getState() == 1) {
+                    viewHolder.setTextColor(R.id.item_meetgrid_name, getResources().getColor(R.color.green));
+                } else {
+                    viewHolder.setTextColor(R.id.item_meetgrid_name, getResources().getColor(R.color.text_black));
+                }
+            }
+        });
     }
 
     @Override
@@ -408,9 +491,17 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
 
     @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
     public void onDataStatusEvent(SignEvent event) {
-        LogUtils.d("收到签到回应"+event.getType()+event.isStatus());
         if (event.getType() == 1 && event.isStatus()) {
             showToast(event.getName() + "签到成功！");
+            if (studentsList != null && studentsList.size() > 0) {
+                for (SignInfoBean.StudentBean m : studentsList) {
+                    if (m.getAccountid().equals(event.getId())) {
+                        m.setState(1);
+                        Log4j.d("SignActivity", "匹配成功，签到成功！");
+                    }
+                }
+                setGridData(studentsList);
+            }
         } else if (event.getType() == 1 && !event.isStatus()) {
             showToast("签到失败！");
         }

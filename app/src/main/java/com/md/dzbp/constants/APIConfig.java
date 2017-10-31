@@ -113,4 +113,11 @@ public interface APIConfig {
      * ?deviceId=e9d50961-3a47-460f-bfc9-1398e3b64c4e
      */
     public static final String GET_LOAD_NOTICE = "zhxy/api/notice/list";
+    /**
+     * 获取班级签到信息
+     * 请求方式：Get
+     * 参数：
+     * ?deviceId=6dd62d53-249e-4845-8716-05926842568f
+     */
+    public static final String GET_SIGN = "zhxy/api/attendance/index";
 }

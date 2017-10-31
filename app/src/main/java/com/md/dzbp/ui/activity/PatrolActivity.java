@@ -26,6 +26,7 @@ import com.bumptech.glide.Glide;
 import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
 import com.md.dzbp.constants.APIConfig;
+import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.ClassInfoBean;
 import com.md.dzbp.data.ClassManagerBean;
 import com.md.dzbp.data.PatrolBean;
@@ -35,7 +36,6 @@ import com.md.dzbp.tcp.TcpService;
 import com.md.dzbp.ui.view.MainDialog;
 import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.myToast;
-import com.md.dzbp.constants.Constant;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -74,6 +74,12 @@ public class PatrolActivity extends BaseActivity implements UIDataListener {
     TextView mMngCourse;
     @BindView(R.id.patrol_listview)
     ListView mListview;
+    @BindView(R.id.patrol_yingdao)
+    TextView mYingdao;
+    @BindView(R.id.patrol_shidao)
+    TextView mShidao;
+    @BindView(R.id.patrol_weidao)
+    TextView mWeidao;
     private Dialog dialog;
     private Handler _handler = null;
     private Handler foucus_handler = null;
@@ -97,7 +103,7 @@ public class PatrolActivity extends BaseActivity implements UIDataListener {
     @Override
     protected void initUI() {
         Intent intent = getIntent();
-        if (intent.hasExtra("userId")){
+        if (intent.hasExtra("userId")) {
             userId = intent.getStringExtra("userId");
         }
 
@@ -110,7 +116,7 @@ public class PatrolActivity extends BaseActivity implements UIDataListener {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        if (intent.hasExtra("userId")){
+        if (intent.hasExtra("userId")) {
             userId = intent.getStringExtra("userId");
         }
         getUIdata();
@@ -197,24 +203,24 @@ public class PatrolActivity extends BaseActivity implements UIDataListener {
                 ClassInfoBean classInfo = patrolBean.getClassInfo();
                 PatrolBean.TeacherBean teacher = patrolBean.getTeacher();
                 List<PatrolBean.InspectionParametersBean> inspectionParameters = patrolBean.getInspectionParameters();
-                if (patrolBean!=null&&classInfo!=null&&teacher!=null&&inspectionParameters!=null) {
+                if (patrolBean != null && classInfo != null && teacher != null && inspectionParameters != null) {
                     JSONObject obj = new JSONObject();
                     obj.put("deviceId", Constant.getDeviceId(PatrolActivity.this));
-                    obj.put("classId",classInfo.getClassId());
-                    obj.put("teacherId",teacher.getAccountId());
+                    obj.put("classId", classInfo.getClassId());
+                    obj.put("teacherId", teacher.getAccountId());
                     obj.put("periodId", teacher.getPeriodId());
                     obj.put("subjectId", teacher.getSubjectId());
                     obj.put("createAccountId", userId);
                     JSONArray array = new JSONArray();
                     for (PatrolBean.InspectionParametersBean bean : inspectionParameters) {
                         JSONObject object = new JSONObject();
-                        object.put("parameterId",bean.getId());
-                        object.put("positive",bean.isPositive());
+                        object.put("parameterId", bean.getId());
+                        object.put("positive", bean.isPositive());
                         array.add(object);
                     }
-                    obj.put("scores",array);
+                    obj.put("scores", array);
                     netWorkRequest.doPostRequest(1, Constant.getUrl(PatrolActivity.this, APIConfig.Post_PATROL), true, obj.toJSONString());
-                }else {
+                } else {
                     showToast("未获取到巡查信息！");
                 }
                 break;
@@ -254,9 +260,9 @@ public class PatrolActivity extends BaseActivity implements UIDataListener {
                     setUIData(patrolBean);
                 }
             }
-        }else if (code ==1){
+        } else if (code == 1) {
             showToast("提交成功！");
-            startActivity(new Intent(PatrolActivity.this,TeacherActivity.class));
+            startActivity(new Intent(PatrolActivity.this, TeacherActivity.class));
         }
     }
 
@@ -296,15 +302,22 @@ public class PatrolActivity extends BaseActivity implements UIDataListener {
                     ((ToggleButton) viewHolder.getView(R.id.item_check)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                            if (b){
+                            if (b) {
                                 item.setPositive(true);
-                            }else {
+                            } else {
                                 item.setPositive(false);
                             }
                         }
                     });
                 }
             });
+        }
+
+        PatrolBean.AttendanceBean attendance = patrolBean.getAttendance();
+        if (attendance != null) {
+            mYingdao.setText(attendance.getYindao() + "人");
+            mShidao.setText(attendance.getShidao() + "人");
+            mWeidao.setText(attendance.getWeidao() + "人");
         }
     }
 

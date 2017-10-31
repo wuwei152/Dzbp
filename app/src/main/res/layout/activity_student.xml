@@ -117,6 +117,7 @@
                         android:textSize="18sp" />
 
                     <TextView
+                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -125,6 +126,7 @@
                         android:textSize="18sp" />
 
                     <TextView
+                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -133,6 +135,7 @@
                         android:textSize="18sp" />
 
                     <TextView
+                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -185,151 +188,13 @@
                     android:text="最近考试成绩："
                     android:textColor="#E35774"
                     android:textSize="20sp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="语文：112"
-                        android:textColor="@color/text_black"
-                        android:textSize="18sp" />
-
-                    <ImageView
-                        android:id="@+id/student_arr1"
-                        android:layout_width="25dp"
-                        android:layout_height="20dp"
-                        android:rotation="180"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/xia" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="30dp"
-                        android:text="数学：107"
-                        android:textColor="@color/text_black"
-                        android:textSize="18sp" />
-
-                    <ImageView
-                        android:id="@+id/student_arr2"
-                        android:layout_width="25dp"
-                        android:layout_height="20dp"
-                        android:rotation="180"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/xia" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="30dp"
-                        android:text="英语：115"
-                        android:textColor="@color/text_black"
-                        android:textSize="18sp" />
-
-                    <ImageView
-                        android:id="@+id/student_arr3"
-                        android:layout_width="25dp"
-                        android:layout_height="20dp"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/shang" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="物理：81  "
-                        android:textColor="@color/text_black"
-                        android:textSize="18sp" />
-
-                    <ImageView
-                        android:id="@+id/student_arr4"
-                        android:layout_width="25dp"
-                        android:layout_height="20dp"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/shang" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="30dp"
-                        android:text="化学：73  "
-                        android:textColor="@color/text_black"
-                        android:textSize="18sp" />
-
-                    <ImageView
-                        android:id="@+id/student_arr5"
-                        android:layout_width="25dp"
-                        android:layout_height="20dp"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/shang" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="30dp"
-                        android:text="政治：76  "
-                        android:textColor="@color/text_black"
-                        android:textSize="18sp" />
-
-                    <ImageView
-                        android:id="@+id/student_arr6"
-                        android:layout_width="25dp"
-                        android:layout_height="20dp"
-                        android:rotation="180"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/xia" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="历史：76  "
-                        android:textColor="@color/text_black"
-                        android:textSize="18sp" />
-
-                    <ImageView
-                        android:id="@+id/student_arr7"
-                        android:layout_width="25dp"
-                        android:layout_height="20dp"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/shang" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="30dp"
-                        android:text="地理：75  "
-                        android:textColor="@color/text_black"
-                        android:textSize="18sp" />
-
-                    <ImageView
-                        android:id="@+id/student_arr8"
-                        android:layout_width="25dp"
-                        android:layout_height="20dp"
-                        android:rotation="180"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/xia" />
-                </LinearLayout>
+                    android:layout_marginTop="40dp"
+                    android:text="暂无考试"
+                    android:textColor="@color/text_black"
+                    android:textSize="20sp" />
 
             </LinearLayout>
         </LinearLayout>

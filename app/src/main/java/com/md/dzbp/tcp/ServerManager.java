@@ -6,7 +6,11 @@ import android.os.Looper;
 import android.widget.Toast;
 
 import com.md.dzbp.constants.Constant;
+import com.md.dzbp.data.LoginEvent;
+import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.Log4j;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -21,6 +25,7 @@ public class ServerManager {
     public final MessageHandle messageHandle;
     private final String Tag = "ServerManager";
     private String deviceId = "";
+    private ACache mACache ;
 
 
     /* 1:懒汉式，静态工程方法，创建实例 */
@@ -34,13 +39,15 @@ public class ServerManager {
     /* 私有构造方法，防止被实例化 */
     private ServerManager(final Context context) {
         this.context = context;
+        mACache = ACache.get(context);
         deviceId = Constant.getDeviceId(context);
         client = new TcpClient() {
 
             @Override
             public void onConnect(SocketTransceiver transceiver) {
                 Log4j.d(Tag, "Tcp连接成功");
-
+                EventBus.getDefault().post(new LoginEvent(0,true,"",""));
+                mACache.put("conStatus",true);
                 new Handler(context.getMainLooper()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -52,6 +59,8 @@ public class ServerManager {
             @Override
             public void onDisconnect(SocketTransceiver transceiver) {
                 Log4j.d(Tag, "断开连接");
+                EventBus.getDefault().post(new LoginEvent(0,false,"",""));
+                mACache.put("conStatus",false);
                 messageHandle.IsEnable = false;
                 if (handler ==null){
                     handler = new Handler(Looper.getMainLooper());
@@ -68,6 +77,8 @@ public class ServerManager {
             @Override
             public void onConnectFailed() {
                 Log4j.d(Tag, "Connect连接失败");
+                EventBus.getDefault().post(new LoginEvent(0,false,"",""));
+                mACache.put("conStatus",false);
                 if (handler ==null){
                     handler = new Handler(Looper.getMainLooper());
                 }
