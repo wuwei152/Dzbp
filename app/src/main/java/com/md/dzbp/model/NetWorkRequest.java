@@ -61,7 +61,7 @@ public class NetWorkRequest {
 
             @Override
             protected void onSuccess(String response) {
-                LogUtils.d(flag + "/" + response);
+                LogUtils.d(flag + "/"    );
                 if (TextUtils.isEmpty(response)) {
                     return;
                 } else {
@@ -119,7 +119,7 @@ public class NetWorkRequest {
 
             @Override
             protected void onSuccess(String response) {
-                LogUtils.d(flag + "/" + response);
+                LogUtils.d(flag + "/"   );
                 if (TextUtils.isEmpty(response)) {
                     return;
                 } else {
@@ -170,7 +170,7 @@ public class NetWorkRequest {
 
             @Override
             protected void onSuccess(String response) {
-                LogUtils.d(flag + "/" + response);
+                LogUtils.d(flag + "/"  );
                 if (TextUtils.isEmpty(response)) {
                     return;
                 } else {

@@ -32,6 +32,7 @@ import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.Log4j;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -270,6 +271,13 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
         if (mp == null) {
             mp = MediaPlayer.create(NoticeActivity.this, R.raw.notify_alert);
             Log4j.d(TAG, "初始化");
+        }else {
+            Log4j.d(TAG, "重新开始播放");
+            try {
+                mp.prepare();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         try {
             mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -284,8 +292,8 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
                 @Override
                 public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
                     Log4j.d(TAG, "播放错误");
+
                     mp = MediaPlayer.create(NoticeActivity.this, R.raw.notify_alert);
-                    mp.start();
                     Log4j.d(TAG, "重置播放器");
                     return false;
                 }
@@ -318,6 +326,23 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
         super.onPause();
         if (mp != null) {
             mp.stop();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mp != null) {
+            mp.stop();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mp != null) {
+            mp.stop();
+            mp=null;
         }
     }
 }

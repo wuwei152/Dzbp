@@ -1,11 +1,16 @@
 package com.md.dzbp.tcp;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.smdt.SmdtManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
+import android.view.WindowManager;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
@@ -32,6 +37,7 @@ import com.md.dzbp.ui.activity.PatrolActivity;
 import com.md.dzbp.ui.activity.SignActivity;
 import com.md.dzbp.ui.activity.StudentActivity;
 import com.md.dzbp.ui.activity.TeacherActivity;
+import com.md.dzbp.ui.view.MsgDialog;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.FileUtils;
@@ -46,6 +52,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -102,6 +109,13 @@ public class MessageHandle {
                     String web_api = tcpMessage.ReadString(length023);
                     int length024 = tcpMessage.ReadInt();
                     String psw = tcpMessage.ReadString(length024);
+
+                    int length = tcpMessage.ReadInt();
+                    String guanji = tcpMessage.ReadString(length);
+                    int length2 = tcpMessage.ReadInt();
+                    String kaiji = tcpMessage.ReadString(length2);
+                    Log4j.d(TAG, "0xA002设置开关机指令：关" + guanji + "/开" + kaiji);
+                    smdtManager.smdtSetTimingSwitchMachine(guanji, kaiji, "1");
 
                     LogUtils.d(psw);
 
@@ -750,6 +764,8 @@ public class MessageHandle {
      * @param xyh
      * @param path
      */
+    private int retryTime = 0;
+
     public void downloadFile(final int xyh, final String path, final int id) {
         new Thread(new Runnable() {
             @Override
@@ -765,13 +781,28 @@ public class MessageHandle {
                             if (currentStep.equals(ERRORTYPE.FTP_DOWN_SUCCESS)) {
                                 Log4j.d(TAG, "-----xiazai-apk-successful" + FileUtils.getDiskCacheDir(context) + "Apk/dzbp.apk");
                                 yingda(xyh, true, deviceId, id);
-//                                smdtManager. smdtSetTimingSwitchMachine ("9:50", "20:10"，1);
-                                smdtManager.smdtSilentInstall(FileUtils.getDiskCacheDir(context) + "Apk/dzbp.apk", context);
+//                                smdtManager.smdtSilentInstall(FileUtils.getDiskCacheDir(context) + "Apk/dzbp.apk", context);
+                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                intent.setDataAndType(Uri.fromFile(new File(FileUtils.getDiskCacheDir(context) + "Apk/dzbp.apk")),
+                                        "application/vnd.android.package-archive");
+                                context.startActivity(intent);
                             } else if (currentStep.equals(ERRORTYPE.FTP_DOWN_LOADING)) {
                                 Log4j.d(TAG, "-----xiazai-apk--" + downProcess + "%");
                             } else if (currentStep.equals(ERRORTYPE.FTP_DOWN_FAIL)) {
                                 Log4j.d(TAG, "-----xiazai-apk-fail---");
-                                yingda(xyh, false, deviceId, id);
+                                new Handler(context.getMainLooper()).postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (retryTime < 5) {
+                                            Log4j.d(TAG, "-----xiazai-apk-fail-chongshi--");
+                                            downloadFile(xyh, path, id);
+                                        } else {
+                                            yingda(xyh, false, deviceId, id);
+                                        }
+                                        retryTime++;
+                                    }
+                                }, 5000);
                             }
                         }
 
@@ -834,6 +865,23 @@ public class MessageHandle {
      * 播放广播
      */
     private void playBroad(final String path) {
+
+//        try {
+//            new Handler(context.getMainLooper()).post(new Runnable() {
+//                @Override
+//                public void run() {
+//                    MsgDialog dialog = new MsgDialog(context);
+//                    dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+//                    ArrayList<String> mlist = new ArrayList<>();
+//                    mlist.add("我是广播提示");
+//                    mlist.add("我也是广播提示！");
+//                    dialog.setData(mlist);
+//                    dialog.show();
+//                }
+//            });
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         Log4j.d(TAG, "开始播放" + path);
         if (mp == null) {
             mp = new MediaPlayer();
@@ -1012,6 +1060,7 @@ public class MessageHandle {
      */
     private void gotoActivity(int type, String userId, String ext) {
         Intent intent = null;
+        Log4j.d(TAG, "开始跳转屏幕" + type);
         switch (type) {
             case 0:
                 intent = new Intent(context, MainActivity.class);
@@ -1042,10 +1091,11 @@ public class MessageHandle {
             default:
                 break;
         }
-        Log4j.d(TAG, "开始跳转屏幕" + type);
+
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
+            Log4j.d(TAG, "屏幕跳转成功" + type);
         }
     }
 }

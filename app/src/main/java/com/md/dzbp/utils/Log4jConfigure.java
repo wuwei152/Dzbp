@@ -16,7 +16,7 @@ import com.md.dzbp.model.TimeUtils;
 import de.mindpipe.android.logging.log4j.LogConfigurator;
 
 public class Log4jConfigure {
-    private static final int MAX_FILE_SIZE = 1024 * 1024 * 10;
+    private static final int MAX_FILE_SIZE = 1024 * 1024 * 5;
     private static final String DEFAULT_LOG_FILE_NAME = "DZBP.log";
     private static final String TAG = "Log4jConfigure";
     private static Context context;
@@ -29,23 +29,24 @@ public class Log4jConfigure {
 //                logConfigurator.setFileName(Environment.getExternalStorageDirectory()
 //                        + DEFAULT_LOG_DIR + fileName);
 //            } else {
-                logConfigurator.setFileName(FileUtils.getDiskCacheDir(context)+"Log"
-                        + File.separator + TimeUtils.currentTimeLong()+"_"+ Constant.getDeviceId(context)+"_"+fileName);
+            logConfigurator.setFileName(FileUtils.getDiskCacheDir(context) + "Log"
+                    + File.separator + TimeUtils.currentTime() + "_" + Constant.getDeviceId(context) + "_" + fileName);
 //            }
             //以下设置是按指定大小来生成新的文件
-            /*
-             * logConfigurator.setMaxBackupSize(4);
-             * logConfigurator.setMaxFileSize(MAX_FILE_SIZE);
-             */
+
+            logConfigurator.setMaxBackupSize(4);
+            logConfigurator.setMaxFileSize(MAX_FILE_SIZE);
+
 
             //以下设置是按天生成新的日志文件,与以上两句互斥,MAX_FILE_SIZE将不在起作用
             //文件名形如 MyApp.log.2016-06-02,MyApp.log.2016-06-03
 //            logConfigurator.setUseDailyRollingFileAppender(true);
-            logConfigurator.setUseFileAppender(true);
+//            logConfigurator.setUseFileAppender(true);
             //以下为通用配置
             logConfigurator.setImmediateFlush(true);
-            logConfigurator.setRootLevel(Level.DEBUG);
-            logConfigurator.setFilePattern("%d\t%p/%c:\t%m%n");
+            logConfigurator.setRootLevel(Level.ALL);
+//            logConfigurator.setFilePattern("%d\t%p/%c:\t%m%n");
+            logConfigurator.setFilePattern("%d %-5p [%c{2}]-[%L] %m%n");
             logConfigurator.configure();
             android.util.Log.e(TAG, "Log4j config finish");
         } catch (Throwable throwable) {
@@ -55,7 +56,7 @@ public class Log4jConfigure {
     }
 
     public static void configure(Context mcontext) {
-        context=mcontext;
+        context = mcontext;
         configure(DEFAULT_LOG_FILE_NAME);
     }
 

@@ -1,6 +1,7 @@
 package com.md.dzbp.ui.activity;
 
 import android.app.Dialog;
+import android.app.smdt.SmdtManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -178,9 +179,9 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         stuListAdapter = new StuListAdapter(this);
         mStuListRecycler.setAdapter(stuListAdapter);
         mStuListRecycler.setEmptyView(mRecyclerEmpty);
-//        SmdtManager smdt = SmdtManager.create(this);
-//        //隐藏状态栏
-//        smdt.smdtSetStatusBar(MainActivity.this, false);
+        SmdtManager smdt = SmdtManager.create(this);
+        //隐藏状态栏
+        smdt.smdtSetStatusBar(MainActivity.this, false);
     }
 
     @Override
@@ -482,7 +483,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
             setNoticeList(notice);
         }
 
-        if (mainData.getPhotos() != null) {
+        if (mainData.getPhotos() != null&&mainData.getPhotos().size()>0) {
             setPager(mainData.getPhotos());
         }
 

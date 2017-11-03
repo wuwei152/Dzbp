@@ -170,7 +170,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
         boolean cons = (boolean) mAcache.getAsObject("conStatus");
         if (cons) {
             mTemp.setText("连接状态：已连接");
-            mTemp.setTextColor(getResources().getColor(R.color.cons));
+            mTemp.setTextColor(getResources().getColor(R.color.white));
         } else {
             mTemp.setText("连接状态：已断开");
             mTemp.setTextColor(getResources().getColor(R.color.conf));
@@ -223,7 +223,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
                 try {
                     Thread.sleep(300);
 //                    camera = Camera.open();
-                    LogUtils.d("initCamera");
+                    Log4j.d(TAG,"initCamera");
                     camera = Camera.open(Camera.getNumberOfCameras() - 1);
                     camera.setPreviewDisplay(mSurface.getHolder());
                     //        camera.setDisplayOrientation(90);
@@ -238,7 +238,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log4j.e(TAG, e.getMessage());
-                    new Handler().postDelayed(new Runnable() {
+                    new Handler(getMainLooper()).postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             retry++;
@@ -529,7 +529,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
         LogUtils.d("MainActivity接收到连接状态信息" + event.getType() + event.isStatus());
         if (event.isStatus()) {
             mTemp.setText("连接状态：已连接");
-            mTemp.setTextColor(getResources().getColor(R.color.cons));
+            mTemp.setTextColor(getResources().getColor(R.color.white));
         } else {
             mTemp.setText("连接状态：已断开");
             mTemp.setTextColor(getResources().getColor(R.color.conf));

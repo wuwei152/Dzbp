@@ -85,4 +85,25 @@
         <item name="android:windowEnterAnimation">@anim/menushow</item>
         <item name="android:windowExitAnimation">@anim/menuhide</item>
     </style>
+
+
+    <!--自定义dialog背景全透明无边框theme -->
+    <style name="MybrostcastDialog" parent="@android:style/Theme.DeviceDefault.Light.Dialog">
+        <!--背景颜色及和透明程度-->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <!--是否去除标题 -->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:padding">0dp</item>
+        <!--是否去除边框-->
+        <item name="android:windowFrame">@null</item>
+        <!--是否浮现在activity之上-->
+        <item name="android:windowIsFloating">false</item>
+        <!--是否模糊-->
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+
+        <item name="android:windowIsTranslucent">true</item>
+        <!--<item name="android:background">@android:color/transparent</item>-->
+    </style>
+
 </resources>

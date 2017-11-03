@@ -145,7 +145,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
         boolean cons = (boolean) mAcache.getAsObject("conStatus");
         if (cons) {
             mTemp.setText("连接状态：已连接");
-            mTemp.setTextColor(getResources().getColor(R.color.cons));
+            mTemp.setTextColor(getResources().getColor(R.color.white));
         } else {
             mTemp.setText("连接状态：已断开");
             mTemp.setTextColor(getResources().getColor(R.color.conf));
@@ -376,7 +376,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
         LogUtils.d("MainActivity接收到连接状态信息" + event.getType() + event.isStatus());
         if (event.isStatus()) {
             mTemp.setText("连接状态：已连接");
-            mTemp.setTextColor(getResources().getColor(R.color.cons));
+            mTemp.setTextColor(getResources().getColor(R.color.white));
         } else {
             mTemp.setText("连接状态：已断开");
             mTemp.setTextColor(getResources().getColor(R.color.conf));

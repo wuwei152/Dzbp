@@ -27,8 +27,8 @@ android {
     buildTypes {
         release {
             debuggable false
-            minifyEnabled true      // 开启混淆
-            shrinkResources true    // 去除无效的资源文件(依赖于minifyEnabled 为true)
+            minifyEnabled false      // 开启混淆
+            shrinkResources false    // 去除无效的资源文件(依赖于minifyEnabled 为true)
             zipAlignEnabled true    // Zipalign优化
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

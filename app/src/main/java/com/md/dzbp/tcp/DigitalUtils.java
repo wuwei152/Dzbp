@@ -74,7 +74,6 @@ public class DigitalUtils {
 	 *
 	 * @param buf
 	 *            bytes buffer
-	 * @param byte[]中开始转换的位置
 	 * @return convert result
 	 */
 	public static long byte2long(byte[] buf, int pos) {
