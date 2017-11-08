@@ -30,7 +30,7 @@ public class Log4jConfigure {
 //                        + DEFAULT_LOG_DIR + fileName);
 //            } else {
             logConfigurator.setFileName(FileUtils.getDiskCacheDir(context) + "Log"
-                    + File.separator + TimeUtils.currentTime() + "_" + Constant.getDeviceId(context) + "_" + fileName);
+                    + File.separator + TimeUtils.currentTimelog() + "_" + Constant.getDeviceId(context) + "_" + fileName);
 //            }
             //以下设置是按指定大小来生成新的文件
 

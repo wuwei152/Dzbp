@@ -452,6 +452,7 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/main_test"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:scaleType="fitXY"

@@ -46,6 +46,8 @@ public class TcpService extends Service {
             String ext = intent.getStringExtra("ext");
             LogUtils.d("onStartCommand:----"+num+"/"+Act+"/"+ext);
             mManager.sendCardNum(num,Act,ext);
+        }else if (intent!=null&&intent.hasExtra("test")){
+            mManager.test();
         }
 
         return super.onStartCommand(intent, flags, startId);

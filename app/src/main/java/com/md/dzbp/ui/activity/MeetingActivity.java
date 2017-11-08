@@ -322,7 +322,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
 
     @Override
     public void showDialog() {
-        if (dialog != null) {
+        if (dialog != null&&!mainDialog.isShowing()) {
             dialog.show();
         }
     }

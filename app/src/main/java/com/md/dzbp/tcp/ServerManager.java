@@ -8,10 +8,14 @@ import android.widget.Toast;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.LoginEvent;
 import com.md.dzbp.utils.ACache;
+import com.md.dzbp.utils.FileUtils;
 import com.md.dzbp.utils.Log4j;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 public class ServerManager {
@@ -19,13 +23,13 @@ public class ServerManager {
     private static final String TAG = "ServerManager";
     private static ServerManager instance = null;
     private Context context;
-    private static int retryTime = 7000;
+    private static int retryTime = 10000;
     private Handler handler = new Handler(Looper.getMainLooper());
     private TcpClient client;
     public final MessageHandle messageHandle;
     private final String Tag = "ServerManager";
     private String deviceId = "";
-    private ACache mACache ;
+    private ACache mACache;
 
 
     /* 1:懒汉式，静态工程方法，创建实例 */
@@ -46,8 +50,8 @@ public class ServerManager {
             @Override
             public void onConnect(SocketTransceiver transceiver) {
                 Log4j.d(Tag, "Tcp连接成功");
-                EventBus.getDefault().post(new LoginEvent(0,true,"",""));
-                mACache.put("conStatus",true);
+                EventBus.getDefault().post(new LoginEvent(0, true, "", ""));
+                mACache.put("conStatus", true);
                 new Handler(context.getMainLooper()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -59,10 +63,10 @@ public class ServerManager {
             @Override
             public void onDisconnect(SocketTransceiver transceiver) {
                 Log4j.d(Tag, "断开连接");
-                EventBus.getDefault().post(new LoginEvent(0,false,"",""));
-                mACache.put("conStatus",false);
+                EventBus.getDefault().post(new LoginEvent(0, false, "", ""));
+                mACache.put("conStatus", false);
                 messageHandle.IsEnable = false;
-                if (handler ==null){
+                if (handler == null) {
                     handler = new Handler(Looper.getMainLooper());
                 }
                 handler.postDelayed(new Runnable() {
@@ -77,9 +81,9 @@ public class ServerManager {
             @Override
             public void onConnectFailed() {
                 Log4j.d(Tag, "Connect连接失败");
-                EventBus.getDefault().post(new LoginEvent(0,false,"",""));
-                mACache.put("conStatus",false);
-                if (handler ==null){
+                EventBus.getDefault().post(new LoginEvent(0, false, "", ""));
+                mACache.put("conStatus", false);
+                if (handler == null) {
                     handler = new Handler(Looper.getMainLooper());
                 }
                 handler.postDelayed(new Runnable() {
@@ -110,14 +114,20 @@ public class ServerManager {
     }
 
     /**
+     * 测试
+     */
+    public void test() {
+    }
+
+    /**
      * 启动
      */
     public void Start(String hostIP, int port) {
         try {
-            Log4j.d(TAG,"开始连接"+hostIP+"/"+port);
+            Log4j.d(TAG, "开始连接" + hostIP + "/" + port);
             client.connect(hostIP, port);
         } catch (NumberFormatException e) {
-            Log4j.d(TAG,"Start连接失败"+e.getMessage());
+            Log4j.d(TAG, "Start连接失败" + e.getMessage());
         }
     }
 
@@ -136,14 +146,14 @@ public class ServerManager {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (!messageHandle.IsEnable){
-                        Log4j.e(TAG,"登录无回应，断开重试！");
+                    if (!messageHandle.IsEnable) {
+                        Log4j.e(TAG, "登录无回应，断开重试！");
                         Stop();
                     }
                 }
-            },retryTime);
+            }, retryTime);
         } catch (Exception e) {
-            Log4j.d(TAG, "登录失败"+e.getMessage());
+            Log4j.d(TAG, "登录失败" + e.getMessage());
         }
     }
 

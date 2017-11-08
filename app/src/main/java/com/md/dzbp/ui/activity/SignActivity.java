@@ -473,7 +473,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
 
     @Override
     public void showDialog() {
-        if (dialog != null) {
+        if (dialog != null&&!mainDialog.isShowing()) {
             dialog.show();
         }
     }

@@ -234,7 +234,7 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
 
     @Override
     public void showDialog() {
-        if (dialog != null) {
+        if (dialog != null&&!mainDialog.isShowing()) {
             dialog.show();
         }
     }

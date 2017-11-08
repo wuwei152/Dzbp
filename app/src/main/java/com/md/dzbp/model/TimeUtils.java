@@ -79,6 +79,11 @@ public class TimeUtils {
         Date date = new Date();
         return toString(date);
     }
+    // 获取当前时间，字符串形式
+    public static String currentTimelog() {
+        Date date = new Date();
+        return toString(date).replaceAll(" ","").replaceAll(":","_");
+    }
 
     // 从字符串, 获取日期, 如time = "2016-3-16 4:12:16"
     public static Date toDate(String time) {

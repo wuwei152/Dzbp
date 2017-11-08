@@ -205,7 +205,11 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         super.onResume();
         LogUtils.d("注册EventBus");
         EventBus.getDefault().register(this);
-        boolean cons = (boolean) mAcache.getAsObject("conStatus");
+        boolean cons = false;
+        Object consobj = mAcache.getAsObject("conStatus");
+        if (consobj!=null){
+            cons = (boolean)consobj;
+        }
         if (cons) {
             mConStatus.setText("连接状态：已连接");
             mConStatus.setTextColor(getResources().getColor(R.color.cons));
@@ -326,9 +330,14 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         }, 1000);
     }
 
-    @OnClick({R.id.main_left, R.id.main_right})
+    @OnClick({R.id.main_left, R.id.main_right, R.id.main_test})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.main_test:
+//                Intent intent = new Intent(MainActivity.this,TcpService.class);
+//                intent.putExtra("test",0);
+//                startService(intent);
+                break;
             case R.id.main_left:
                 if (mChatList != null && mChatList.size() > 0) {
                     int recyclePosition = linearLayoutManager.findFirstVisibleItemPosition();
@@ -530,7 +539,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
 
     @Override
     public void showDialog() {
-        if (dialog != null) {
+        if (dialog != null&&!mainDialog.isShowing()) {
             dialog.show();
         }
     }

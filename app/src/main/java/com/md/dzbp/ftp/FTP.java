@@ -154,8 +154,10 @@ public class FTP {
                     new FileInputStream(localFile));
             ProgressInputStream progressInput = new ProgressInputStream(buffIn, listener, localFile);
             flag = ftpClient.storeFile(localFile.getName(), progressInput);
+            LogUtils.d(flag);
             buffIn.close();
         } catch (Exception e) {
+            e.printStackTrace();
             Log4j.d(TAG, e.getMessage());
         }
         return flag;

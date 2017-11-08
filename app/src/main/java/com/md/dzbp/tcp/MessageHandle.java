@@ -1,16 +1,13 @@
 package com.md.dzbp.tcp;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.smdt.SmdtManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
-import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
@@ -19,7 +16,6 @@ import com.md.dzbp.constants.Constant;
 import com.md.dzbp.constants.ERRORTYPE;
 import com.md.dzbp.data.FtpParams;
 import com.md.dzbp.data.ImageReceiveMessage;
-import com.md.dzbp.data.LoginEvent;
 import com.md.dzbp.data.MainUpdateEvent;
 import com.md.dzbp.data.MessageBase;
 import com.md.dzbp.data.MsgSendStatus;
@@ -37,7 +33,6 @@ import com.md.dzbp.ui.activity.PatrolActivity;
 import com.md.dzbp.ui.activity.SignActivity;
 import com.md.dzbp.ui.activity.StudentActivity;
 import com.md.dzbp.ui.activity.TeacherActivity;
-import com.md.dzbp.ui.view.MsgDialog;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.FileUtils;
@@ -52,7 +47,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
@@ -68,7 +62,7 @@ public class MessageHandle {
     private Context context;
     private TcpClient client;
     private Handler x_handler;
-    private static int xintiaoTime = 60000;
+    private static int xintiaoTime = 30000;
     private SmdtManager smdtManager;
     public boolean IsEnable = false;
     private final ACache mACache;
@@ -90,7 +84,6 @@ public class MessageHandle {
         switch (tcpMessage.Type) {
             case 0xA001://通用应答
                 Log4j.d(TAG, "0xA001收到通用应答消息");
-//                XTfailNum = 0;
                 break;
             case 0xA002://登录应答，发心跳
                 int result1 = tcpMessage.ReadInt();
@@ -130,7 +123,10 @@ public class MessageHandle {
                     IsEnable = false;
                 }
                 break;
-
+            case 0xA003://心跳应答
+                Log4j.d(TAG, "0xA003收到心跳应答消息");
+                XTfailNum = 0;
+                break;
             case 0xA501://定时开关机
                 int msgid501 = tcpMessage.ReadInt();
                 int length = tcpMessage.ReadInt();
@@ -178,48 +174,52 @@ public class MessageHandle {
                 yingda(0xA504, true, deviceId, msgid504);
                 break;
             case 0xA505://截屏
-                final int msgid505 = tcpMessage.ReadInt();
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");//设置日期格式
-                final String timeStr = df.format(new Date());
-                Log4j.d(TAG, "A505开始截屏");
-                File filedir = new File(FileUtils.getDiskCacheDir(context) + "Screenshot");
-                if (!filedir.exists()) {
-                    filedir.mkdirs();
-                }
-                smdtManager.smdtTakeScreenshot(FileUtils.getDiskCacheDir(context) + "Screenshot/", "screenshot_" + timeStr + ".png", context);
-                File file = new File(FileUtils.getDiskCacheDir(context) + "Screenshot/screenshot_" + timeStr + ".png");
-                if (file.exists()) {
-                    Log4j.d(TAG, "获取截屏成功！");
+                try {
+                    final int msgid505 = tcpMessage.ReadInt();
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");//设置日期格式
+                    final String timeStr = df.format(new Date());
+                    Log4j.d(TAG, "A505开始截屏");
+                    File filedir = new File(FileUtils.getDiskCacheDir(context) + "Screenshot");
+                    if (!filedir.exists()) {
+                        filedir.mkdirs();
+                    }
+                    smdtManager.smdtTakeScreenshot(FileUtils.getDiskCacheDir(context) + "Screenshot/", "screenshot_" + timeStr + ".png", context);
+                    File file = new File(FileUtils.getDiskCacheDir(context) + "Screenshot/screenshot_" + timeStr + ".png");
+                    if (file.exists()) {
+                        Log4j.d(TAG, "获取截屏成功！");
 
-                    Luban.with(context)
-                            .load(file)                                   // 传人要压缩的图片列表
-                            .ignoreBy(50)                                  // 忽略不压缩图片的大小
-                            .setTargetDir(FileUtils.getDiskCacheDir(context) + "Screenshot")                        // 设置压缩后文件存储位置
-                            .setCompressListener(new OnCompressListener() { //设置回调
-                                @Override
-                                public void onStart() {
-                                    // TODO 压缩开始前调用，可以在方法内启动 loading UI
-                                    Log4j.d(TAG, "开始压缩");
-                                }
+                        Luban.with(context)
+                                .load(file)                                   // 传人要压缩的图片列表
+                                .ignoreBy(50)                                  // 忽略不压缩图片的大小
+                                .setTargetDir(FileUtils.getDiskCacheDir(context) + "Screenshot")                        // 设置压缩后文件存储位置
+                                .setCompressListener(new OnCompressListener() { //设置回调
+                                    @Override
+                                    public void onStart() {
+                                        // TODO 压缩开始前调用，可以在方法内启动 loading UI
+                                        Log4j.d(TAG, "开始压缩");
+                                    }
 
-                                @Override
-                                public void onSuccess(File file) {
-                                    // TODO 压缩成功后调用，返回压缩后的图片文件
-                                    Log4j.d(TAG, "压缩截屏文件成功！");
-                                    uploadFile(file.getAbsolutePath(), FileUtils.getDiskCacheDir(context) + "Screenshot/screenshot_" + timeStr + ".png", Constant.Ftp_Screenshot, 0xA505, msgid505);
-                                }
+                                    @Override
+                                    public void onSuccess(File file) {
+                                        // TODO 压缩成功后调用，返回压缩后的图片文件
+                                        Log4j.d(TAG, "压缩截屏文件成功！");
+                                        uploadFile(file.getAbsolutePath(), FileUtils.getDiskCacheDir(context) + "Screenshot/screenshot_" + timeStr + ".png", Constant.Ftp_Screenshot, 0xA505, msgid505);
+                                    }
 
-                                @Override
-                                public void onError(Throwable e) {
-                                    // TODO 当压缩过程出现问题时调用
-                                    Log4j.d(TAG, "压缩截屏文件失败！" + e.getMessage());
-                                    yingda(0xA505, false, deviceId, msgid505);
-                                }
-                            }).launch();    //启动压缩
+                                    @Override
+                                    public void onError(Throwable e) {
+                                        // TODO 当压缩过程出现问题时调用
+                                        Log4j.d(TAG, "压缩截屏文件失败！" + e.getMessage());
+                                        yingda(0xA505, false, deviceId, msgid505);
+                                    }
+                                }).launch();    //启动压缩
 
-                } else {
-                    Log4j.d(TAG, "获取截屏文件失败！sn");
-                    yingda(0xA505, false, deviceId, msgid505);
+                    } else {
+                        Log4j.d(TAG, "获取截屏文件失败！sn");
+                        yingda(0xA505, false, deviceId, msgid505);
+                    }
+                } catch (Exception e) {
+                    Log4j.d(TAG, e.getMessage());
                 }
                 break;
 
@@ -330,7 +330,11 @@ public class MessageHandle {
             case 0xA513://发送版本信息
                 Log4j.d(TAG, "0xA513收到发送版本信息指令");
                 int msgid513 = tcpMessage.ReadInt();
-                sendVersionInfo(0xA513, true, deviceId, msgid513);
+                try {
+                    sendVersionInfo(0xA513, true, deviceId, msgid513);
+                } catch (Exception e) {
+                    Log4j.d(TAG,e.getMessage());
+                }
                 break;
             case 0xA550://刷卡屏幕跳转
                 int status = tcpMessage.ReadInt();
@@ -378,6 +382,15 @@ public class MessageHandle {
             case 0xA601://发消息
                 Boolean msgSuccess = tcpMessage.ReadBool();
                 Log4j.d(TAG, msgSuccess ? "消息发送成功" : "消息发送失败");
+                try {
+                    if (!msgSuccess){
+                        Toast.makeText(context,"消息发送失败!",Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    Log4j.e(TAG,"0x601Toast错误！");
+                    e.printStackTrace();
+                }
+
                 break;
             case 0xA602://接收广播消息
                 int msgid602 = tcpMessage.ReadInt();
@@ -441,16 +454,17 @@ public class MessageHandle {
         x_runnable = new Runnable() {
             @Override
             public void run() {
-                Log4j.d(TAG, "发送心跳");
+                Log4j.d(TAG, "发送心跳"+XTfailNum);
                 try {
-                    if (client == null || !IsEnable || XTfailNum > 10) {
+                    if (client == null || !IsEnable || XTfailNum > 2) {
+                        Log4j.d(TAG,"心跳异常，断开连接");
                         x_handler.removeCallbacks(this);
                         Stop();
                         return;
                     }
                     TCPMessage message = new TCPMessage(0xA000);
                     client.getTransceiver().send(message);
-//                    XTfailNum++;
+                    XTfailNum++;
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log4j.d(TAG, e.getMessage());
@@ -597,7 +611,7 @@ public class MessageHandle {
      * @param ftpPath
      * @param xyh
      */
-    private void uploadFile(final String fileName, final String ftpPath, final int xyh, final int id) {
+    public void uploadFile(final String fileName, final String ftpPath, final int xyh, final int id) {
         new Thread(new Runnable() {
             @Override
             public void run() {
