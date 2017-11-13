@@ -39,7 +39,6 @@ import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.FileUtils;
-import com.md.dzbp.utils.Log4j;
 import com.nanchen.compresshelper.CompressHelper;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
@@ -47,6 +46,8 @@ import com.zhy.adapter.abslistview.ViewHolder;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -90,7 +91,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
     TextView mTemp;
     private SurfaceHolder.Callback callback;
     private Camera camera;
-    private String TAG = "SignActivity";
+    private String TAG = "SignActivity-->{}";
     private Handler card_handler = null;
     private Handler foucus_handler = null;
     private String card_stringTemp;
@@ -105,6 +106,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
     private SignInfoBean signInfoBean;
     private List<SignInfoBean.StudentBean> studentsList;
     private ACache mAcache;
+    private Logger logger;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +123,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
     protected void initUI() {
         mainDialog = new MainDialog(this);
         mAcache = ACache.get(this);
+        logger = LoggerFactory.getLogger(getClass());
         gestureDetector = new GestureDetector(SignActivity.this, onGestureListener);
         //获取时间日期
         new TimeUtils(SignActivity.this, this);
@@ -223,7 +226,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
                 try {
                     Thread.sleep(300);
 //                    camera = Camera.open();
-                    Log4j.d(TAG,"initCamera");
+                    logger.debug(TAG,"initCamera");
                     camera = Camera.open(Camera.getNumberOfCameras() - 1);
                     camera.setPreviewDisplay(mSurface.getHolder());
                     //        camera.setDisplayOrientation(90);
@@ -237,7 +240,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
                     camera.cancelAutoFocus();// 2如果要实现连续的自动对焦，这一句必须加上
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log4j.e(TAG, e.getMessage());
+                    logger.error(TAG, e.getMessage());
                     new Handler(getMainLooper()).postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -273,7 +276,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
      * 拍照
      */
     private void TakePicture(final String cardNum) {
-        Log4j.d(TAG, "开始拍照！");
+        logger.debug(TAG, "开始拍照！");
         if (camera != null) {
             camera.takePicture(null, null, new Camera.PictureCallback() {
                 @Override
@@ -296,7 +299,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
                         intent.putExtra("ext", fileName.getName());
                         startService(intent);
 
-                        Log4j.d(TAG, "拍照成功！");
+                        logger.debug(TAG, "拍照成功！");
                         compress(fileName);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -328,7 +331,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
                 .setDestinationDirectoryPath(FileUtils.getDiskCacheDir(SignActivity.this) + "sign_compress")
                 .build()
                 .compressToFile(oldFile);
-        Log4j.d(TAG, "压缩图片！");
+        logger.debug(TAG, "压缩图片！");
         Intent intent = new Intent(SignActivity.this, UploadService.class);
         intent.putExtra("file", newFile);
         startService(intent);
@@ -363,7 +366,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
                             if (!TextUtils.isEmpty(card_stringTemp)) {
                                 TakePicture(card_stringTemp);
                             } else {
-                                Log4j.d(TAG, "获取卡号失败");
+                                logger.debug(TAG, "获取卡号失败");
                             }
                             mCardNum.setText("");
                             card_handler = null;
@@ -378,6 +381,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
 //                LogUtils.d(arg0);
             }
         });
+        foucus_handler = null;
         foucus_handler = new Handler();
         foucus_handler.postDelayed(new Runnable() {
             @Override
@@ -510,7 +514,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
                 for (SignInfoBean.StudentBean m : studentsList) {
                     if (m.getAccountid().equals(event.getId())) {
                         m.setState(1);
-                        Log4j.d("SignActivity", "匹配成功，签到成功！");
+                        logger.debug("SignActivity", "匹配成功，签到成功！");
                     }
                 }
                 setGridData(studentsList);

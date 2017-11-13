@@ -7,8 +7,9 @@ import com.apkfuns.logutils.LogUtils;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.FileUtils;
-import com.md.dzbp.utils.Log4j;
-import com.md.dzbp.utils.Log4jConfigure;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -24,11 +25,13 @@ import cn.finalteam.okhttpfinal.OkHttpFinalConfiguration;
 public class ClientApp extends Application {
     private static ClientApp instance;
     private ACache mAcache;
+    private Logger logger;
 
     @Override
     public void onCreate() {
         super.onCreate();
         instance = this;
+        logger = LoggerFactory.getLogger(getClass());
         initLogs();
         mAcache = ACache.get(this);
         Fresco.initialize(this);
@@ -38,12 +41,11 @@ public class ClientApp extends Application {
         //注册错误处理保存本地
 //        CrashHandler crashHandler = CrashHandler.getInstance();
 //        crashHandler.init(this);
-        Log4jConfigure.configure(this);
 
         try {
-            deleteCache();
+//            deleteCache();
         } catch (Exception e) {
-            Log4j.e("ClientApp", e.getMessage());
+            logger.error("ClientApp", e.getMessage());
         }
         //加入初始密码
         mAcache.put("AdminPsw", "1234");
@@ -70,7 +72,7 @@ public class ClientApp extends Application {
         int numCount = 0;
         if (num != null) {
             numCount = (int) num;
-            Log4j.d("ClientApp", "登录次数："+numCount);
+            logger.debug("ClientApp", "登录次数："+numCount);
         }
         if (numCount <= 15) {
             numCount++;
@@ -81,9 +83,9 @@ public class ClientApp extends Application {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    Log4j.d("ClientApp", "删除缓存！");
+                    logger.debug("ClientApp", "删除缓存！");
                     ArrayList<File> files = new ArrayList<>();
-                    File file1 = new File(FileUtils.getDiskCacheDir(ClientApp.this) + "Log");
+//                    File file1 = new File(FileUtils.getDiskCacheDir(ClientApp.this) + "Log");
                     File file2 = new File(FileUtils.getDiskCacheDir(ClientApp.this) + "receiveVoice");
                     File file3 = new File(FileUtils.getDiskCacheDir(ClientApp.this) + "SendVoiceCache");
                     File file4 = new File(FileUtils.getDiskCacheDir(ClientApp.this) + "Apk");
@@ -91,7 +93,7 @@ public class ClientApp extends Application {
                     File file6 = new File(FileUtils.getDiskCacheDir(ClientApp.this) + "Screenshot");
                     File file7 = new File(FileUtils.getDiskCacheDir(ClientApp.this) + "sign");
                     File file8 = new File(FileUtils.getDiskCacheDir(ClientApp.this) + "sign_compress");
-                    files.add(file1);
+//                    files.add(file1);
                     files.add(file2);
                     files.add(file3);
                     files.add(file4);
@@ -107,7 +109,6 @@ public class ClientApp extends Application {
                             }
                         }
                     }
-                    Log4jConfigure.configure(ClientApp.this);
                 }
             }).start();
         }

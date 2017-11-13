@@ -33,6 +33,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
+            debuggable false
+            minifyEnabled true      // 开启混淆
+            shrinkResources true    // 去除无效的资源文件(依赖于minifyEnabled 为true)
+            zipAlignEnabled true    // Zipalign优化
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
         }
     }
@@ -57,7 +62,6 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile files('libs/smdt.jar')
     compile files('libs/commons-net-3.6.jar')
-    compile files('libs/android-logging-log4j-1.0.3.jar')
     compile 'com.android.support:appcompat-v7:26.0.0'
     compile 'com.android.support:support-v4:26.0.0'
     compile 'com.android.support:design:26.0.0'
@@ -73,4 +77,11 @@ dependencies {
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
     compile 'com.github.nanchen2251:CompressHelper:1.0.5'
+
+    compile 'org.slf4j:slf4j-api:1.7.21'
+    compile 'com.github.tony19:logback-android-core:1.1.1-6'
+    compile('com.github.tony19:logback-android-classic:1.1.1-6') {
+        // workaround issue #73
+        exclude group: 'com.google.android', module: 'android'
+    }
 }

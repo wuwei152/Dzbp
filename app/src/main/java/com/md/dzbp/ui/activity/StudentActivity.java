@@ -50,16 +50,15 @@ import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.MyRecyclerView;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
-import com.md.dzbp.utils.Log4j;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,6 +107,7 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
     private String mStuUserId;
     private HonorListAdapter honorListAdapter;
     private LinearLayoutManager linearLayoutManager2;
+    private Logger logger;
     ;
 
     @Override
@@ -127,7 +127,7 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
         if (intent.hasExtra("userId")) {
             mStuUserId = intent.getStringExtra("userId");
         }
-
+        logger = LoggerFactory.getLogger(getClass());
         mAcache = ACache.get(this);
 
         mainDialog = new MainDialog(this);
@@ -246,6 +246,7 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
             }
         });
 
+        foucus_handler = null;
         foucus_handler = new Handler();
         foucus_handler.postDelayed(new Runnable() {
             @Override
@@ -415,7 +416,7 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
             try {
                 Glide.with(StudentActivity.this).load(student.getPhoto()).into(mIcon);
             } catch (Exception e) {
-                Log4j.e("Studentactivity", e.getMessage());
+                logger.error("Studentactivity-->{}", e.getMessage());
             }
             mName.setText(student.getAccountname());
             mClass.setText(student.getGradename() + student.getClassname());

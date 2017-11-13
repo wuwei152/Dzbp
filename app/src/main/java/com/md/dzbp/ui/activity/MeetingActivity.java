@@ -34,13 +34,14 @@ import com.md.dzbp.ui.view.MainDialog;
 import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
-import com.md.dzbp.utils.Log4j;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -100,6 +101,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
     private List<Meetingbean.MeetingUserListBean> meetingUserList;
     private Meetingbean meetingbean;
     private ACache mAcache;
+    private Logger logger;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,6 +118,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
         //主菜单
         mainDialog = new MainDialog(this);
         mAcache = ACache.get(this);
+        logger = LoggerFactory.getLogger(getClass());
         gestureDetector = new GestureDetector(MeetingActivity.this, onGestureListener);
         //获取时间日期
         new TimeUtils(MeetingActivity.this, this);
@@ -247,7 +250,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
                                 intent.putExtra("ext", meetingbean.getId());
                                 startService(intent);
                             } else {
-                                Log4j.d("MeetingActivity", "获取卡号失败或会议为空");
+                                logger.debug("MeetingActivity-->{}", "获取卡号失败或会议为空");
                             }
                             mCardNum.setText("");
                             card_handler = null;
@@ -262,6 +265,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
 //                LogUtils.d(arg0);
             }
         });
+        foucus_handler = null;
         foucus_handler = new Handler();
         foucus_handler.postDelayed(new Runnable() {
             @Override
@@ -358,7 +362,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
                 for (Meetingbean.MeetingUserListBean m : meetingUserList) {
                     if (m.getAccountId().equals(event.getId())) {
                         m.setSigninStatus(1);
-                        Log4j.d("MeetingActivity", "匹配成功，签到成功！");
+                        logger.debug("MeetingActivity-->{}", "匹配成功，签到成功！");
                     }
                 }
                 setGridData(meetingUserList);

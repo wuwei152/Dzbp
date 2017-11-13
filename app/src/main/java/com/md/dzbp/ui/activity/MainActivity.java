@@ -53,6 +53,7 @@ import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.MyRecyclerView;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
+import com.md.dzbp.utils.GlideImgManager;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -201,6 +202,12 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         LogUtils.d("注册EventBus");
@@ -218,6 +225,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
             mConStatus.setTextColor(getResources().getColor(R.color.conf));
         }
         getUIdata();
+//        logger.debug(Tag,"");
     }
 
     /**
@@ -320,6 +328,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
 //                LogUtils.d(arg0);
             }
         });
+        foucus_handler = null;
         foucus_handler = new Handler();
         foucus_handler.postDelayed(new Runnable() {
             @Override
@@ -378,8 +387,9 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         mLoop.setOnLoadImageViewListener(new OnDefaultImageViewLoader() {
             @Override
             public void onLoadImageView(int position, ImageView imageView, Object parameter) {
-                imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                Glide.with(MainActivity.this).load(parameter).into(imageView);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+//                Glide.with(MainActivity.this).load(parameter).into(imageView);
+                GlideImgManager.glideLoader(MainActivity.this,parameter.toString(),R.drawable.pic_not_found,R.drawable.pic_not_found,imageView,"");
                 position = position == 0 ? photos.size() - 1 : position - 1;
                 mLoopName.setText(photos.get(position).getDescription());
 //                LogUtils.d(position + "");
@@ -430,7 +440,11 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
                     if (x > 500 && Math.abs(x) > Math.abs(y)) {
                         mainDialog.dismiss();
                     } else if (x < -500 && Math.abs(x) > Math.abs(y)) {
-                        mainDialog.show();
+                        try {
+                            mainDialog.show();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                     return true;
                 }

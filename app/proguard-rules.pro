@@ -15,8 +15,18 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-ignorewarnings
 -keep class com.apkfuns.logutils.** { *;}
 -dontwarn com.apkfuns.logutils.**
+
+-keep class com.github.** { *;}
+-dontwarn com.github.**
+-dontwarn org.slf4j.**
+-dontwarn ch.qos.**
+
+-keep class ch.qos.** { *; }
+-keep class org.slf4j.** { *; }
+-keepattributes *Annotation*
 
 #log4j
 -keep class de.mindpipe.android.logging.log4j.** { *;}

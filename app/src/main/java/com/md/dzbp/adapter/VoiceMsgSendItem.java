@@ -14,21 +14,24 @@ import com.md.dzbp.R;
 import com.md.dzbp.data.MessageBase;
 import com.md.dzbp.data.VoiceSendMessage;
 import com.md.dzbp.model.TimeUtils;
-import com.md.dzbp.utils.Log4j;
 import com.zhy.adapter.abslistview.ViewHolder;
 import com.zhy.adapter.abslistview.base.ItemViewDelegate;
 
 import org.greenrobot.eventbus.EventBus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 发送语音消息
  * Created by Administrator on 2017/8/24.
  */
 public class VoiceMsgSendItem implements ItemViewDelegate<MessageBase> {
+    private final Logger logger;
     private Context context;
 
     public VoiceMsgSendItem(Context context) {
         this.context = context;
+        logger = LoggerFactory.getLogger(context.getClass());
     }
 
     @Override
@@ -92,14 +95,14 @@ public class VoiceMsgSendItem implements ItemViewDelegate<MessageBase> {
     }
 
     private void play(String path){
-        Log4j.d("VoiceMsgSendItem","播放"+path);
+        logger.debug("VoiceMsgSendItem--{}","播放"+path);
         SoundPool soundPool;
         soundPool= new SoundPool(21, AudioManager.STREAM_SYSTEM,10);
         soundPool.load(path,1);
         soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
             @Override
             public void onLoadComplete(SoundPool soundPool, int i, int i1) {
-                Log4j.d("VoiceMsgSendItem","开始播放！");
+                logger.debug("VoiceMsgSendItem","开始播放！");
                 soundPool.play(1,1, 1, 0, 0,  1f);
             }
         });

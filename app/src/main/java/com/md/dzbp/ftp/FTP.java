@@ -7,12 +7,13 @@ import com.md.dzbp.constants.Constant;
 import com.md.dzbp.constants.ERRORTYPE;
 import com.md.dzbp.data.FtpParams;
 import com.md.dzbp.utils.ACache;
-import com.md.dzbp.utils.Log4j;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPClientConfig;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -24,6 +25,7 @@ import java.io.OutputStream;
 import java.util.LinkedList;
 
 public class FTP {
+    private final Logger logger;
     /**
      * 服务器名.
      */
@@ -49,10 +51,11 @@ public class FTP {
      */
 
     private FTPClient ftpClient;
-    private String TAG = "FTP";
+    private String TAG = "FTP-->{}";
 
     public FTP(Context context) {
         ACache mAcache = ACache.get(context);
+        logger = LoggerFactory.getLogger(context.getClass());
         FtpParams params = (FtpParams) mAcache.getAsObject("FtpParams");
         if (params != null) {
             LogUtils.d(params);
@@ -158,7 +161,7 @@ public class FTP {
             buffIn.close();
         } catch (Exception e) {
             e.printStackTrace();
-            Log4j.d(TAG, e.getMessage());
+            logger.debug(TAG, e.getMessage());
         }
         return flag;
     }
@@ -192,7 +195,7 @@ public class FTP {
             ftpClient.changeWorkingDirectory(remotePath);
             // 上传单个文件
         } catch (Exception e) {
-            Log4j.d(TAG, e.getMessage());
+            logger.debug(TAG, e.getMessage());
         }
     }
 
@@ -227,7 +230,7 @@ public class FTP {
             this.openConnect();
             listener.onDownLoadProgress(ERRORTYPE.FTP_CONNECT_SUCCESSS, 0, null);
         } catch (IOException e1) {
-            Log4j.d("FTP打开", e1.getMessage());
+            logger.debug("FTP打开", e1.getMessage());
             listener.onDownLoadProgress(ERRORTYPE.FTP_CONNECT_FAIL, 0, null);
             return;
         }
@@ -259,7 +262,7 @@ public class FTP {
 //                    file.delete();
 //                }
             }
-//            Log4j.d(TAG, "下载");
+//            logger.debug(TAG, "下载");
             // 进度
             long step = serverSize / 100;
             long process = 0;
@@ -295,7 +298,7 @@ public class FTP {
             this.closeConnect();
             listener.onDownLoadProgress(ERRORTYPE.FTP_DISCONNECT_SUCCESS, 0, null);
         } catch (Exception e) {
-            Log4j.d("FTP33", e.getMessage());
+            logger.debug("FTP33", e.getMessage());
             listener.onDownLoadProgress(ERRORTYPE.FTP_DOWN_FAIL, 0, null);
         }
         return;

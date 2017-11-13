@@ -14,7 +14,9 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.md.dzbp.R;
 import com.md.dzbp.data.MainData;
-import com.md.dzbp.utils.Log4j;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
@@ -24,7 +26,7 @@ import java.util.ArrayList;
 public class StuListAdapter extends RecyclerView.Adapter<StuListAdapter.ViewHolder> {
 
     private Context context;
-
+    private Logger logger  ;
     /**
      * ItemClick的回调接口
      */
@@ -44,12 +46,14 @@ public class StuListAdapter extends RecyclerView.Adapter<StuListAdapter.ViewHold
     public StuListAdapter(Context context) {
         this.context = context;
         mInflater = LayoutInflater.from(context);
+        logger = LoggerFactory.getLogger(context.getClass());
     }
 
     public StuListAdapter(Context context, ArrayList mDatas) {
         this.context = context;
         mInflater = LayoutInflater.from(context);
         this.mDatas = mDatas;
+        logger = LoggerFactory.getLogger(context.getClass());
     }
 
     public void setDatas(ArrayList<MainData.ChatBean> mDatas) {
@@ -100,7 +104,7 @@ public class StuListAdapter extends RecyclerView.Adapter<StuListAdapter.ViewHold
         try {
             viewHolder.mImg.setImageURI(Uri.parse(studentBean.getPhoto()));
         }catch (Exception e){
-            Log4j.e("StuListAdapter",e.getMessage());
+            logger.error(e.getMessage());
         }
         setFlickerAnimation(500, viewHolder.mNum);
         //如果设置了回调，则设置点击事件

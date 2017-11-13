@@ -32,7 +32,6 @@ import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.utils.ACache;
-import com.md.dzbp.utils.Log4j;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -176,6 +175,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
 //                LogUtils.d(arg0);
             }
         });
+        foucus_handler = null;
         foucus_handler = new Handler();
         foucus_handler.postDelayed(new Runnable() {
             @Override

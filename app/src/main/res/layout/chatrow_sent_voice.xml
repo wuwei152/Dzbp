@@ -29,7 +29,7 @@
 
         <RelativeLayout
             android:id="@+id/bubble"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_userid"
             android:layout_marginRight="10dp"

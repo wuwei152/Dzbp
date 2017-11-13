@@ -14,6 +14,9 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -39,6 +42,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
     private Map<String, String> info = new HashMap<String, String>();// 用来存储设备信息和异常信息
     private SimpleDateFormat format = new SimpleDateFormat(
             "yyyy-MM-dd-HH-mm-ss");// 用于格式化日期,作为日志文件名的一部分
+    private Logger logger;
 
     /** 保证只有一个CrashHandler实例 */
     private CrashHandler() {
@@ -57,6 +61,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
      */
     public void init(Context context) {
         mContext = context;
+        logger = LoggerFactory.getLogger(context.getClass());
         mDefaultHandler = Thread.getDefaultUncaughtExceptionHandler();// 获取系统默认的UncaughtException处理器
         Thread.setDefaultUncaughtExceptionHandler(this);// 设置该CrashHandler为程序的默认处理器
     }
@@ -161,7 +166,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
         sb.append(result);
         // 保存文件
         String time = format.format(new Date());
-        Log4j.e("崩溃信息",time+"//"+sb.toString());
+        logger.error("崩溃信息-->{}",time+"//"+sb.toString());
 //        String fileName = "crash-" + time + "-" + timetamp + ".log";
 //        if (Environment.getExternalStorageState().equals(
 //                Environment.MEDIA_MOUNTED)) {

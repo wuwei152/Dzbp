@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.View;
 import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -30,7 +29,9 @@ import com.md.dzbp.tcp.TcpService;
 import com.md.dzbp.ui.view.MainDialog;
 import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.myToast;
-import com.md.dzbp.utils.Log4j;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -64,8 +65,9 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
     private NetWorkRequest netWorkRequest;
     private NoticeBean noticeBean;
     private MediaPlayer mp;
-    private String TAG = "NoticeActivity";
+    private String TAG = "NoticeActivity-->{}";
     private String noticeId = "";
+    private Logger logger;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +86,7 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
         netWorkRequest = new NetWorkRequest(this, this);
         gestureDetector = new GestureDetector(NoticeActivity.this, onGestureListener);
 
+        logger = LoggerFactory.getLogger(getClass());
         Intent intent = getIntent();
         if (intent.hasExtra("id")) {
             noticeId = intent.getStringExtra("id");
@@ -158,6 +161,7 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
 //                LogUtils.d(arg0);
             }
         });
+        foucus_handler = null;
         foucus_handler = new Handler();
         foucus_handler.postDelayed(new Runnable() {
             @Override
@@ -267,12 +271,12 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
      * 播放广播音乐
      */
     private void playAlert() {
-        Log4j.d(TAG, "开始播放");
+        logger.debug(TAG, "开始播放");
         if (mp == null) {
             mp = MediaPlayer.create(NoticeActivity.this, R.raw.notify_alert);
-            Log4j.d(TAG, "初始化");
+            logger.debug(TAG, "初始化");
         }else {
-            Log4j.d(TAG, "重新开始播放");
+            logger.debug(TAG, "重新开始播放");
             try {
                 mp.prepare();
             } catch (IOException e) {
@@ -283,7 +287,7 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
             mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mediaPlayer) {
-                    Log4j.d(TAG, "开始播放");
+                    logger.debug(TAG, "开始播放");
                     mediaPlayer.start();
                 }
             });
@@ -291,23 +295,23 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
             mp.setOnErrorListener(new MediaPlayer.OnErrorListener() {
                 @Override
                 public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
-                    Log4j.d(TAG, "播放错误");
+                    logger.debug(TAG, "播放错误");
 
                     mp = MediaPlayer.create(NoticeActivity.this, R.raw.notify_alert);
-                    Log4j.d(TAG, "重置播放器");
+                    logger.debug(TAG, "重置播放器");
                     return false;
                 }
             });
             mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer) {
-                    Log4j.d(TAG, "播放完成");
+                    logger.debug(TAG, "播放完成");
                     mediaPlayer.start();
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
-            Log4j.d(TAG, e.getMessage());
+            logger.debug(TAG, e.getMessage());
         }
     }
 
@@ -315,7 +319,7 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
     public void onViewClicked() {
         if (mp != null) {
             mp.stop();
-            Log4j.d(TAG, "关闭声音");
+            logger.debug(TAG, "关闭声音");
         } else {
             finish();
         }

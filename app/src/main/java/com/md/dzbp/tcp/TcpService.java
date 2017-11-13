@@ -11,11 +11,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.apkfuns.logutils.LogUtils;
 import com.md.dzbp.data.VoiceSendMessage;
 import com.md.dzbp.constants.Constant;
-import com.md.dzbp.utils.Log4j;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tcp服务
@@ -24,6 +25,7 @@ public class TcpService extends Service {
 
     private Handler handler = new Handler(Looper.getMainLooper());
     private ServerManager mManager;
+    private Logger logger;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -36,6 +38,7 @@ public class TcpService extends Service {
         super.onCreate();
         mManager = ServerManager.getInstance(this);
         EventBus.getDefault().register(this);
+        logger = LoggerFactory.getLogger(getClass());
     }
 
     @Override
@@ -77,7 +80,7 @@ public class TcpService extends Service {
         jsonObject.put("CreateTime",event.getCreateTime());
         jsonObject.put("VoicePath",event.getVoicePath());
 
-        Log4j.d("TcpService开始发送消息",jsonObject.toJSONString());
+        logger.debug("TcpService开始发送消息-->{}",jsonObject.toJSONString());
         mManager.messageHandle.uploadFile(event.getMsgType(),event.getVoiceLocalPath(),Constant.Ftp_Voice,0xA601,jsonObject.toJSONString());
     }
 }

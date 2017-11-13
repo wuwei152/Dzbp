@@ -1,7 +1,6 @@
 package com.md.dzbp.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,11 +11,13 @@ import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
 
-import com.apkfuns.logutils.LogUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.md.dzbp.R;
 import com.md.dzbp.data.StudentInfoBean;
-import com.md.dzbp.utils.Log4j;
+
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 public class ParentListAdapter extends RecyclerView.Adapter<ParentListAdapter.ViewHolder> {
 
     private Context context;
+    private Logger logger  ;
 
     /**
      * ItemClick的回调接口
@@ -46,12 +48,14 @@ public class ParentListAdapter extends RecyclerView.Adapter<ParentListAdapter.Vi
     public ParentListAdapter(Context context) {
         this.context = context;
         mInflater = LayoutInflater.from(context);
+        logger = LoggerFactory.getLogger(context.getClass());
     }
 
     public ParentListAdapter(Context context, ArrayList mDatas) {
         this.context = context;
         mInflater = LayoutInflater.from(context);
         this.mDatas = mDatas;
+        logger = LoggerFactory.getLogger(context.getClass());
     }
 
     public void setDatas(ArrayList<StudentInfoBean.ParentsBean> mDatas) {
@@ -114,7 +118,7 @@ public class ParentListAdapter extends RecyclerView.Adapter<ParentListAdapter.Vi
         try {
             viewHolder.mImg.setImageURI(Uri.parse(parentsBean.getPhoto()));
         } catch (Exception e) {
-            Log4j.e("ParentListAdapter", e.getMessage());
+            logger.debug(e.getMessage());
         }
         //如果设置了回调，则设置点击事件
         if (mOnItemClickLitener != null) {

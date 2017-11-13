@@ -36,11 +36,12 @@ import com.md.dzbp.ui.activity.TeacherActivity;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.FileUtils;
-import com.md.dzbp.utils.Log4j;
 import com.md.dzbp.utils.luban.Luban;
 import com.md.dzbp.utils.luban.OnCompressListener;
 
 import org.greenrobot.eventbus.EventBus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -58,7 +59,8 @@ import cn.finalteam.toolsfinal.ManifestUtils;
  * 处理接收消息，回应消息
  */
 public class MessageHandle {
-    private static final String TAG = "MessageHandle";
+    private static final String TAG = "MessageHandle-->{}";
+    private final Logger logger;
     private Context context;
     private TcpClient client;
     private Handler x_handler;
@@ -77,18 +79,19 @@ public class MessageHandle {
         smdtManager = SmdtManager.create(context);
         mACache = ACache.get(context);
         deviceId = Constant.getDeviceId(context);
+        logger = LoggerFactory.getLogger(context.getClass());
     }
 
     public void handleMessage(TCPMessage tcpMessage) {
-        Log4j.d(TAG, "收到消息>>>>>>>>>>>>>>" + tcpMessage.Type);
+        logger.debug(TAG, "收到消息>>>>>>>>>>>>>>" + tcpMessage.Type);
         switch (tcpMessage.Type) {
             case 0xA001://通用应答
-                Log4j.d(TAG, "0xA001收到通用应答消息");
+                logger.debug(TAG, "0xA001收到通用应答消息");
                 break;
             case 0xA002://登录应答，发心跳
                 int result1 = tcpMessage.ReadInt();
                 if (result1 == 0) {
-                    Log4j.d(TAG, "0xA002收到登录授权成功消息");
+                    logger.debug(TAG, "0xA002收到登录授权成功消息");
                     IsEnable = true;
                     xintiao();
                     int length02 = tcpMessage.ReadInt();
@@ -107,7 +110,7 @@ public class MessageHandle {
                     String guanji = tcpMessage.ReadString(length);
                     int length2 = tcpMessage.ReadInt();
                     String kaiji = tcpMessage.ReadString(length2);
-                    Log4j.d(TAG, "0xA002设置开关机指令：关" + guanji + "/开" + kaiji);
+                    logger.debug(TAG, "0xA002设置开关机指令：关" + guanji + "/开" + kaiji);
                     smdtManager.smdtSetTimingSwitchMachine(guanji, kaiji, "1");
 
                     LogUtils.d(psw);
@@ -116,15 +119,15 @@ public class MessageHandle {
                     mACache.put("FtpParams", params);
                     mACache.put("AdminPsw", psw);
                 } else if (result1 == 1) {
-                    Log4j.d(TAG, "0xA002收到登录授权失败消息");
+                    logger.debug(TAG, "0xA002收到登录授权失败消息");
                     IsEnable = false;
                 } else {
-                    Log4j.d(TAG, "0xA002收到登录未知错误消息");
+                    logger.debug(TAG, "0xA002收到登录未知错误消息");
                     IsEnable = false;
                 }
                 break;
             case 0xA003://心跳应答
-                Log4j.d(TAG, "0xA003收到心跳应答消息");
+                logger.debug(TAG, "0xA003收到心跳应答消息");
                 XTfailNum = 0;
                 break;
             case 0xA501://定时开关机
@@ -134,32 +137,32 @@ public class MessageHandle {
                 int length2 = tcpMessage.ReadInt();
                 String kaiji = tcpMessage.ReadString(length2);
                 int IsEnable = tcpMessage.ReadInt();
-                Log4j.d(TAG, "0xA501收到开关机指令：" + guanji + "/" + kaiji + "/" + IsEnable);
+                logger.debug(TAG, "0xA501收到开关机指令：" + guanji + "/" + kaiji + "/" + IsEnable);
                 smdtManager.smdtSetTimingSwitchMachine(guanji, kaiji, IsEnable + "");
                 yingda(0xA501, true, deviceId, msgid501);
                 break;
             case 0xA502://关闭系统
                 int msgid502 = tcpMessage.ReadInt();
                 try {
-                    Log4j.d(TAG, "0xA502收到关机指令");
+                    logger.debug(TAG, "0xA502收到关机指令");
                     yingda(0xA502, true, deviceId, msgid502);
                     smdtManager.shutDown();
                 } catch (Exception e) {
-                    Log4j.d(TAG, e.getMessage());
+                    logger.debug(TAG, e.getMessage());
                     yingda(0xA502, false, deviceId, msgid502);
-                    Log4j.d(TAG, "关机失败");
+                    logger.debug(TAG, "关机失败");
                 }
                 break;
             case 0xA503://重启系统
                 int msgid503 = tcpMessage.ReadInt();
                 try {
-                    Log4j.d(TAG, "0xA503收到重启指令");
+                    logger.debug(TAG, "0xA503收到重启指令");
                     yingda(0xA503, true, deviceId, msgid503);
                     smdtManager.smdtReboot("reboot");
                 } catch (Exception e) {
-                    Log4j.d(TAG, e.getMessage());
+                    logger.debug(TAG, e.getMessage());
                     yingda(0xA503, false, deviceId, msgid503);
-                    Log4j.d(TAG, "重启失败");
+                    logger.debug(TAG, "重启失败");
                 }
                 break;
             case 0xA504://开关机时间间隔
@@ -169,7 +172,7 @@ public class MessageHandle {
                 int kHours = tcpMessage.ReadInt();
                 int kMinute = tcpMessage.ReadInt();
                 int IsEnable2 = tcpMessage.ReadInt();
-                Log4j.d(TAG, "0xA504收到开关机时间间隔指令" + gHours + "/" + gMinute + "/" + kHours + "/" + kMinute + "/" + IsEnable2);
+                logger.debug(TAG, "0xA504收到开关机时间间隔指令" + gHours + "/" + gMinute + "/" + kHours + "/" + kMinute + "/" + IsEnable2);
                 smdtManager.smdtSetPowerOnOff((char) gHours, (char) gMinute, (char) kHours, (char) kMinute, (char) IsEnable2);
                 yingda(0xA504, true, deviceId, msgid504);
                 break;
@@ -178,7 +181,7 @@ public class MessageHandle {
                     final int msgid505 = tcpMessage.ReadInt();
                     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");//设置日期格式
                     final String timeStr = df.format(new Date());
-                    Log4j.d(TAG, "A505开始截屏");
+                    logger.debug(TAG, "A505开始截屏");
                     File filedir = new File(FileUtils.getDiskCacheDir(context) + "Screenshot");
                     if (!filedir.exists()) {
                         filedir.mkdirs();
@@ -186,7 +189,7 @@ public class MessageHandle {
                     smdtManager.smdtTakeScreenshot(FileUtils.getDiskCacheDir(context) + "Screenshot/", "screenshot_" + timeStr + ".png", context);
                     File file = new File(FileUtils.getDiskCacheDir(context) + "Screenshot/screenshot_" + timeStr + ".png");
                     if (file.exists()) {
-                        Log4j.d(TAG, "获取截屏成功！");
+                        logger.debug(TAG, "获取截屏成功！");
 
                         Luban.with(context)
                                 .load(file)                                   // 传人要压缩的图片列表
@@ -196,37 +199,37 @@ public class MessageHandle {
                                     @Override
                                     public void onStart() {
                                         // TODO 压缩开始前调用，可以在方法内启动 loading UI
-                                        Log4j.d(TAG, "开始压缩");
+                                        logger.debug(TAG, "开始压缩");
                                     }
 
                                     @Override
                                     public void onSuccess(File file) {
                                         // TODO 压缩成功后调用，返回压缩后的图片文件
-                                        Log4j.d(TAG, "压缩截屏文件成功！");
+                                        logger.debug(TAG, "压缩截屏文件成功！");
                                         uploadFile(file.getAbsolutePath(), FileUtils.getDiskCacheDir(context) + "Screenshot/screenshot_" + timeStr + ".png", Constant.Ftp_Screenshot, 0xA505, msgid505);
                                     }
 
                                     @Override
                                     public void onError(Throwable e) {
                                         // TODO 当压缩过程出现问题时调用
-                                        Log4j.d(TAG, "压缩截屏文件失败！" + e.getMessage());
+                                        logger.debug(TAG, "压缩截屏文件失败！" + e.getMessage());
                                         yingda(0xA505, false, deviceId, msgid505);
                                     }
                                 }).launch();    //启动压缩
 
                     } else {
-                        Log4j.d(TAG, "获取截屏文件失败！sn");
+                        logger.debug(TAG, "获取截屏文件失败！sn");
                         yingda(0xA505, false, deviceId, msgid505);
                     }
                 } catch (Exception e) {
-                    Log4j.d(TAG, e.getMessage());
+                    logger.debug(TAG, e.getMessage());
                 }
                 break;
 
             case 0xA506://开关屏
                 int msgid506 = tcpMessage.ReadInt();
                 boolean result2 = tcpMessage.ReadBool();
-                Log4j.d(TAG, "0xA506收到开关屏指令" + result2);
+                logger.debug(TAG, "0xA506收到开关屏指令" + result2);
                 if (result2) {
                     smdtManager.smdtSetLcdBackLight(1);//打开背光
                     yingda(0xA506, 1, true, deviceId, msgid506);
@@ -238,14 +241,14 @@ public class MessageHandle {
             case 0xA507://亮度调节
                 int msgid507 = tcpMessage.ReadInt();
                 int result3 = tcpMessage.ReadInt();
-                Log4j.d(TAG, "0xA507收到亮度调节指令" + result3);
+                logger.debug(TAG, "0xA507收到亮度调节指令" + result3);
                 smdtManager.setBrightness(context.getContentResolver(), result3);
                 yingda(0xA507, true, deviceId, msgid507);
                 break;
             case 0xA508://设置声音
                 int msgid508 = tcpMessage.ReadInt();
                 int voice = tcpMessage.ReadInt();
-                Log4j.d(TAG, "0xA508收到设置声音指令" + voice);
+                logger.debug(TAG, "0xA508收到设置声音指令" + voice);
                 smdtManager.smdtSetVolume(context, voice);
                 yingda(0xA508, true, deviceId, msgid508);
                 break;
@@ -253,7 +256,7 @@ public class MessageHandle {
                 int msgid509 = tcpMessage.ReadInt();
                 int length9 = tcpMessage.ReadInt();
                 String path9 = tcpMessage.ReadString(length9);
-                Log4j.d(TAG, "0xA509收到远程升级指令" + path9);
+                logger.debug(TAG, "0xA509收到远程升级指令" + path9);
                 downloadFile(0xA509, Constant.Ftp_Upgrade + path9, msgid509);
                 break;
             case 0xA510://设置以太网IP
@@ -266,15 +269,15 @@ public class MessageHandle {
                 String gateway = tcpMessage.ReadString(l3);
                 int l4 = tcpMessage.ReadInt();
                 String dns = tcpMessage.ReadString(l4);
-                Log4j.d(TAG, "0xA510收到设置以太网IP指令" + ip + "/" + mask + "/" + gateway + "/" + dns);
+                logger.debug(TAG, "0xA510收到设置以太网IP指令" + ip + "/" + mask + "/" + gateway + "/" + dns);
                 try {
                     smdtManager.smdtSetEthIPAddress(ip, mask, gateway, dns);
                     yingda(0xA510, true, deviceId, msgid510);
-                    Log4j.d(TAG, "设置以太网IP成功！");
+                    logger.debug(TAG, "设置以太网IP成功！");
                 } catch (Exception e) {
-                    Log4j.d(TAG, e.getMessage());
+                    logger.debug(TAG, e.getMessage());
                     yingda(0xA510, false, deviceId, msgid510);
-                    Log4j.d(TAG, "设置以太网IP失败！");
+                    logger.debug(TAG, "设置以太网IP失败！");
                 }
 
                 break;
@@ -292,22 +295,22 @@ public class MessageHandle {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(date2);
                 LogUtils.d(time);
-                Log4j.d(TAG, "0xA511收到设置系统时间指令" + time);
+                logger.debug(TAG, "0xA511收到设置系统时间指令" + time);
 //                LogUtils.d(calendar.get(Calendar.YEAR) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + (calendar.get(Calendar.DAY_OF_MONTH)) + "/" + calendar.get(Calendar.HOUR_OF_DAY) + "/" + calendar.get(Calendar.MINUTE));
                 try {
                     smdtManager.setTime(context, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
                     yingda(0xA511, true, deviceId, msgid511);
-                    Log4j.d(TAG, "设置系统时间成功");
+                    logger.debug(TAG, "设置系统时间成功");
                 } catch (Exception e) {
-                    Log4j.d(TAG, e.getMessage());
+                    logger.debug(TAG, e.getMessage());
                     yingda(0xA511, false, deviceId, msgid511);
-                    Log4j.d(TAG, "设置系统时间失败");
+                    logger.debug(TAG, "设置系统时间失败");
                 }
                 EventBus.getDefault().post(new UpdateDate());
                 break;
             case 0xA512://传log
                 int msgid512 = tcpMessage.ReadInt();
-                Log4j.d(TAG, "0xA512收到上传log指令");
+                logger.debug(TAG, "0xA512收到上传log指令");
                 File path = new File(FileUtils.getDiskCacheDir(context) + "Log/");
                 //列出该目录下所有文件和文件夹
                 File[] files = path.listFiles();
@@ -320,32 +323,32 @@ public class MessageHandle {
                         }
                     });
                     //取出第一个(即最新修改的)文件
-                    Log4j.d(TAG, "开始上传" + files[0].getAbsolutePath());
-                    uploadFile(files[0].getAbsolutePath(), Constant.Ftp_Log, 0xA512, msgid512);
+                    logger.debug(TAG, "开始上传" + files[0].getAbsolutePath());
+                    uploadFile(files[0].getAbsolutePath(), Constant.Ftp_Log+Constant.getDeviceId(context)+"/", 0xA512, msgid512);
                 } else {
                     yingda(0xA512, false, deviceId, msgid512);
-                    Log4j.d(TAG, "未查询到log文件");
+                    logger.debug(TAG, "未查询到log文件");
                 }
                 break;
             case 0xA513://发送版本信息
-                Log4j.d(TAG, "0xA513收到发送版本信息指令");
+                logger.debug(TAG, "0xA513收到发送版本信息指令");
                 int msgid513 = tcpMessage.ReadInt();
                 try {
                     sendVersionInfo(0xA513, true, deviceId, msgid513);
                 } catch (Exception e) {
-                    Log4j.d(TAG,e.getMessage());
+                    logger.debug(TAG,e.getMessage());
                 }
                 break;
             case 0xA550://刷卡屏幕跳转
                 int status = tcpMessage.ReadInt();
-                Log4j.d("0xA550收到刷卡屏幕跳转指令", status + "");
+                logger.debug("0xA550收到刷卡屏幕跳转指令", status + "");
                 if (status == 0) {
                     int type = tcpMessage.ReadInt();
                     int length550 = tcpMessage.ReadInt();
                     String userId = tcpMessage.ReadString(length550);
                     int length5502 = tcpMessage.ReadInt();
                     String ext = tcpMessage.ReadString(length5502);
-                    Log4j.d("0xA550", type + "");
+                    logger.debug("0xA550", type + "");
                     gotoActivity(type, userId, ext);
                 } else {
                     handleFail(status, 550);
@@ -353,7 +356,7 @@ public class MessageHandle {
                 break;
             case 0xA555://通用屏幕跳转
                 int type555 = tcpMessage.ReadInt();
-                Log4j.d("0xA555收到通用屏幕跳转指令", type555 + "");
+                logger.debug("0xA555收到通用屏幕跳转指令", type555 + "");
                 gotoActivity(type555, "", "");
                 yingda(0xA555, true, deviceId);
                 break;
@@ -361,7 +364,7 @@ public class MessageHandle {
                 int msgType = tcpMessage.ReadInt();
                 int length600 = tcpMessage.ReadInt();
                 String msgStr = tcpMessage.ReadString(length600);
-                Log4j.d(TAG, "0xA600收到接收消息指令" + msgType + "///" + msgStr);
+                logger.debug(TAG, "0xA600收到接收消息指令" + msgType + "///" + msgStr);
                 try {
                     MessageBase result = null;
                     if (msgType == 1) {
@@ -376,18 +379,18 @@ public class MessageHandle {
                     }
                     EventBus.getDefault().post(result);
                 } catch (Exception e) {
-                    Log4j.d(TAG, e.getMessage());
+                    logger.debug(TAG, e.getMessage());
                 }
                 break;
             case 0xA601://发消息
                 Boolean msgSuccess = tcpMessage.ReadBool();
-                Log4j.d(TAG, msgSuccess ? "消息发送成功" : "消息发送失败");
+                logger.debug(TAG, msgSuccess ? "消息发送成功" : "消息发送失败");
                 try {
                     if (!msgSuccess){
                         Toast.makeText(context,"消息发送失败!",Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
-                    Log4j.e(TAG,"0x601Toast错误！");
+                    logger.error(TAG,"0x601Toast错误！");
                     e.printStackTrace();
                 }
 
@@ -396,22 +399,22 @@ public class MessageHandle {
                 int msgid602 = tcpMessage.ReadInt();
                 int length602 = tcpMessage.ReadInt();
                 String broadcastUrl = tcpMessage.ReadString(length602);
-                Log4j.d(TAG, "0xA602收到广播消息：" + broadcastUrl);
+                logger.debug(TAG, "0xA602收到广播消息：" + broadcastUrl);
                 downloadBroadcast(0xA602, Constant.Ftp_Broadcast + "/" + broadcastUrl, broadcastUrl, msgid602);
                 break;
             case 0xA605://会议签到
                 int status605 = tcpMessage.ReadInt();
-                Log4j.d(TAG, "0xA605收到会议签到指令" + status605);
+                logger.debug(TAG, "0xA605收到会议签到指令" + status605);
                 if (status605 == 0) {
                     int type = tcpMessage.ReadInt();
                     int length605 = tcpMessage.ReadInt();
                     String id = tcpMessage.ReadString(length605);
                     int length6052 = tcpMessage.ReadInt();
                     String ext = tcpMessage.ReadString(length6052);
-                    Log4j.d(TAG, "签到：" + id);
+                    logger.debug(TAG, "签到：" + id);
                     EventBus.getDefault().post(new SignEvent(0, true, id, ""));
                 } else {
-                    Log4j.d(TAG, "签到失败");
+                    logger.debug(TAG, "签到失败");
                     handleFail(status605, 605);
                     EventBus.getDefault().post(new SignEvent(0, false, "", ""));
                 }
@@ -419,23 +422,23 @@ public class MessageHandle {
             case 0xA606://页面更新
                 int msgid606 = tcpMessage.ReadInt();
                 int status606 = tcpMessage.ReadInt();
-                Log4j.d(TAG, "0xA606收到页面更新指令" + status606);
+                logger.debug(TAG, "0xA606收到页面更新指令" + status606);
                 EventBus.getDefault().post(new MainUpdateEvent(status606, ""));
                 yingda(0xA606, true, deviceId, msgid606);
                 break;
             case 0xA608://页面更新
                 int status608 = tcpMessage.ReadInt();
-                Log4j.d(TAG, "0xA608收到班级签到指令" + status608);
+                logger.debug(TAG, "0xA608收到班级签到指令" + status608);
                 if (status608 == 0) {
                     int type = tcpMessage.ReadInt();
                     int length608 = tcpMessage.ReadInt();
                     String id = tcpMessage.ReadString(length608);
                     int length6082 = tcpMessage.ReadInt();
                     String ext = tcpMessage.ReadString(length6082);
-                    Log4j.d(TAG, "签到：" + id + ext);
+                    logger.debug(TAG, "签到：" + id + ext);
                     EventBus.getDefault().post(new SignEvent(1, true, id, ext));
                 } else {
-                    Log4j.d(TAG, "签到失败");
+                    logger.debug(TAG, "签到失败");
                     handleFail(status608, 608);
                     EventBus.getDefault().post(new SignEvent(1, false, "", ""));
                 }
@@ -450,16 +453,19 @@ public class MessageHandle {
      * 心跳
      */
     private void xintiao() {
+        x_handler = null;
+        x_runnable = null;
         x_handler = new Handler();
         x_runnable = new Runnable() {
             @Override
             public void run() {
-                Log4j.d(TAG, "发送心跳"+XTfailNum);
+                logger.debug(TAG, "发送心跳"+XTfailNum);
                 try {
                     if (client == null || !IsEnable || XTfailNum > 2) {
-                        Log4j.d(TAG,"心跳异常，断开连接");
+                        logger.debug(TAG,"心跳异常，断开连接");
                         x_handler.removeCallbacks(this);
                         Stop();
+                        XTfailNum=0;
                         return;
                     }
                     TCPMessage message = new TCPMessage(0xA000);
@@ -467,7 +473,7 @@ public class MessageHandle {
                     XTfailNum++;
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log4j.d(TAG, e.getMessage());
+                    logger.debug(TAG, e.getMessage());
                 } finally {
                     x_handler.postDelayed(this, xintiaoTime);
                 }
@@ -489,7 +495,7 @@ public class MessageHandle {
      * 停止心跳
      */
     public void StopXT() {
-        Log4j.d(TAG, "停止心跳");
+        logger.debug(TAG, "停止心跳");
         if (x_handler != null && x_runnable != null) {
             x_handler.removeCallbacks(x_runnable);
         }
@@ -578,7 +584,7 @@ public class MessageHandle {
             client.getTransceiver().send(message);
         } catch (Exception e) {
             e.printStackTrace();
-            Log4j.d(TAG, e.getMessage());
+            logger.debug(TAG, e.getMessage());
         }
     }
 
@@ -600,7 +606,7 @@ public class MessageHandle {
             client.getTransceiver().send(message);
         } catch (Exception e) {
             e.printStackTrace();
-            Log4j.d(TAG, e.getMessage());
+            logger.debug(TAG, e.getMessage());
         }
     }
 
@@ -626,17 +632,17 @@ public class MessageHandle {
                         @Override
                         public void onUploadProgress(String currentStep, long uploadSize, File file) {
                             // TODO Auto-generated method stub  
-                            Log4j.d(TAG, currentStep);
+                            logger.debug(TAG, currentStep);
                             if (currentStep.equals(ERRORTYPE.FTP_UPLOAD_SUCCESS)) {
-                                Log4j.d(TAG, fileName + "-----shanchuan-log-successful");
+                                logger.debug(TAG, fileName + "-----shanchuan-log-successful");
                                 yingda(xyh, true, deviceId, file.getName(), id);
                             } else if (currentStep.equals(ERRORTYPE.FTP_UPLOAD_LOADING)) {
                                 long fize = file.length();
                                 float num = (float) uploadSize / (float) fize;
                                 int result = (int) (num * 100);
-                                Log4j.d(TAG, "-----shangchuan--log-" + result + "%");
+                                logger.debug(TAG, "-----shangchuan--log-" + result + "%");
                             } else if (currentStep.equals(ERRORTYPE.FTP_UPLOAD_FAIL)) {
-                                Log4j.d(TAG, "-----shangchuan-log-fail---");
+                                logger.debug(TAG, "-----shangchuan-log-fail---");
                                 yingda(xyh, false, deviceId, id);
                             }
                         }
@@ -644,7 +650,7 @@ public class MessageHandle {
                 } catch (IOException e) {
                     // TODO Auto-generated catch block  
                     e.printStackTrace();
-                    Log4j.e(TAG, e.getMessage());
+                    logger.error(TAG, e.getMessage());
                     yingda(xyh, false, deviceId, id);
                 }
             }
@@ -659,7 +665,7 @@ public class MessageHandle {
      * @param xyh
      */
     private void uploadFile(final String fileName, final String fileName2, final String ftpPath, final int xyh, final int id) {
-        Log4j.d(TAG, "开始上传截图" + fileName);
+        logger.debug(TAG, "开始上传截图" + fileName);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -674,17 +680,17 @@ public class MessageHandle {
                         @Override
                         public void onUploadProgress(String currentStep, long uploadSize, File file) {
                             // TODO Auto-generated method stub
-                            Log4j.d(TAG, currentStep);
+                            logger.debug(TAG, currentStep);
                             if (currentStep.equals(ERRORTYPE.FTP_UPLOAD_SUCCESS)) {
-                                Log4j.d(TAG, fileName + "-----shanchuan-log-successful");
+                                logger.debug(TAG, fileName + "-----shanchuan-log-successful");
                                 yingda(xyh, true, deviceId, file.getName(), id);
                             } else if (currentStep.equals(ERRORTYPE.FTP_UPLOAD_LOADING)) {
                                 long fize = file.length();
                                 float num = (float) uploadSize / (float) fize;
                                 int result = (int) (num * 100);
-                                Log4j.d(TAG, "-----shangchuan--log-" + result + "%");
+                                logger.debug(TAG, "-----shangchuan--log-" + result + "%");
                             } else if (currentStep.equals(ERRORTYPE.FTP_UPLOAD_FAIL)) {
-                                Log4j.d(TAG, "-----shangchuan-log-fail---");
+                                logger.debug(TAG, "-----shangchuan-log-fail---");
                                 yingda(xyh, false, deviceId, id);
                             }
                         }
@@ -692,7 +698,7 @@ public class MessageHandle {
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
-                    Log4j.e(TAG, e.getMessage());
+                    logger.error(TAG, e.getMessage());
                     yingda(xyh, false, deviceId, id);
                 } finally {
                     File file1 = new File(fileName);
@@ -731,9 +737,9 @@ public class MessageHandle {
                         @Override
                         public void onUploadProgress(String currentStep, long uploadSize, File file) {
                             // TODO Auto-generated method stub
-                            Log4j.d(TAG, currentStep);
+                            logger.debug(TAG, currentStep);
                             if (currentStep.equals(ERRORTYPE.FTP_UPLOAD_SUCCESS)) {
-                                Log4j.d(TAG, fileName + "-----shanchuan--VoiceSendMessage--successful");
+                                logger.debug(TAG, fileName + "-----shanchuan--VoiceSendMessage--successful");
                                 yingda(xyh, msgType, deviceId, JsonMsg);
                                 VoiceSendMessage mMessage = JSON.parseObject(JsonMsg, new TypeReference<VoiceSendMessage>() {
                                 });
@@ -745,9 +751,9 @@ public class MessageHandle {
                                 long fize = file.length();
                                 float num = (float) uploadSize / (float) fize;
                                 int result = (int) (num * 100);
-                                Log4j.d(TAG, "-----shangchuan--VoiceSendMessage---" + result + "%");
+                                logger.debug(TAG, "-----shangchuan--VoiceSendMessage---" + result + "%");
                             } else if (currentStep.equals(ERRORTYPE.FTP_UPLOAD_FAIL)) {
-                                Log4j.d(TAG, "-----shangchuan--VoiceSendMessage--fail---");
+                                logger.debug(TAG, "-----shangchuan--VoiceSendMessage--fail---");
                                 VoiceSendMessage mMessage = JSON.parseObject(JsonMsg, new TypeReference<VoiceSendMessage>() {
                                 });
                                 MsgSendStatus msgSendStatus = new MsgSendStatus();
@@ -760,7 +766,7 @@ public class MessageHandle {
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
-                    Log4j.e(TAG, e.getMessage());
+                    logger.error(TAG, e.getMessage());
                     VoiceSendMessage mMessage = JSON.parseObject(JsonMsg, new TypeReference<VoiceSendMessage>() {
                     });
                     MsgSendStatus msgSendStatus = new MsgSendStatus();
@@ -793,7 +799,7 @@ public class MessageHandle {
                         public void onDownLoadProgress(String currentStep, long downProcess, File file) {
                             Log.d(TAG, currentStep);
                             if (currentStep.equals(ERRORTYPE.FTP_DOWN_SUCCESS)) {
-                                Log4j.d(TAG, "-----xiazai-apk-successful" + FileUtils.getDiskCacheDir(context) + "Apk/dzbp.apk");
+                                logger.debug(TAG, "-----xiazai-apk-successful" + FileUtils.getDiskCacheDir(context) + "Apk/dzbp.apk");
                                 yingda(xyh, true, deviceId, id);
 //                                smdtManager.smdtSilentInstall(FileUtils.getDiskCacheDir(context) + "Apk/dzbp.apk", context);
                                 Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -802,14 +808,14 @@ public class MessageHandle {
                                         "application/vnd.android.package-archive");
                                 context.startActivity(intent);
                             } else if (currentStep.equals(ERRORTYPE.FTP_DOWN_LOADING)) {
-                                Log4j.d(TAG, "-----xiazai-apk--" + downProcess + "%");
+                                logger.debug(TAG, "-----xiazai-apk--" + downProcess + "%");
                             } else if (currentStep.equals(ERRORTYPE.FTP_DOWN_FAIL)) {
-                                Log4j.d(TAG, "-----xiazai-apk-fail---");
+                                logger.debug(TAG, "-----xiazai-apk-fail---");
                                 new Handler(context.getMainLooper()).postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
                                         if (retryTime < 5) {
-                                            Log4j.d(TAG, "-----xiazai-apk-fail-chongshi--");
+                                            logger.debug(TAG, "-----xiazai-apk-fail-chongshi--");
                                             downloadFile(xyh, path, id);
                                         } else {
                                             yingda(xyh, false, deviceId, id);
@@ -839,7 +845,7 @@ public class MessageHandle {
      * @param path
      */
     public void downloadBroadcast(final int xyh, final String path, final String fileName, final int id) {
-        Log4j.d(TAG, xyh + path + fileName);
+        logger.debug(TAG, xyh + path + fileName);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -852,13 +858,13 @@ public class MessageHandle {
                         public void onDownLoadProgress(String currentStep, long downProcess, File file) {
                             Log.d(TAG, currentStep);
                             if (currentStep.equals(ERRORTYPE.FTP_DOWN_SUCCESS)) {
-                                Log4j.d(TAG, "-----xiazai-guangbo-successful");
+                                logger.debug(TAG, "-----xiazai-guangbo-successful");
                                 yingda(xyh, true, deviceId, id);
                                 playBroad(FileUtils.getDiskCacheDir(context) + "BroadCast/" + fileName);
                             } else if (currentStep.equals(ERRORTYPE.FTP_DOWN_LOADING)) {
-                                Log4j.d(TAG, "-----xiazai-guangbo--" + downProcess + "%");
+                                logger.debug(TAG, "-----xiazai-guangbo--" + downProcess + "%");
                             } else if (currentStep.equals(ERRORTYPE.FTP_DOWN_FAIL)) {
-                                Log4j.d(TAG, "-----xiazai-guangbo-fail---");
+                                logger.debug(TAG, "-----xiazai-guangbo-fail---");
                                 yingda(xyh, false, deviceId, id);
                             }
                         }
@@ -896,16 +902,16 @@ public class MessageHandle {
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-        Log4j.d(TAG, "开始播放" + path);
+        logger.debug(TAG, "开始播放" + path);
         if (mp == null) {
             mp = new MediaPlayer();
-            Log4j.d(TAG, "初始化");
+            logger.debug(TAG, "初始化");
         } else {
             mp.stop();
             mp.reset();
         }
         try {
-            Log4j.d(TAG, "设置资源");
+            logger.debug(TAG, "设置资源");
             final FileInputStream is = new FileInputStream(path);
             mp.setDataSource(is.getFD());
 //            mp.setDataSource(path);
@@ -914,7 +920,7 @@ public class MessageHandle {
             mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mediaPlayer) {
-                    Log4j.d(TAG, "开始播放");
+                    logger.debug(TAG, "开始播放");
                     mediaPlayer.start();
                 }
             });
@@ -922,11 +928,11 @@ public class MessageHandle {
             mp.setOnErrorListener(new MediaPlayer.OnErrorListener() {
                 @Override
                 public boolean onError(MediaPlayer mediaPlayer, int i, int i1) {
-                    Log4j.d(TAG, "播放错误");
+                    logger.debug(TAG, "播放错误");
                     if (mediaPlayer != null) {
                         mediaPlayer.stop();
                         mediaPlayer.reset();
-                        Log4j.d(TAG, "重置播放器");
+                        logger.debug(TAG, "重置播放器");
                     }
                     return false;
                 }
@@ -934,7 +940,7 @@ public class MessageHandle {
             mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer) {
-                    Log4j.d(TAG, "播放完成");
+                    logger.debug(TAG, "播放完成");
                     if (is != null) {
                         try {
                             is.close();
@@ -943,14 +949,14 @@ public class MessageHandle {
                                 file.delete();
                             }
                         } catch (IOException e) {
-                            Log4j.d(TAG, e.getMessage());
+                            logger.debug(TAG, e.getMessage());
                         }
                     }
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
-            Log4j.d(TAG, e.getMessage());
+            logger.debug(TAG, e.getMessage());
         }
     }
 
@@ -1040,7 +1046,7 @@ public class MessageHandle {
      * @param code
      */
     private void handleFail(int code, int type) {
-        Log4j.d(TAG, "handleFail处理错误信息" + code);
+        logger.debug(TAG, "handleFail处理错误信息" + code);
         String msg = "";
         switch (code) {
             case 1:
@@ -1072,9 +1078,9 @@ public class MessageHandle {
      *
      * @param type
      */
-    private void gotoActivity(int type, String userId, String ext) {
+    public void gotoActivity(int type, String userId, String ext) {
         Intent intent = null;
-        Log4j.d(TAG, "开始跳转屏幕" + type);
+        logger.debug(TAG, "开始跳转屏幕" + type);
         switch (type) {
             case 0:
                 intent = new Intent(context, MainActivity.class);
@@ -1109,7 +1115,7 @@ public class MessageHandle {
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
-            Log4j.d(TAG, "屏幕跳转成功" + type);
+            logger.debug(TAG, "屏幕跳转成功" + type);
         }
     }
 }

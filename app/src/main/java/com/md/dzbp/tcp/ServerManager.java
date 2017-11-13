@@ -9,9 +9,10 @@ import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.LoginEvent;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.FileUtils;
-import com.md.dzbp.utils.Log4j;
 
 import org.greenrobot.eventbus.EventBus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Arrays;
@@ -20,14 +21,15 @@ import java.util.List;
 
 public class ServerManager {
 
-    private static final String TAG = "ServerManager";
+    private static final String TAG = "ServerManager-->{}";
     private static ServerManager instance = null;
+    private final Logger logger;
     private Context context;
     private static int retryTime = 10000;
     private Handler handler = new Handler(Looper.getMainLooper());
     private TcpClient client;
     public final MessageHandle messageHandle;
-    private final String Tag = "ServerManager";
+    private final String Tag = "ServerManager-->{}";
     private String deviceId = "";
     private ACache mACache;
 
@@ -44,12 +46,13 @@ public class ServerManager {
     private ServerManager(final Context context) {
         this.context = context;
         mACache = ACache.get(context);
+        logger = LoggerFactory.getLogger(context.getClass());
         deviceId = Constant.getDeviceId(context);
         client = new TcpClient() {
 
             @Override
             public void onConnect(SocketTransceiver transceiver) {
-                Log4j.d(Tag, "Tcp连接成功");
+                logger.debug(Tag, "Tcp连接成功");
                 EventBus.getDefault().post(new LoginEvent(0, true, "", ""));
                 mACache.put("conStatus", true);
                 new Handler(context.getMainLooper()).postDelayed(new Runnable() {
@@ -62,7 +65,7 @@ public class ServerManager {
 
             @Override
             public void onDisconnect(SocketTransceiver transceiver) {
-                Log4j.d(Tag, "断开连接");
+                logger.debug(Tag, "断开连接");
                 EventBus.getDefault().post(new LoginEvent(0, false, "", ""));
                 mACache.put("conStatus", false);
                 messageHandle.IsEnable = false;
@@ -80,7 +83,7 @@ public class ServerManager {
 
             @Override
             public void onConnectFailed() {
-                Log4j.d(Tag, "Connect连接失败");
+                logger.debug(Tag, "Connect连接失败");
                 EventBus.getDefault().post(new LoginEvent(0, false, "", ""));
                 mACache.put("conStatus", false);
                 if (handler == null) {
@@ -116,7 +119,14 @@ public class ServerManager {
     /**
      * 测试
      */
+    int type =1;
     public void test() {
+        if (type==1){
+            type =0;
+        }else {
+            type=1;
+        }
+        messageHandle.gotoActivity(type,"","");
     }
 
     /**
@@ -124,10 +134,10 @@ public class ServerManager {
      */
     public void Start(String hostIP, int port) {
         try {
-            Log4j.d(TAG, "开始连接" + hostIP + "/" + port);
+            logger.debug(TAG, "开始连接" + hostIP + "/" + port);
             client.connect(hostIP, port);
         } catch (NumberFormatException e) {
-            Log4j.d(TAG, "Start连接失败" + e.getMessage());
+            logger.debug(TAG, "Start连接失败" + e.getMessage());
         }
     }
 
@@ -136,7 +146,7 @@ public class ServerManager {
      * 登录
      */
     private void login() {
-        Log4j.d(TAG, "开始登录");
+        logger.debug(TAG, "开始登录");
         try {
             TCPMessage message = new TCPMessage(0xA002);
             message.Write(deviceId, 36);
@@ -147,13 +157,13 @@ public class ServerManager {
                 @Override
                 public void run() {
                     if (!messageHandle.IsEnable) {
-                        Log4j.e(TAG, "登录无回应，断开重试！");
+                        logger.error(TAG, "登录无回应，断开重试！");
                         Stop();
                     }
                 }
             }, retryTime);
         } catch (Exception e) {
-            Log4j.d(TAG, "登录失败" + e.getMessage());
+            logger.debug(TAG, "登录失败" + e.getMessage());
         }
     }
 
@@ -161,7 +171,7 @@ public class ServerManager {
      * 发送卡号
      */
     public void sendCardNum(String num, int act, String ext) {
-        Log4j.d("发送卡号", "是否已登录" + messageHandle.IsEnable);
+        logger.debug("发送卡号", "是否已登录" + messageHandle.IsEnable);
         if (messageHandle.IsEnable) {
             try {
                 TCPMessage message = new TCPMessage(0xA550);
@@ -177,7 +187,7 @@ public class ServerManager {
                 client.getTransceiver().send(message);
             } catch (Exception e) {
                 e.printStackTrace();
-                Log4j.d("发送卡号失败", e.getMessage());
+                logger.debug("发送卡号失败", e.getMessage());
             }
         } else {
             showToast("暂未授权该班牌，请联系系统管理员！");

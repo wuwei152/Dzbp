@@ -182,6 +182,7 @@ public class PatrolActivity extends BaseActivity implements UIDataListener {
 //                LogUtils.d(arg0);
             }
         });
+        foucus_handler = null;
         foucus_handler = new Handler();
         foucus_handler.postDelayed(new Runnable() {
             @Override

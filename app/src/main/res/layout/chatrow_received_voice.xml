@@ -30,7 +30,7 @@
 
         <RelativeLayout
             android:id="@+id/bubble"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="wrap_content" 
             android:layout_toRightOf="@id/iv_userhead"
             android:layout_marginLeft="5dp"

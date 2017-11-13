@@ -19,9 +19,11 @@ import com.md.dzbp.ftp.FTP;
 import com.md.dzbp.model.TimeUtils;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.utils.FileUtils;
-import com.md.dzbp.utils.Log4j;
 import com.zhy.adapter.abslistview.ViewHolder;
 import com.zhy.adapter.abslistview.base.ItemViewDelegate;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
@@ -30,10 +32,12 @@ import java.io.File;
  * Created by Administrator on 2017/8/24.
  */
 public class VoiceMsgReceiveItem implements ItemViewDelegate<MessageBase> {
+    private final Logger logger;
     private Context context;
 
     public VoiceMsgReceiveItem(Context context) {
         this.context = context;
+        logger = LoggerFactory.getLogger(context.getClass());
     }
 
     @Override
@@ -77,7 +81,7 @@ public class VoiceMsgReceiveItem implements ItemViewDelegate<MessageBase> {
                     try {
                         downloadVoice(chatMessage);
                     } catch (Exception e) {
-                        Log4j.d("VoiceMsgReceiveItem", e.getMessage());
+                        logger.error("VoiceMsgReceiveItem--{}",e.getMessage());
                     }
                 }
 
@@ -98,15 +102,14 @@ public class VoiceMsgReceiveItem implements ItemViewDelegate<MessageBase> {
 
                         @Override
                         public void onDownLoadProgress(String currentStep, long downProcess, File file) {
-                            Log4j.d("VoiceMsgReceiveItem", currentStep);
                             if (currentStep.equals(ERRORTYPE.FTP_DOWN_SUCCESS)) {
-                                Log4j.d("VoiceMsgReceiveItem", "-----xiazai--successful");
+                                logger.debug("VoiceMsgReceiveItem--{}","-----xiazaiyuyin--successful");
                                 chatMessage.setVoiceLocalPath(FileUtils.getDiskCacheDir(context)+"receiveVoice/" + fileName);
                                 play(chatMessage.getVoiceLocalPath());
                             } else if (currentStep.equals(ERRORTYPE.FTP_DOWN_LOADING)) {
-                                Log4j.d("VoiceMsgReceiveItem", "-----xiazai---" + downProcess + "%");
+                                logger.debug("VoiceMsgReceiveItem--{}","-----xiazaiyuyin---" + downProcess + "%");
                             } else if (currentStep.equals(ERRORTYPE.FTP_DOWN_FAIL)) {
-                                Log4j.d("VoiceMsgReceiveItem", "-----xiazai--fail---");
+                                logger.debug("VoiceMsgReceiveItem--{}","-----xiazaiyuyin--fail---");
                             }
                         }
 
@@ -122,14 +125,14 @@ public class VoiceMsgReceiveItem implements ItemViewDelegate<MessageBase> {
     }
 
     private void play(String path) {
-        Log4j.d("VoiceMsgSendItem", "播放" + path);
+        logger.debug("VoiceMsgReceiveItem--{}","播放" + path);
         SoundPool soundPool;
         soundPool = new SoundPool(21, AudioManager.STREAM_SYSTEM, 10);
         soundPool.load(path, 1);
         soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
             @Override
             public void onLoadComplete(SoundPool soundPool, int i, int i1) {
-                Log4j.d("VoiceMsgSendItem", "开始播放！");
+                logger.debug("VoiceMsgReceiveItem--{}","开始播放！");
                 soundPool.play(1, 1, 1, 0, 0, 1f);
             }
         });

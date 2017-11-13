@@ -5,16 +5,22 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.md.dzbp.ui.activity.MainActivity;
-import com.md.dzbp.utils.Log4j;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by Administrator on 2017/8/22.
  */
 public class TcpServiceInstalledReceiver extends BroadcastReceiver {
 
+    private Logger logger;
+
+
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log4j.d("TcpServiceInstalledReceiver","维护服务广播");
+        logger = LoggerFactory.getLogger(getClass());
+        logger.debug("TcpServiceInstalledReceiver-->{}","维护服务广播");
 //        if (intent.getAction().equals("android.media.AUDIO_BECOMING_NOISY")) {
             /* 服务开机自启动 */
         Intent service = new Intent(context, TcpService.class);

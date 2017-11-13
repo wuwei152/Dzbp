@@ -7,7 +7,9 @@ import android.os.IBinder;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.constants.ERRORTYPE;
 import com.md.dzbp.ftp.FTP;
-import com.md.dzbp.utils.Log4j;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,8 +18,9 @@ import java.util.concurrent.Executors;
 
 public class UploadService extends Service {
 
-    private String TAG = "UploadService";
+    private String TAG = "UploadService-->{}";
     private ExecutorService pool;
+    private Logger logger;
 
     public UploadService() {
     }
@@ -32,6 +35,7 @@ public class UploadService extends Service {
     public void onCreate() {
         super.onCreate();
         pool = Executors.newSingleThreadExecutor();
+        logger = LoggerFactory.getLogger(getClass());
     }
 
     @Override
@@ -47,7 +51,7 @@ public class UploadService extends Service {
      * 上传
      */
     private Thread getUploadFileThread(final File file) {
-        Log4j.d(TAG, "开始上传相片");
+        logger.debug(TAG, "开始上传相片");
         return new Thread(new Runnable() {
             @Override
             public void run() {
@@ -58,22 +62,22 @@ public class UploadService extends Service {
                         @Override
                         public void onUploadProgress(String currentStep, long uploadSize, File file) {
                             // TODO Auto-generated method stub
-                            Log4j.d(TAG, currentStep);
+                            logger.debug(TAG, currentStep);
                             if (currentStep.equals(ERRORTYPE.FTP_UPLOAD_SUCCESS)) {
-                                Log4j.d(TAG, "-----shanchuan-sign-successful");
+                                logger.debug(TAG, "-----shanchuan-sign-successful");
                                 file.delete();
                             } else if (currentStep.equals(ERRORTYPE.FTP_UPLOAD_LOADING)) {
                                 long fize = file.length();
                                 float num = (float) uploadSize / (float) fize;
                                 int result = (int) (num * 100);
-                                Log4j.d(TAG, "-----shangchuan--sign-" + result + "%");
+                                logger.debug(TAG, "-----shangchuan--sign-" + result + "%");
                             } else if (currentStep.equals(ERRORTYPE.FTP_UPLOAD_FAIL)) {
-                                Log4j.d(TAG, "-----shangchuan-sign-fail---");
+                                logger.debug(TAG, "-----shangchuan-sign-fail---");
                             }
                         }
                     });
                 } catch (IOException e) {
-                    Log4j.e(TAG, e.getMessage());
+                    logger.error(TAG, e.getMessage());
                 }
             }
         });
