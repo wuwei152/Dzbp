@@ -23,6 +23,9 @@ import com.md.dzbp.ui.view.MainDialog;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -45,6 +48,8 @@ public class ExamActivity extends BaseActivity implements TimeListener {
     private String card_stringTemp;
     private MainDialog mainDialog;
     private GestureDetector gestureDetector;
+    private String TAG = "ExamActivity-->{}";
+    private Logger logger;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +66,8 @@ public class ExamActivity extends BaseActivity implements TimeListener {
 
         mainDialog = new MainDialog(this);
         gestureDetector = new GestureDetector(ExamActivity.this, onGestureListener);
+
+        logger = LoggerFactory.getLogger(ExamActivity.class);
     }
 
     @Override
@@ -70,6 +77,12 @@ public class ExamActivity extends BaseActivity implements TimeListener {
 //            noticeId = intent.getStringExtra("id");
 //        }
 //        getUIdata();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        logger.debug(TAG,"考试界面");
     }
 
     @Override

@@ -39,6 +39,9 @@ import com.md.dzbp.ui.view.myToast;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,6 +92,8 @@ public class PatrolActivity extends BaseActivity implements UIDataListener {
     private NetWorkRequest netWorkRequest;
     private PatrolBean patrolBean;
     private String userId;
+    private String TAG = "PatrolActivity-->{}";
+    private Logger logger;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +116,8 @@ public class PatrolActivity extends BaseActivity implements UIDataListener {
         netWorkRequest = new NetWorkRequest(this, this);
         mainDialog = new MainDialog(this);
         gestureDetector = new GestureDetector(PatrolActivity.this, onGestureListener);
+
+        logger = LoggerFactory.getLogger(getClass());
     }
 
     @Override
@@ -127,6 +134,12 @@ public class PatrolActivity extends BaseActivity implements UIDataListener {
         getCardNum();
 
         getUIdata();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        logger.debug(TAG,"巡查界面");
     }
 
     /**

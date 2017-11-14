@@ -60,6 +60,8 @@ import com.zhy.adapter.abslistview.ViewHolder;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -149,6 +151,8 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     private MainData mainData;
     private List<MainData.ChatBean> mChatList;
     private Dialog dialog;
+    private Logger logger;
+    private String TAG ="MainActivity-->{}";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,6 +184,9 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         stuListAdapter = new StuListAdapter(this);
         mStuListRecycler.setAdapter(stuListAdapter);
         mStuListRecycler.setEmptyView(mRecyclerEmpty);
+
+        logger = LoggerFactory.getLogger(ExamActivity.class);
+
         SmdtManager smdt = SmdtManager.create(this);
         //隐藏状态栏
         smdt.smdtSetStatusBar(MainActivity.this, false);
@@ -210,6 +217,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     @Override
     protected void onResume() {
         super.onResume();
+        logger.debug(TAG,"课中界面");
         LogUtils.d("注册EventBus");
         EventBus.getDefault().register(this);
         boolean cons = false;

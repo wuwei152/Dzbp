@@ -108,6 +108,7 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
     private HonorListAdapter honorListAdapter;
     private LinearLayoutManager linearLayoutManager2;
     private Logger logger;
+    private String TAG = "StudentActivity-->{}";
     ;
 
     @Override
@@ -174,6 +175,7 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
     @Override
     protected void onResume() {
         super.onResume();
+        logger.debug(TAG,"学生界面");
         LogUtils.d("EventBus注册");
         EventBus.getDefault().register(this);
     }

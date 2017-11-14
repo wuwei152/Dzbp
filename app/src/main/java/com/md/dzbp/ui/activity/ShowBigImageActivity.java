@@ -9,12 +9,17 @@ import com.bumptech.glide.Glide;
 import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import butterknife.BindView;
 
 public class ShowBigImageActivity extends BaseActivity {
 
     @BindView(R.id.showimg_img)
     ImageView mImg;
+    private Logger logger;
+    private String TAG = "ShowBigImageActivity-->{}";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +38,7 @@ public class ShowBigImageActivity extends BaseActivity {
 
     @Override
     protected void initUI() {
+        logger = LoggerFactory.getLogger(getClass());
         Intent intent = getIntent();
         if (intent.hasExtra("imgUrl")) {
             String imgUrl = intent.getStringExtra("imgUrl");
@@ -40,6 +46,12 @@ public class ShowBigImageActivity extends BaseActivity {
                     .load(imgUrl)
                     .into(mImg);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        logger.debug(TAG,"查看图片界面");
     }
 
     @Override

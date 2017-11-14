@@ -33,8 +33,11 @@ import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.utils.ACache;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -75,6 +78,8 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     private Dialog dialog;
     private NetWorkRequest netWorkRequest;
     private ACache mAcache;
+    private String TAG = "TeacherActivity-->{}";
+    private Logger logger;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +98,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
         mAcache = ACache.get(this);
         dialog = MyProgressDialog.createLoadingDialog(TeacherActivity.this, "", this);
         netWorkRequest = new NetWorkRequest(this, this);
+        logger = LoggerFactory.getLogger(getClass());
     }
 
     @Override
@@ -114,6 +120,8 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     @Override
     protected void onResume() {
         super.onResume();
+        logger.debug(TAG,"上课界面");
+        EventBus.getDefault().register(this);
         boolean cons = (boolean) mAcache.getAsObject("conStatus");
         if (cons) {
             mTemp.setText("连接状态：已连接");
@@ -122,6 +130,13 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
             mTemp.setText("连接状态：已断开");
             mTemp.setTextColor(getResources().getColor(R.color.conf));
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LogUtils.d("解注册EventBus");
+        EventBus.getDefault().unregister(this);
     }
 
     /**
@@ -285,7 +300,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
      */
     @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
     public void onUpdateSynEvent2(LoginEvent event) {
-        LogUtils.d("MainActivity接收到连接状态信息" + event.getType() + event.isStatus());
+        logger.debug(TAG,"TeacherActivity接收到连接状态信息" + event.getType() + event.isStatus());
         if (event.isStatus()) {
             mTemp.setText("连接状态：已连接");
             mTemp.setTextColor(getResources().getColor(R.color.white));

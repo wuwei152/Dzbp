@@ -87,6 +87,7 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
         gestureDetector = new GestureDetector(NoticeActivity.this, onGestureListener);
 
         logger = LoggerFactory.getLogger(getClass());
+
         Intent intent = getIntent();
         if (intent.hasExtra("id")) {
             noticeId = intent.getStringExtra("id");
@@ -106,6 +107,12 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
 
         getUIdata();
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        logger.debug(TAG,"通知界面");
     }
 
     /**

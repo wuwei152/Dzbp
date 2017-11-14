@@ -168,6 +168,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
     @Override
     protected void onResume() {
         super.onResume();
+        logger.debug(TAG,"签到界面");
         LogUtils.d("onResume");
         EventBus.getDefault().register(this);
         boolean cons = (boolean) mAcache.getAsObject("conStatus");

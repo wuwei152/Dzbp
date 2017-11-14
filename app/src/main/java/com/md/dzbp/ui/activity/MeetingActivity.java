@@ -102,6 +102,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
     private Meetingbean meetingbean;
     private ACache mAcache;
     private Logger logger;
+    private String TAG = "MeetingActivity-->{}";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +145,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
     @Override
     protected void onResume() {
         super.onResume();
+        logger.debug(TAG,"会议界面");
         EventBus.getDefault().register(this);
         boolean cons = (boolean) mAcache.getAsObject("conStatus");
         if (cons) {
