@@ -9,17 +9,22 @@ import java.util.List;
 
 import android.util.Log;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Socket收发器 通过Socket发送数据，并使用新线程监听Socket接收到的数据
  *
  */
 public abstract class SocketTransceiver implements Runnable {
 
+	private final Logger logger;
 	protected Socket socket;
 	protected InetAddress addr;
 	protected InputStream in;
 	protected OutputStream out;
 	private boolean runFlag;
+	private String TAG = "SocketTransceiver-->{}";
 
 	/**
 	 * 实例化
@@ -30,6 +35,7 @@ public abstract class SocketTransceiver implements Runnable {
 	public SocketTransceiver(Socket socket) {
 		this.socket = socket;
 		this.addr = socket.getInetAddress();
+		logger = LoggerFactory.getLogger(getClass());
 	}
 
 	/**
@@ -63,6 +69,7 @@ public abstract class SocketTransceiver implements Runnable {
 			in.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error(TAG,e.getMessage());
 		}
 	}
 
@@ -83,6 +90,7 @@ public abstract class SocketTransceiver implements Runnable {
 				return true;
 			} catch (Exception e) {
 				e.printStackTrace();
+				logger.error(TAG,e.getMessage());
 				runFlag = false;
 			}
 		}
@@ -100,7 +108,7 @@ public abstract class SocketTransceiver implements Runnable {
 			out = this.socket.getOutputStream();
 		} catch (IOException e) {
 			e.printStackTrace();
-			Log.e("socket", e.getMessage());
+			logger.error(TAG,e.getMessage());
 			runFlag = false;
 		}
 		while (runFlag) {
@@ -118,6 +126,7 @@ public abstract class SocketTransceiver implements Runnable {
 			} catch (IOException e) {
 				// 连接被断开(被动)
 				Log.e("Socket", e.getMessage());
+				logger.error(TAG,e.getMessage());
 				runFlag = false;
 			}
 		}
@@ -132,6 +141,7 @@ public abstract class SocketTransceiver implements Runnable {
 			socket = null;
 		} catch (IOException e) {
 			e.printStackTrace();
+			logger.error(TAG,e.getMessage());
 		}
 		this.onDisconnect(addr);
 	}

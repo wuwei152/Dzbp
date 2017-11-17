@@ -44,6 +44,9 @@ public class Constant {
     public static String Ftp_Snapshot = "/Snapshot/";
 
 
+    public static int SCREENTYPE = 0;
+
+
     /**
      * 获取存储服务器地址
      */

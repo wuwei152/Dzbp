@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
+import com.md.dzbp.constants.Constant;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +53,7 @@ public class ShowBigImageActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         logger.debug(TAG,"查看图片界面");
+        Constant.SCREENTYPE = 111;
     }
 
     @Override

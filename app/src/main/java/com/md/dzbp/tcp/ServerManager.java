@@ -117,12 +117,21 @@ public class ServerManager {
      */
     int type =1;
     public void test() {
-        if (type==1){
-            type =0;
-        }else {
-            type=1;
-        }
-        messageHandle.gotoActivity(type,"","");
+
+//        final Handler handler = new Handler(Looper.getMainLooper());
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (type==1){
+//                    type =0;
+//                }else {
+//                    type=1;
+//                }
+//                messageHandle.gotoActivity(type,"","");
+//                handler.postDelayed(this,6000);
+//            }
+//        },6000);
+
     }
 
     /**

@@ -176,6 +176,7 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
     protected void onResume() {
         super.onResume();
         logger.debug(TAG,"学生界面");
+        Constant.SCREENTYPE = 2;
         LogUtils.d("EventBus注册");
         EventBus.getDefault().register(this);
     }

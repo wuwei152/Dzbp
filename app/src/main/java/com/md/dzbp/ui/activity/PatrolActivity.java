@@ -140,6 +140,7 @@ public class PatrolActivity extends BaseActivity implements UIDataListener {
     protected void onResume() {
         super.onResume();
         logger.debug(TAG,"巡查界面");
+        Constant.SCREENTYPE = 3;
     }
 
     /**

@@ -121,6 +121,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     protected void onResume() {
         super.onResume();
         logger.debug(TAG,"上课界面");
+        Constant.SCREENTYPE = 1;
         EventBus.getDefault().register(this);
         boolean cons = (boolean) mAcache.getAsObject("conStatus");
         if (cons) {

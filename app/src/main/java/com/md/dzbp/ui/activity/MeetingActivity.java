@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.UserHandle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -146,6 +147,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
     protected void onResume() {
         super.onResume();
         logger.debug(TAG,"会议界面");
+        Constant.SCREENTYPE = 6;
         EventBus.getDefault().register(this);
         boolean cons = (boolean) mAcache.getAsObject("conStatus");
         if (cons) {
@@ -155,6 +157,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
             mTemp.setText("连接状态：已断开");
             mTemp.setTextColor(getResources().getColor(R.color.conf));
         }
+
     }
 
     @Override

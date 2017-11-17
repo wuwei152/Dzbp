@@ -15,7 +15,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
--ignorewarnings
+#-ignorewarnings
 -keep class com.apkfuns.logutils.** { *;}
 -dontwarn com.apkfuns.logutils.**
 

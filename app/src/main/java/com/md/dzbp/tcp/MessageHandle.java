@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
+import android.os.Looper;
+import android.os.UserHandle;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -64,7 +66,7 @@ public class MessageHandle {
     private Context context;
     private TcpClient client;
     private Handler x_handler;
-    private static int xintiaoTime = 30000;
+    private static int xintiaoTime = 10000;
     private SmdtManager smdtManager;
     public boolean IsEnable = false;
     private final ACache mACache;
@@ -324,7 +326,7 @@ public class MessageHandle {
                     });
                     //取出第一个(即最新修改的)文件
                     logger.debug(TAG, "开始上传" + files[0].getAbsolutePath());
-                    uploadFile(files[0].getAbsolutePath(), Constant.Ftp_Log+Constant.getDeviceId(context)+"/", 0xA512, msgid512);
+                    uploadFile(files[0].getAbsolutePath(), Constant.Ftp_Log + Constant.getDeviceId(context) + "/", 0xA512, msgid512);
                 } else {
                     yingda(0xA512, false, deviceId, msgid512);
                     logger.debug(TAG, "未查询到log文件");
@@ -336,7 +338,7 @@ public class MessageHandle {
                 try {
                     sendVersionInfo(0xA513, true, deviceId, msgid513);
                 } catch (Exception e) {
-                    logger.debug(TAG,e.getMessage());
+                    logger.debug(TAG, e.getMessage());
                 }
                 break;
             case 0xA550://刷卡屏幕跳转
@@ -386,11 +388,11 @@ public class MessageHandle {
                 Boolean msgSuccess = tcpMessage.ReadBool();
                 logger.debug(TAG, msgSuccess ? "消息发送成功" : "消息发送失败");
                 try {
-                    if (!msgSuccess){
-                        Toast.makeText(context,"消息发送失败!",Toast.LENGTH_SHORT).show();
+                    if (!msgSuccess) {
+                        Toast.makeText(context, "消息发送失败!", Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
-                    logger.error(TAG,"0x601Toast错误！");
+                    logger.error(TAG, "0x601Toast错误！");
                     e.printStackTrace();
                 }
 
@@ -459,13 +461,13 @@ public class MessageHandle {
         x_runnable = new Runnable() {
             @Override
             public void run() {
-                logger.debug(TAG, "发送心跳"+XTfailNum);
+                logger.debug(TAG, "发送心跳" + XTfailNum);
                 try {
                     if (client == null || !IsEnable || XTfailNum > 2) {
-                        logger.debug(TAG,"心跳异常，断开连接");
+                        logger.debug(TAG, "心跳异常，断开连接");
                         x_handler.removeCallbacks(this);
                         Stop();
-                        XTfailNum=0;
+                        XTfailNum = 0;
                         return;
                     }
                     TCPMessage message = new TCPMessage(0xA000);
@@ -1078,7 +1080,7 @@ public class MessageHandle {
      *
      * @param type
      */
-    public void gotoActivity(int type, String userId, String ext) {
+    public void gotoActivity(final int type, final String userId, final String ext) {
         Intent intent = null;
         logger.debug(TAG, "开始跳转屏幕" + type);
         switch (type) {
@@ -1115,7 +1117,13 @@ public class MessageHandle {
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
+
             logger.debug(TAG, "屏幕跳转成功" + type);
+        } else {
+            logger.debug(TAG, "屏幕跳转失败重试" + type);
+            gotoActivity(type, userId, ext);
         }
     }
+
+
 }

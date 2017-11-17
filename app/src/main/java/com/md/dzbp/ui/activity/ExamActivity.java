@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.apkfuns.logutils.LogUtils;
 import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
+import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.Exam;
 import com.md.dzbp.model.TimeListener;
 import com.md.dzbp.model.TimeUtils;
@@ -83,6 +84,7 @@ public class ExamActivity extends BaseActivity implements TimeListener {
     protected void onResume() {
         super.onResume();
         logger.debug(TAG,"考试界面");
+        Constant.SCREENTYPE = 4;
     }
 
     @Override

@@ -113,6 +113,7 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
     protected void onResume() {
         super.onResume();
         logger.debug(TAG,"通知界面");
+        Constant.SCREENTYPE = 5;
     }
 
     /**

@@ -218,6 +218,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     protected void onResume() {
         super.onResume();
         logger.debug(TAG,"课中界面");
+        Constant.SCREENTYPE = 0;
         LogUtils.d("注册EventBus");
         EventBus.getDefault().register(this);
         boolean cons = false;

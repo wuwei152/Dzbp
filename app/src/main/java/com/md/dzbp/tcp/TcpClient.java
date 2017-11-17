@@ -1,5 +1,8 @@
 package com.md.dzbp.tcp;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.List;
@@ -14,6 +17,8 @@ public abstract class TcpClient implements Runnable {
 	private String hostIP;
 	private boolean connect = false;
 	private SocketTransceiver transceiver;
+	private final String TAG = "TcpClient-->{}";
+	private Logger logger = LoggerFactory.getLogger(getClass());
 
 	/**
 	 * 建立连接
@@ -58,6 +63,7 @@ public abstract class TcpClient implements Runnable {
 			this.onConnect(transceiver);
 		} catch (Exception e) {
 			e.printStackTrace();
+			logger.error(TAG,e.getMessage());
 			this.onConnectFailed();
 		}
 	}
