@@ -5,12 +5,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
+import android.text.Spannable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -20,8 +25,10 @@ import com.bumptech.glide.Glide;
 import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
 import com.md.dzbp.constants.APIConfig;
+import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.CourseBean;
 import com.md.dzbp.data.LoginEvent;
+import com.md.dzbp.model.DahuaModel;
 import com.md.dzbp.model.NetWorkRequest;
 import com.md.dzbp.model.TimeListener;
 import com.md.dzbp.model.TimeUtils;
@@ -30,8 +37,8 @@ import com.md.dzbp.tcp.TcpService;
 import com.md.dzbp.ui.view.MainDialog;
 import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.myToast;
-import com.md.dzbp.constants.Constant;
 import com.md.dzbp.utils.ACache;
+import com.md.dzbp.utils.EaseSmileUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -43,6 +50,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * 上课页面
@@ -69,6 +77,8 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     TextView mPeriodName;
     @BindView(R.id.teacher_addr)
     TextView mAddr;
+    @BindView(R.id.teacher_imgRl)
+    RelativeLayout mImgRl;
 
     private Handler _handler = null;
     private Handler foucus_handler = null;
@@ -93,6 +103,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
 
     @Override
     protected void initUI() {
+        LogUtils.d("teacher--onCreate");
         mainDialog = new MainDialog(this);
         gestureDetector = new GestureDetector(TeacherActivity.this, onGestureListener);
         mAcache = ACache.get(this);
@@ -114,13 +125,14 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        LogUtils.d("onNewIntent");
         getUIdata();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        logger.debug(TAG,"上课界面");
+        logger.debug(TAG, "上课界面");
         Constant.SCREENTYPE = 1;
         EventBus.getDefault().register(this);
         boolean cons = (boolean) mAcache.getAsObject("conStatus");
@@ -140,6 +152,18 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
         EventBus.getDefault().unregister(this);
     }
 
+    @Override
+    protected void onStop() {
+        LogUtils.d("teacher--onStop");
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LogUtils.d("teacherAct--onDestroy");
+    }
+
     /**
      * 获取UI数据
      */
@@ -148,6 +172,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
         map.put("deviceId", Constant.getDeviceId(this));
         netWorkRequest.doGetRequest(0, Constant.getUrl(this, APIConfig.GET_COURSE), true, map);
     }
+
     /**
      * 读取卡号
      */
@@ -245,6 +270,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
 
     /**
      * 设置UI数据
+     *
      * @param courseBean
      */
     private void setUIData(CourseBean courseBean) {
@@ -252,9 +278,21 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
             Glide.with(this).load(courseBean.getPhoto()).into(mImg);
         }
         mClassName.setText(courseBean.getGradeName() + courseBean.getClassName());
-        mCourseName.setText("课程：" + courseBean.getSubjectName());
-        mTeacherName.setText("教师：" + courseBean.getAccountName());
-        mPeriodName.setText("节次：" + courseBean.getPeriodName());
+        if (!TextUtils.isEmpty(courseBean.getSubjectName())) {
+            mCourseName.setText("课程：" + courseBean.getSubjectName());
+        }else {
+            mCourseName.setVisibility(View.GONE);
+        }
+        if (!TextUtils.isEmpty(courseBean.getAccountName())) {
+            mTeacherName.setText("教师：" + courseBean.getAccountName());
+        }else {
+            mTeacherName.setText("班主任：" + courseBean.getManagerAccountName());
+        }
+        if (!TextUtils.isEmpty(courseBean.getPeriodName())) {
+            mPeriodName.setText("节次：" + courseBean.getPeriodName());
+        }else {
+            mCourseName.setVisibility(View.GONE);
+        }
         mAddr.setText("教室：" + courseBean.getAddress());
     }
 
@@ -265,8 +303,13 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
 
     @Override
     public void showDialog() {
-        if (dialog != null&&!mainDialog.isShowing()) {
-            dialog.show();
+        if (dialog != null && !mainDialog.isShowing()) {
+            try {
+                dialog.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.error(TAG, e.getMessage());
+            }
         }
     }
 
@@ -301,7 +344,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
      */
     @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
     public void onUpdateSynEvent2(LoginEvent event) {
-        logger.debug(TAG,"TeacherActivity接收到连接状态信息" + event.getType() + event.isStatus());
+        logger.debug(TAG, "TeacherActivity接收到连接状态信息" + event.getType() + event.isStatus());
         if (event.isStatus()) {
             mTemp.setText("连接状态：已连接");
             mTemp.setTextColor(getResources().getColor(R.color.white));

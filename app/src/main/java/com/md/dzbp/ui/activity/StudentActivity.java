@@ -1,6 +1,7 @@
 package com.md.dzbp.ui.activity;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,11 +11,13 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -38,6 +41,7 @@ import com.md.dzbp.data.MessageBase;
 import com.md.dzbp.data.MsgSendStatus;
 import com.md.dzbp.data.StudentInfoBean;
 import com.md.dzbp.data.TextReceiveMessage;
+import com.md.dzbp.data.TextSendMessage;
 import com.md.dzbp.data.VoiceReceiveMessage;
 import com.md.dzbp.data.VoiceSendMessage;
 import com.md.dzbp.model.NetWorkRequest;
@@ -89,6 +93,12 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
     RecyclerView mRecycle;
     @BindView(R.id.stu_honorRecyclerView)
     MyRecyclerView mHonorRecyclerView;
+    @BindView(R.id.student_inputType)
+    ImageView mInputType;
+    @BindView(R.id.student_textInput)
+    EditText mTextInput;
+    @BindView(R.id.student_textSend)
+    TextView mTextSend;
     private ArrayList<MessageBase> msgList;
     private ChatAdapter chatAdapter;
 
@@ -109,6 +119,7 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
     private LinearLayoutManager linearLayoutManager2;
     private Logger logger;
     private String TAG = "StudentActivity-->{}";
+    private int inputType = 0;
     ;
 
     @Override
@@ -163,6 +174,19 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
             mStuUserId = intent.getStringExtra("userId");
             getUIdata();
         }
+
+        inputType = 0;
+        mInputType.setImageResource(R.drawable.jianpan);
+        mTextInput.setVisibility(View.GONE);
+        mAudioRecorder.setVisibility(View.VISIBLE);
+        mTextSend.setVisibility(View.GONE);
+        mTextInput.setFocusable(false);
+        mTextInput.setFocusableInTouchMode(true);
+        //隐藏软键盘
+        InputMethodManager imm= (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(imm.isActive()){
+            imm.hideSoftInputFromWindow(mTextInput.getWindowToken(), 0); //强制隐藏键盘
+        }
     }
 
     private void getUIdata() {
@@ -175,7 +199,7 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
     @Override
     protected void onResume() {
         super.onResume();
-        logger.debug(TAG,"学生界面");
+        logger.debug(TAG, "学生界面");
         Constant.SCREENTYPE = 2;
         LogUtils.d("EventBus注册");
         EventBus.getDefault().register(this);
@@ -203,6 +227,70 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
                 getHistoryMsg(studentInfo.getStudent().getAccountid(), studentInfo.getParents().get(position).getAccountid());
             }
         });
+
+    }
+
+    @OnClick({R.id.student_back, R.id.student_inputType,R.id.student_textSend})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.student_back:
+                startActivity(new Intent(this, MainActivity.class));
+                break;
+            case R.id.student_textSend:
+                SendTextMsg();
+                break;
+            case R.id.student_inputType:
+                if (inputType == 0) {
+                    inputType = 1;
+                    mInputType.setImageResource(R.drawable.yuyin);
+                    mTextInput.setVisibility(View.VISIBLE);
+                    mAudioRecorder.setVisibility(View.GONE);
+                    mTextSend.setVisibility(View.VISIBLE);
+                    mTextInput.requestFocus();
+                    mTextInput.setFocusable(true);
+                    mTextInput.setFocusableInTouchMode(true);
+                    //开启软键盘
+                    InputMethodManager imm= (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if(imm.isActive()){
+                        imm.showSoftInput(mTextInput,InputMethodManager.SHOW_FORCED);
+                    }
+                } else if (inputType == 1) {
+                    inputType = 0;
+                    mInputType.setImageResource(R.drawable.jianpan);
+                    mTextInput.setVisibility(View.GONE);
+                    mAudioRecorder.setVisibility(View.VISIBLE);
+                    mTextSend.setVisibility(View.GONE);
+                    mTextInput.setFocusable(false);
+                    mTextInput.setFocusableInTouchMode(true);
+                    //隐藏软键盘
+                    InputMethodManager imm= (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if(imm.isActive()){
+                        imm.hideSoftInputFromWindow(mTextInput.getWindowToken(), 0); //强制隐藏键盘
+                    }
+                }
+                break;
+        }
+    }
+
+    /**
+     * 发送文字消息
+     */
+    private void SendTextMsg(){
+        String inputText = mTextInput.getText().toString();
+        if (TextUtils.isEmpty(inputText)){
+            showToast("请输入要发送的内容！");
+            return;
+        }
+        TextSendMessage msg = new TextSendMessage(MSGTYPE.MSGTYPE_TEXT, TimeUtils.currentTimeLong(), studentInfo.getStudent().getPhoto(), studentInfo.getStudent().getAccountname(), inputText, studentInfo.getStudent().getAccountid(), currentParent.getAccountid());
+        msg.setSendMsg(true);
+        chatAdapter.addData(msg);
+        EventBus.getDefault().post(msg);
+        mTextInput.setText("");
+        //隐藏软键盘
+        InputMethodManager imm= (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if(imm.isActive()){
+            imm.hideSoftInputFromWindow(mTextInput.getWindowToken(), 0); //强制隐藏键盘
+        }
     }
 
     /**
@@ -245,19 +333,29 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
 
             @Override
             public void afterTextChanged(Editable arg0) {
-//                LogUtils.d(arg0);
             }
         });
 
-        foucus_handler = null;
-        foucus_handler = new Handler();
-        foucus_handler.postDelayed(new Runnable() {
+        mTextInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void run() {
-                mCardNum.requestFocus();
-                foucus_handler.postDelayed(this, 1000);
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus){
+                    LogUtils.d("失去焦点");
+                    mCardNum.setFocusable(true);
+                    mCardNum.requestFocus();
+                }
             }
-        }, 1000);
+        });
+
+//        foucus_handler = null;
+//        foucus_handler = new Handler();
+//        foucus_handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                mCardNum.requestFocus();
+//                foucus_handler.postDelayed(this, 1000);
+//            }
+//        }, 1000);
     }
 
     /**
@@ -281,6 +379,17 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
             }
         });
 
+        mTextInput.setOnKeyListener(new View.OnKeyListener() {
+
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if(keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN){
+                    SendTextMsg();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     /**
@@ -290,8 +399,8 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
      */
     @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
     public void onDataSynEvent(MessageBase event) {
-        LogUtils.d(event);
         if (!event.isSendMsg()) {
+            LogUtils.d(event);
             String fromUserId = event.getFromUserName();
             if (fromUserId.equals(currentParent.getAccountid())) {
                 event.setHeadIcon(currentParent.getPhoto());
@@ -338,11 +447,6 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
                 chatAdapter.notifyDataSetChanged();
             }
         }
-    }
-
-    @OnClick(R.id.student_back)
-    public void onViewClicked() {
-        startActivity(new Intent(this, MainActivity.class));
     }
 
     private void setFlickerAnimation(int offset, View iv_chat_head) {
@@ -426,7 +530,7 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
         }
         List<StudentInfoBean.ParentsBean> parents = studentInfo.getParents();
         if (parents != null) {
-            if (parents.size()>0){
+            if (parents.size() > 0) {
                 parents.get(0).setSelect(true);
             }
             parentListAdapter.setDatas((ArrayList<StudentInfoBean.ParentsBean>) parents);
@@ -437,7 +541,7 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
         }
 
         List<StudentInfoBean.HonorBean> honor = studentInfo.getHonor();
-        if (honor!=null){
+        if (honor != null) {
             honorListAdapter.setDatas((ArrayList<StudentInfoBean.HonorBean>) honor);
         }
     }
@@ -463,8 +567,13 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
 
     @Override
     public void showDialog() {
-        if (dialog != null&&!mainDialog.isShowing()) {
-            dialog.show();
+        if (dialog != null && !mainDialog.isShowing()) {
+            try {
+                dialog.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.error(TAG, e.getMessage());
+            }
         }
     }
 

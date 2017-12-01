@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.md.dzbp.R;
+import com.md.dzbp.tcp.TcpService;
 import com.md.dzbp.ui.activity.ExamActivity;
 import com.md.dzbp.ui.activity.MainActivity;
 import com.md.dzbp.ui.activity.MeetingActivity;
@@ -31,7 +32,7 @@ import com.md.dzbp.utils.ACache;
  */
 public class MainDialog extends Dialog {
 
-    private TextView act1, act2, act3, act4, act5, act6, act7, act8, bt1, bt2;
+    private TextView act1, act2, act3, act4, act5, act6, act7, act8, act9, bt1, bt2;
     private Context context;
     private LinearLayout ll;
     private final SmdtManager smdt;
@@ -91,6 +92,7 @@ public class MainDialog extends Dialog {
         act6 = (TextView) findViewById(R.id.act6);
         act7 = (TextView) findViewById(R.id.act7);
         act8 = (TextView) findViewById(R.id.act8);
+        act9 = (TextView) findViewById(R.id.act9);
 
         bt1 = (TextView) findViewById(R.id.bt1);
         bt2 = (TextView) findViewById(R.id.bt2);
@@ -183,6 +185,18 @@ public class MainDialog extends Dialog {
                     return;
                 }
                 context.startActivity(new Intent(context, SignActivity.class));
+                dismiss();
+            }
+        });
+        act9.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!YZ()){
+                    return;
+                }
+                Intent intent = new Intent(context, TcpService.class);
+                intent.putExtra("Log","");
+                context.startService(intent);
                 dismiss();
             }
         });

@@ -40,6 +40,17 @@
                 android:textSize="35sp" />
         </LinearLayout>
 
+        <ImageView
+            android:visibility="gone"
+            android:layout_width="180dp"
+            android:layout_height="100dp"
+            android:layout_toRightOf="@id/student_back"
+            android:layout_marginLeft="25dp"
+            android:layout_centerVertical="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/dianxin"
+            />
+
         <TextView
             android:id="@+id/student_title"
             android:layout_width="wrap_content"
@@ -91,8 +102,7 @@
                     android:layout_width="200dp"
                     android:layout_height="233dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/pic_not_found"
-                     />
+                    android:src="@drawable/pic_not_found" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -117,31 +127,31 @@
                         android:textSize="18sp" />
 
                     <TextView
-                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:text="一卡通余额：31元"
                         android:textColor="@color/text_black"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        android:visibility="gone" />
 
                     <TextView
-                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:text="电子学生证有效期："
                         android:textColor="@color/text_black"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        android:visibility="gone" />
 
                     <TextView
-                        android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:text="2017年12月30日"
                         android:textColor="@color/text_black"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
@@ -188,6 +198,7 @@
                     android:text="最近考试成绩："
                     android:textColor="#E35774"
                     android:textSize="20sp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -214,11 +225,11 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/student_recycle"
                 android:layout_width="wrap_content"
-                android:listSelector="#00000000"
                 android:layout_height="100dp"
-                android:layout_marginTop="10dp"
                 android:layout_marginBottom="5dp"
+                android:layout_marginTop="10dp"
                 android:background="@android:color/transparent"
+                android:listSelector="#00000000"
                 android:orientation="horizontal"
                 android:scrollbars="none" />
 
@@ -232,7 +243,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginRight="300dp"
                 android:gravity="center_vertical"
                 android:orientation="vertical"
                 android:padding="10dp">
@@ -250,15 +260,59 @@
                     android:scrollbars="none"
                     android:transcriptMode="alwaysScroll" />
 
-                <com.md.dzbp.ui.view.AudioRecorder.AudioRecorderButton
-                    android:id="@+id/student_audioRecorder"
-                    android:layout_width="500dp"
-                    android:layout_height="60dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/recorderbutton_normal_back"
-                    android:textColor="@color/white"
-                    android:text="按住说话" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/student_inputType"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/jianpan" />
+
+                    <EditText
+                        android:id="@+id/student_textInput"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:imeOptions="actionSend"
+                        android:hint="请输入文字"
+                        android:visibility="gone" />
+
+
+                    <com.md.dzbp.ui.view.AudioRecorder.AudioRecorderButton
+                        android:id="@+id/student_audioRecorder"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/recorderbutton_normal_back"
+                        android:text="按住说话"
+                        android:textSize="18sp"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:id="@+id/student_textSend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:visibility="gone"
+                        android:background="@drawable/recorderbutton_normal_back"
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp"
+                        android:paddingLeft="30dp"
+                        android:paddingRight="30dp"
+                        android:text="发送"
+                        android:textColor="@color/white"
+                        android:textSize="20dp" />
+                </LinearLayout>
 
             </LinearLayout>
 

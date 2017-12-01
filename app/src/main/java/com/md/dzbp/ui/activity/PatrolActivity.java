@@ -123,6 +123,7 @@ public class PatrolActivity extends BaseActivity implements UIDataListener {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        LogUtils.d("onNewIntent");
         if (intent.hasExtra("userId")) {
             userId = intent.getStringExtra("userId");
         }
@@ -344,7 +345,12 @@ public class PatrolActivity extends BaseActivity implements UIDataListener {
     @Override
     public void showDialog() {
         if (dialog != null) {
-            dialog.show();
+            try {
+                dialog.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.error(TAG,e.getMessage());
+            }
         }
     }
 

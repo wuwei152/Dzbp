@@ -132,6 +132,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        LogUtils.d("onNewIntent");
         getUIdata();
     }
 
@@ -332,7 +333,12 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
     @Override
     public void showDialog() {
         if (dialog != null&&!mainDialog.isShowing()) {
-            dialog.show();
+            try {
+                dialog.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.error(TAG,e.getMessage());
+            }
         }
     }
 

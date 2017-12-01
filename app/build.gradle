@@ -21,22 +21,27 @@ android {
         applicationId "com.md.dzbp"
         minSdkVersion 18
         targetSdkVersion 23
-        versionCode 3
-        versionName "1.2"
+        versionCode 4
+        versionName "1.3"
+        //推送选择要添加的对应cpu类型的.so库。
+        ndk {
+            abiFilters 'armeabi'
+        }
     }
     buildTypes {
         release {
             debuggable false
-            minifyEnabled true      // 开启混淆
-            shrinkResources true    // 去除无效的资源文件(依赖于minifyEnabled 为true)
-            zipAlignEnabled true    // Zipalign优化
+            minifyEnabled false      // 开启混淆
+            shrinkResources false    // 去除无效的资源文件(依赖于minifyEnabled 为true)
+            zipAlignEnabled false    // Zipalign优化
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
         debug {
             debuggable false
-            minifyEnabled true      // 开启混淆
-            shrinkResources true    // 去除无效的资源文件(依赖于minifyEnabled 为true)
-            zipAlignEnabled true    // Zipalign优化
+            minifyEnabled false      // 开启混淆
+            shrinkResources false    // 去除无效的资源文件(依赖于minifyEnabled 为true)
+            zipAlignEnabled false    // Zipalign优化
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
         }
@@ -53,15 +58,27 @@ configurations.all {
         }
     }
 }
+
+android {
+    lintOptions {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
 dependencies {
     allprojects {
         repositories {
             maven { url "https://jitpack.io" }
         }
     }
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile files('libs/smdt.jar')
-    compile files('libs/commons-net-3.6.jar')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+//    compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:26.0.0'
     compile 'com.android.support:support-v4:26.0.0'
     compile 'com.android.support:design:26.0.0'

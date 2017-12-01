@@ -189,28 +189,12 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
         EventBus.getDefault().unregister(this);
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        LogUtils.d("onStop");
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        LogUtils.d("onStart");
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        LogUtils.d("onRestart");
-    }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         LogUtils.d("onNewIntent");
+        getUIdata();
     }
 
     @Override
@@ -480,7 +464,12 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
     @Override
     public void showDialog() {
         if (dialog != null&&!mainDialog.isShowing()) {
-            dialog.show();
+            try {
+                dialog.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.error(TAG,e.getMessage());
+            }
         }
     }
 
@@ -511,7 +500,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
     @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
     public void onDataStatusEvent(SignEvent event) {
         if (event.getType() == 1 && event.isStatus()) {
-            showToast(event.getName() + "签到成功！");
+//            showToast(event.getName() + "签到成功！");
             if (studentsList != null && studentsList.size() > 0) {
                 for (SignInfoBean.StudentBean m : studentsList) {
                     if (m.getAccountid().equals(event.getId())) {
@@ -521,9 +510,10 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
                 }
                 setGridData(studentsList);
             }
-        } else if (event.getType() == 1 && !event.isStatus()) {
-            showToast("签到失败！");
         }
+//        else if (event.getType() == 1 && !event.isStatus()) {
+//            showToast("签到失败！");
+//        }
     }
     /**
      * 接收到连接信息

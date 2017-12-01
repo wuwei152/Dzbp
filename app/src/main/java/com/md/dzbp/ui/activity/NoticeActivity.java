@@ -96,6 +96,7 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        LogUtils.d("onNewIntent");
         if (intent.hasExtra("id")) {
             noticeId = intent.getStringExtra("id");
         }
@@ -247,7 +248,12 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
     @Override
     public void showDialog() {
         if (dialog != null&&!mainDialog.isShowing()) {
-            dialog.show();
+            try {
+                dialog.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.error(TAG,e.getMessage());
+            }
         }
     }
 

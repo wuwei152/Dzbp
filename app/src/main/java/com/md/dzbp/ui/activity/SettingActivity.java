@@ -17,6 +17,7 @@ import com.md.dzbp.R;
 import com.md.dzbp.constants.APIConfig;
 import com.md.dzbp.data.SchoolAreaBean;
 import com.md.dzbp.data.SchoolBean;
+import com.md.dzbp.model.DahuaModel;
 import com.md.dzbp.model.NetWorkRequest;
 import com.md.dzbp.model.UIDataListener;
 import com.md.dzbp.ui.view.MyProgressDialog;
@@ -75,7 +76,6 @@ public class SettingActivity extends BaseActivity implements UIDataListener {
         mAcache = ACache.get(SettingActivity.this);
         dialog = MyProgressDialog.createLoadingDialog(this, "", this);
         netWorkRequest = new NetWorkRequest(this, this);
-
     }
 
     @Override

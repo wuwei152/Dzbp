@@ -157,7 +157,14 @@
         android:layout_weight="540"
         android:orientation="vertical"
         android:padding="30dp">
-
+        <ImageView
+            android:visibility="gone"
+            android:layout_width="180dp"
+            android:layout_height="100dp"
+            android:layout_gravity="right"
+            android:scaleType="fitXY"
+            android:src="@drawable/dianxin"
+            />
         <TextView
             android:id="@+id/meet_listTitle"
             android:layout_width="match_parent"

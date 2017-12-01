@@ -187,12 +187,22 @@ public class MainData implements Serializable {
          * period : 8:10-8:50
          * serial : 1
          * subjectname : 生物
+         * remarks
          */
 
         private String accountname;
         private String period;
         private int serial;
         private String subjectname;
+        private String remarks;
+
+        public String getRemarks() {
+            return remarks;
+        }
+
+        public void setRemarks(String remarks) {
+            this.remarks = remarks;
+        }
 
         public String getAccountname() {
             return accountname;

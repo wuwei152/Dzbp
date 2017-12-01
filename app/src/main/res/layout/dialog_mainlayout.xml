@@ -197,5 +197,24 @@
             android:layout_marginLeft="15dp"
             android:background="@color/line" />
 
+        <TextView
+            android:id="@+id/act9"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="15dp"
+            android:gravity="center"
+            android:text="发送日志"
+            android:visibility="gone"
+            android:textColor="@color/text_black"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:visibility="gone"
+            android:layout_marginLeft="15dp"
+            android:background="@color/line" />
+
     </LinearLayout>
 </RelativeLayout>

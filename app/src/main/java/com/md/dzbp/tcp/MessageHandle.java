@@ -6,8 +6,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
-import android.os.Looper;
-import android.os.UserHandle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -35,6 +34,7 @@ import com.md.dzbp.ui.activity.PatrolActivity;
 import com.md.dzbp.ui.activity.SignActivity;
 import com.md.dzbp.ui.activity.StudentActivity;
 import com.md.dzbp.ui.activity.TeacherActivity;
+import com.md.dzbp.ui.activity.VideoShowActivity;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.FileUtils;
@@ -313,24 +313,7 @@ public class MessageHandle {
             case 0xA512://传log
                 int msgid512 = tcpMessage.ReadInt();
                 logger.debug(TAG, "0xA512收到上传log指令");
-                File path = new File(FileUtils.getDiskCacheDir(context) + "Log/");
-                //列出该目录下所有文件和文件夹
-                File[] files = path.listFiles();
-                if (files.length > 0) {
-                    //按照文件最后修改日期倒序排序
-                    Arrays.sort(files, new Comparator<File>() {
-                        @Override
-                        public int compare(File file1, File file2) {
-                            return (int) (file2.lastModified() - file1.lastModified());
-                        }
-                    });
-                    //取出第一个(即最新修改的)文件
-                    logger.debug(TAG, "开始上传" + files[0].getAbsolutePath());
-                    uploadFile(files[0].getAbsolutePath(), Constant.Ftp_Log + Constant.getDeviceId(context) + "/", 0xA512, msgid512);
-                } else {
-                    yingda(0xA512, false, deviceId, msgid512);
-                    logger.debug(TAG, "未查询到log文件");
-                }
+                GetLog(msgid512);
                 break;
             case 0xA513://发送版本信息
                 logger.debug(TAG, "0xA513收到发送版本信息指令");
@@ -342,18 +325,22 @@ public class MessageHandle {
                 }
                 break;
             case 0xA550://刷卡屏幕跳转
-                int status = tcpMessage.ReadInt();
-                logger.debug("0xA550收到刷卡屏幕跳转指令", status + "");
-                if (status == 0) {
-                    int type = tcpMessage.ReadInt();
-                    int length550 = tcpMessage.ReadInt();
-                    String userId = tcpMessage.ReadString(length550);
-                    int length5502 = tcpMessage.ReadInt();
-                    String ext = tcpMessage.ReadString(length5502);
-                    logger.debug("0xA550", type + "");
-                    gotoActivity(type, userId, ext);
+                int status550 = tcpMessage.ReadInt();
+                logger.debug("0xA550收到刷卡屏幕跳转指令", status550 + "");
+
+                int type550 = tcpMessage.ReadInt();
+                int length550 = tcpMessage.ReadInt();
+                String userId550 = tcpMessage.ReadString(length550);
+                int length5502 = tcpMessage.ReadInt();
+                String ext550 = tcpMessage.ReadString(length5502);
+                logger.debug("0xA550", type550 + "");
+                if (status550 == 0) {
+                    gotoActivity(type550, userId550, ext550);
                 } else {
-                    handleFail(status, 550);
+                    handleFail(status550, 550);
+                }
+                if (!TextUtils.isEmpty(ext550)){
+                    myToast.toast(context, ext550);
                 }
                 break;
             case 0xA555://通用屏幕跳转
@@ -407,18 +394,23 @@ public class MessageHandle {
             case 0xA605://会议签到
                 int status605 = tcpMessage.ReadInt();
                 logger.debug(TAG, "0xA605收到会议签到指令" + status605);
+                String ext605 = "";
+                int type605 = tcpMessage.ReadInt();
+                int length605 = tcpMessage.ReadInt();
+                String id605 = tcpMessage.ReadString(length605);
+                int length6052 = tcpMessage.ReadInt();
+                ext605 = tcpMessage.ReadString(length6052);
+                logger.debug(TAG, "签到：" + id605);
                 if (status605 == 0) {
-                    int type = tcpMessage.ReadInt();
-                    int length605 = tcpMessage.ReadInt();
-                    String id = tcpMessage.ReadString(length605);
-                    int length6052 = tcpMessage.ReadInt();
-                    String ext = tcpMessage.ReadString(length6052);
-                    logger.debug(TAG, "签到：" + id);
-                    EventBus.getDefault().post(new SignEvent(0, true, id, ""));
+                    EventBus.getDefault().post(new SignEvent(0, true, id605, ""));
+
                 } else {
                     logger.debug(TAG, "签到失败");
-                    handleFail(status605, 605);
+//                    handleFail(status605, 605);
                     EventBus.getDefault().post(new SignEvent(0, false, "", ""));
+                }
+                if (!TextUtils.isEmpty(ext605)){
+                    myToast.toast(context, ext605);
                 }
                 break;
             case 0xA606://页面更新
@@ -428,25 +420,64 @@ public class MessageHandle {
                 EventBus.getDefault().post(new MainUpdateEvent(status606, ""));
                 yingda(0xA606, true, deviceId, msgid606);
                 break;
-            case 0xA608://页面更新
+            case 0xA608://班级签到
                 int status608 = tcpMessage.ReadInt();
                 logger.debug(TAG, "0xA608收到班级签到指令" + status608);
+
+                int type608 = tcpMessage.ReadInt();
+                int length608 = tcpMessage.ReadInt();
+                String id608 = tcpMessage.ReadString(length608);
+                int length6082 = tcpMessage.ReadInt();
+                String ext608 = tcpMessage.ReadString(length6082);
                 if (status608 == 0) {
-                    int type = tcpMessage.ReadInt();
-                    int length608 = tcpMessage.ReadInt();
-                    String id = tcpMessage.ReadString(length608);
-                    int length6082 = tcpMessage.ReadInt();
-                    String ext = tcpMessage.ReadString(length6082);
-                    logger.debug(TAG, "签到：" + id + ext);
-                    EventBus.getDefault().post(new SignEvent(1, true, id, ext));
+                    logger.debug(TAG, "签到：" + id608 + ext608);
+                    EventBus.getDefault().post(new SignEvent(1, true, id608, ext608));
                 } else {
                     logger.debug(TAG, "签到失败");
-                    handleFail(status608, 608);
+//                    handleFail(status608, 608);
                     EventBus.getDefault().post(new SignEvent(1, false, "", ""));
+                }
+                if (!TextUtils.isEmpty(ext608)){
+                    myToast.toast(context, ext608);
                 }
                 break;
             default:
                 break;
+        }
+    }
+
+    /**
+     * 上传Log
+     *
+     * @param msgid512
+     */
+    public void GetLog(int msgid512) {
+        if (msgid512 == 0) {
+            try {
+                Toast.makeText(context, "上传成功！", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        File path = new File(FileUtils.getDiskCacheDir(context) + "Log/");
+        //列出该目录下所有文件和文件夹
+        File[] files = path.listFiles();
+        if (files.length > 0) {
+            //按照文件最后修改日期倒序排序
+            Arrays.sort(files, new Comparator<File>() {
+                @Override
+                public int compare(File file1, File file2) {
+                    return (int) (file2.lastModified() - file1.lastModified());
+                }
+            });
+            //取出第一个(即最新修改的)文件
+            logger.debug(TAG, "开始上传" + files[0].getAbsolutePath());
+            uploadFile(files[0].getAbsolutePath(), Constant.Ftp_Log + Constant.getDeviceId(context) + "/", 0xA512, msgid512);
+        } else {
+            if (msgid512 != 0) {
+                yingda(0xA512, false, deviceId, msgid512);
+            }
+            logger.debug(TAG, "未查询到log文件");
         }
     }
 
@@ -500,6 +531,8 @@ public class MessageHandle {
         logger.debug(TAG, "停止心跳");
         if (x_handler != null && x_runnable != null) {
             x_handler.removeCallbacks(x_runnable);
+            x_handler = null;
+            x_runnable = null;
         }
     }
 
@@ -637,7 +670,9 @@ public class MessageHandle {
                             logger.debug(TAG, currentStep);
                             if (currentStep.equals(ERRORTYPE.FTP_UPLOAD_SUCCESS)) {
                                 logger.debug(TAG, fileName + "-----shanchuan-log-successful");
-                                yingda(xyh, true, deviceId, file.getName(), id);
+                                if (id != 0) {
+                                    yingda(xyh, true, deviceId, file.getName(), id);
+                                }
                             } else if (currentStep.equals(ERRORTYPE.FTP_UPLOAD_LOADING)) {
                                 long fize = file.length();
                                 float num = (float) uploadSize / (float) fize;
@@ -645,7 +680,9 @@ public class MessageHandle {
                                 logger.debug(TAG, "-----shangchuan--log-" + result + "%");
                             } else if (currentStep.equals(ERRORTYPE.FTP_UPLOAD_FAIL)) {
                                 logger.debug(TAG, "-----shangchuan-log-fail---");
-                                yingda(xyh, false, deviceId, id);
+                                if (id != 0) {
+                                    yingda(xyh, false, deviceId, id);
+                                }
                             }
                         }
                     });
@@ -653,7 +690,9 @@ public class MessageHandle {
                     // TODO Auto-generated catch block  
                     e.printStackTrace();
                     logger.error(TAG, e.getMessage());
-                    yingda(xyh, false, deviceId, id);
+                    if (id != 0) {
+                        yingda(xyh, false, deviceId, id);
+                    }
                 }
             }
         }).start();
@@ -778,6 +817,13 @@ public class MessageHandle {
                 }
             }
         }).start();
+    }
+
+    /**
+     * 发送文本消息
+     */
+    public void sendTextMsg(final int msgType, final int xyh, final String JsonMsg) {
+        yingda(xyh, msgType, deviceId, JsonMsg);
     }
 
     /**
@@ -1110,6 +1156,9 @@ public class MessageHandle {
             case 7:
                 intent = new Intent(context, SignActivity.class);
                 break;
+            case 8:
+                intent = new Intent(context, VideoShowActivity.class);
+                break;
             default:
                 break;
         }
@@ -1120,8 +1169,8 @@ public class MessageHandle {
 
             logger.debug(TAG, "屏幕跳转成功" + type);
         } else {
-            logger.debug(TAG, "屏幕跳转失败重试" + type);
-            gotoActivity(type, userId, ext);
+            logger.debug(TAG, "屏幕跳转失败" + type);
+//            gotoActivity(type, userId, ext);//8888情况
         }
     }
 

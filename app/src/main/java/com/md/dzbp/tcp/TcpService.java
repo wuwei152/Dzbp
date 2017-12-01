@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.apkfuns.logutils.LogUtils;
+import com.md.dzbp.data.TextSendMessage;
 import com.md.dzbp.data.VoiceSendMessage;
 import com.md.dzbp.constants.Constant;
 
@@ -51,6 +52,8 @@ public class TcpService extends Service {
             mManager.sendCardNum(num,Act,ext);
         }else if (intent!=null&&intent.hasExtra("test")){
             mManager.test();
+        }else if (intent!=null&&intent.hasExtra("Log")){
+            mManager.messageHandle.GetLog(0);
         }
 
         return super.onStartCommand(intent, flags, startId);
@@ -68,7 +71,7 @@ public class TcpService extends Service {
 
 
     /**
-     * 发送消息
+     * 发送语音消息
      * @param event
      */
     @Subscribe(threadMode = ThreadMode.BACKGROUND) //在ui线程执行
@@ -80,7 +83,23 @@ public class TcpService extends Service {
         jsonObject.put("CreateTime",event.getCreateTime());
         jsonObject.put("VoicePath",event.getVoicePath());
 
-        logger.debug("TcpService开始发送消息-->{}",jsonObject.toJSONString());
+        logger.debug("TcpService开始发送语音消息-->{}",jsonObject.toJSONString());
         mManager.messageHandle.uploadFile(event.getMsgType(),event.getVoiceLocalPath(),Constant.Ftp_Voice,0xA601,jsonObject.toJSONString());
+    }
+    /**
+     * 发送文字消息
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.BACKGROUND) //在ui线程执行
+    public void onTextInputEvent(TextSendMessage event) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("MsgType",event.getMsgType());
+        jsonObject.put("ToUserName",event.getToUserName());
+        jsonObject.put("FromUserName",event.getFromUserName());
+        jsonObject.put("CreateTime",event.getCreateTime());
+        jsonObject.put("Content",event.getContent());
+
+        logger.debug("TcpService开始发送文字消息-->{}",jsonObject.toJSONString());
+        mManager.messageHandle.sendTextMsg(event.getMsgType(),0xA601,jsonObject.toJSONString());
     }
 }

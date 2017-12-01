@@ -6,7 +6,7 @@ import java.io.Serializable;
  * 上课页面--课程
  * Created by Administrator on 2017/9/13.
  */
-public class CourseBean implements Serializable{
+public class CourseBean implements Serializable {
 
     /**
      * gradeName : 高一年级
@@ -37,6 +37,27 @@ public class CourseBean implements Serializable{
     private String classId;
     private String schoolAreaId;
     private String subjectName;
+
+    private String managerAccountId;
+
+    private String managerAccountName;
+    ;
+
+    public String getManagerAccountId() {
+        return managerAccountId;
+    }
+
+    public void setManagerAccountId(String managerAccountId) {
+        this.managerAccountId = managerAccountId;
+    }
+
+    public String getManagerAccountName() {
+        return managerAccountName;
+    }
+
+    public void setManagerAccountName(String managerAccountName) {
+        this.managerAccountName = managerAccountName;
+    }
 
     public String getGradeName() {
         return gradeName;

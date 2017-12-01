@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.md.dzbp">
+    <!-- [START gcm_permission] -->
+    <permission
+        android:name="com.dahuatech.netsdk.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" >
+    </permission>
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="com.dahuatech.netsdk.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- [END gcm_permission] -->
     <!-- android:sharedUserId="android.uid.system" -->
     <!-- 允许应用程序接受开机广播 -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
@@ -27,9 +37,14 @@
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <!--<uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL"/>-->
 
@@ -55,31 +70,31 @@
         <activity
             android:name=".ui.activity.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:launchMode="singleTop"
+            android:launchMode="singleInstance"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".ui.activity.NoticeActivity"
-            android:launchMode="singleTop"
+            android:launchMode="singleInstance"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ui.activity.ExamActivity"
-            android:launchMode="singleTop"
+            android:launchMode="singleInstance"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ui.activity.TeacherActivity"
-            android:launchMode="singleTop"
+            android:launchMode="singleInstance"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".ui.activity.StudentActivity"
-            android:launchMode="singleTop"
+            android:launchMode="singleInstance"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ui.activity.PatrolActivity"
-            android:launchMode="singleTop"
+            android:launchMode="singleInstance"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ui.activity.MeetingActivity"
-            android:launchMode="singleTop"
+            android:launchMode="singleInstance"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ui.activity.SettingActivity"
@@ -91,7 +106,11 @@
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ui.activity.SignActivity"
-            android:launchMode="singleTop"
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".ui.activity.VideoShowActivity"
+            android:launchMode="singleInstance"
             android:windowSoftInputMode="stateHidden" />
 
         <service
@@ -113,6 +132,15 @@
         <service
             android:name=".service.UploadService"
             android:enabled="true" />
+
+        <receiver android:name=".service.BootCompletedReceiver">
+            <intent-filter>
+                <!-- 开机广播 -->
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <!-- 关机广播 -->
+                <action android:name="android.intent.action.ACTION_SHUTDOWN" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

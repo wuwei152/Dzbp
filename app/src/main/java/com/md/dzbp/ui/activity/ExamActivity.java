@@ -74,6 +74,7 @@ public class ExamActivity extends BaseActivity implements TimeListener {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        LogUtils.d("onNewIntent");
 //        if (intent.hasExtra("id")) {
 //            noticeId = intent.getStringExtra("id");
 //        }

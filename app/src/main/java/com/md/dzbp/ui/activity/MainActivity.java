@@ -166,8 +166,10 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
 
     @Override
     protected void initUI() {
+        LogUtils.d("main--onCreate");
         startService(new Intent(this, TcpService.class));
         mAcache = ACache.get(this);
+
 
         mainDialog = new MainDialog(this);
 
@@ -211,7 +213,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-
+        LogUtils.d("onNewIntent");
     }
 
     @Override
@@ -254,6 +256,12 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         EventBus.getDefault().unregister(this);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        LogUtils.d("main--onStop");
+    }
+
     /**
      * 获取通知列表
      */
@@ -270,7 +278,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         mListview.setAdapter(new CommonAdapter<MainData.CourseBean>(MainActivity.this, R.layout.item_main_list, mList) {
             @Override
             protected void convert(ViewHolder viewHolder, MainData.CourseBean item, int position) {
-                viewHolder.setText(R.id.item_l1, item.getSerial() + "");
+                viewHolder.setText(R.id.item_l1, item.getRemarks() + "");
                 viewHolder.setText(R.id.item_l2, item.getSubjectname());
                 viewHolder.setText(R.id.item_l3, item.getPeriod());
                 viewHolder.setText(R.id.item_l4, item.getAccountname());
@@ -417,6 +425,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        LogUtils.d("main--onDestroy");
         if (mLoop != null) {
             mLoop.stopLoop();
         }
@@ -563,7 +572,12 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     @Override
     public void showDialog() {
         if (dialog != null&&!mainDialog.isShowing()) {
-            dialog.show();
+            try {
+                dialog.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.error(TAG,e.getMessage());
+            }
         }
     }
 

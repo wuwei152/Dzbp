@@ -18,6 +18,7 @@ public class ChatAdapter<T> extends MultiItemTypeAdapter {
         addItemViewDelegate(new TxtMsgReceiveItem(context));
         addItemViewDelegate(new VoiceMsgReceiveItem(context));
         addItemViewDelegate(new VoiceMsgSendItem(context));
+        addItemViewDelegate(new TxtMsgSendItem(context));
     }
 
     public void addData(T data){

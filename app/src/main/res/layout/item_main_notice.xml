@@ -19,7 +19,7 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="@color/text_black"
-            android:textSize="18sp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/item_person"
@@ -29,7 +29,7 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="@color/text_gray"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
         <TextView
             android:id="@+id/item_time"
             android:layout_width="0dp"
@@ -38,7 +38,7 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="@color/text_gray"
-            android:textSize="16sp" />
+            android:textSize="18sp" />
 
     </LinearLayout>
 

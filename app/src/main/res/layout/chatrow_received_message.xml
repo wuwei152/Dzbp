@@ -49,7 +49,7 @@
                 android:paddingLeft="6dp"
                 android:paddingRight="1dp"
                 android:textColor="#ff000000"
-                android:textSize="15sp" />
+                android:textSize="18sp" />
         </RelativeLayout>
 
         <TextView
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="12dp"
             android:layout_toRightOf="@id/iv_userhead"
-            android:textSize="13dp"
+            android:textSize="15dp"
             android:visibility="visible" />
     </RelativeLayout>
 
