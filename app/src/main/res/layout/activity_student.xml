@@ -41,15 +41,14 @@
         </LinearLayout>
 
         <ImageView
-            android:visibility="gone"
             android:layout_width="180dp"
             android:layout_height="100dp"
-            android:layout_toRightOf="@id/student_back"
-            android:layout_marginLeft="25dp"
             android:layout_centerVertical="true"
+            android:layout_marginLeft="25dp"
+            android:layout_toRightOf="@id/student_back"
             android:scaleType="fitXY"
             android:src="@drawable/dianxin"
-            />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/student_title"
@@ -276,13 +275,13 @@
                     <EditText
                         android:id="@+id/student_textInput"
                         android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
                         android:layout_weight="1"
                         android:focusable="true"
                         android:focusableInTouchMode="true"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:imeOptions="actionSend"
                         android:hint="请输入文字"
+                        android:imeOptions="actionSend"
                         android:visibility="gone" />
 
 
@@ -294,8 +293,8 @@
                         android:layout_marginRight="10dp"
                         android:background="@drawable/recorderbutton_normal_back"
                         android:text="按住说话"
-                        android:textSize="18sp"
-                        android:textColor="@color/white" />
+                        android:textColor="@color/white"
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/student_textSend"
@@ -303,15 +302,15 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
-                        android:visibility="gone"
                         android:background="@drawable/recorderbutton_normal_back"
-                        android:paddingTop="8dp"
                         android:paddingBottom="8dp"
                         android:paddingLeft="30dp"
                         android:paddingRight="30dp"
+                        android:paddingTop="8dp"
                         android:text="发送"
                         android:textColor="@color/white"
-                        android:textSize="20dp" />
+                        android:textSize="20dp"
+                        android:visibility="gone" />
                 </LinearLayout>
 
             </LinearLayout>

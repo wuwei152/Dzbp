@@ -42,6 +42,7 @@ public class Constant {
     public static String Ftp_Broadcast = "/Broadcast";
     public static String Ftp_Upgrade = "/Upgrade/";
     public static String Ftp_Snapshot = "/Snapshot/";
+    public static String Ftp_Camera = "/ScreenshotForCamera/";
 
 
     public static int SCREENTYPE = 0;

@@ -7,9 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -54,6 +52,8 @@ import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.MyRecyclerView;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
+import com.md.dzbp.utils.GetCardNumUtils;
+import com.md.dzbp.utils.MainGestureDetector;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -71,7 +71,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 public class StudentActivity extends BaseActivity implements UIDataListener {
-
 
     @BindView(R.id.student_chatlist)
     ListView mChatlist;
@@ -102,9 +101,6 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
     private ArrayList<MessageBase> msgList;
     private ChatAdapter chatAdapter;
 
-    private Handler getCard_handler = null;
-    private Handler foucus_handler = null;
-    private String getCard_stringTemp;
     private ACache mAcache;
     private MainDialog mainDialog;
     private GestureDetector gestureDetector;
@@ -143,7 +139,7 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
         mAcache = ACache.get(this);
 
         mainDialog = new MainDialog(this);
-        gestureDetector = new GestureDetector(StudentActivity.this, onGestureListener);
+        gestureDetector = new GestureDetector(StudentActivity.this, MainGestureDetector.getGestureDetector(mainDialog));
 
         currentParent = new StudentInfoBean.ParentsBean();
         studentInfo = new StudentInfoBean();
@@ -183,8 +179,8 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
         mTextInput.setFocusable(false);
         mTextInput.setFocusableInTouchMode(true);
         //隐藏软键盘
-        InputMethodManager imm= (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        if(imm.isActive()){
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm.isActive()) {
             imm.hideSoftInputFromWindow(mTextInput.getWindowToken(), 0); //强制隐藏键盘
         }
     }
@@ -210,6 +206,9 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
         super.onPause();
         LogUtils.d("EventBus解注册");
         EventBus.getDefault().unregister(this);
+        if (mainDialog != null && mainDialog.isShowing()) {
+            mainDialog.dismiss();
+        }
     }
 
     @Override
@@ -230,7 +229,7 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
 
     }
 
-    @OnClick({R.id.student_back, R.id.student_inputType,R.id.student_textSend})
+    @OnClick({R.id.student_back, R.id.student_inputType, R.id.student_textSend})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.student_back:
@@ -250,9 +249,9 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
                     mTextInput.setFocusable(true);
                     mTextInput.setFocusableInTouchMode(true);
                     //开启软键盘
-                    InputMethodManager imm= (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    if(imm.isActive()){
-                        imm.showSoftInput(mTextInput,InputMethodManager.SHOW_FORCED);
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if (imm.isActive()) {
+                        imm.showSoftInput(mTextInput, InputMethodManager.SHOW_FORCED);
                     }
                 } else if (inputType == 1) {
                     inputType = 0;
@@ -263,8 +262,8 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
                     mTextInput.setFocusable(false);
                     mTextInput.setFocusableInTouchMode(true);
                     //隐藏软键盘
-                    InputMethodManager imm= (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                    if(imm.isActive()){
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if (imm.isActive()) {
                         imm.hideSoftInputFromWindow(mTextInput.getWindowToken(), 0); //强制隐藏键盘
                     }
                 }
@@ -275,9 +274,9 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
     /**
      * 发送文字消息
      */
-    private void SendTextMsg(){
+    private void SendTextMsg() {
         String inputText = mTextInput.getText().toString();
-        if (TextUtils.isEmpty(inputText)){
+        if (TextUtils.isEmpty(inputText)) {
             showToast("请输入要发送的内容！");
             return;
         }
@@ -287,8 +286,8 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
         EventBus.getDefault().post(msg);
         mTextInput.setText("");
         //隐藏软键盘
-        InputMethodManager imm= (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        if(imm.isActive()){
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm.isActive()) {
             imm.hideSoftInputFromWindow(mTextInput.getWindowToken(), 0); //强制隐藏键盘
         }
     }
@@ -297,65 +296,31 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
      * 获取卡号
      */
     private void getCardNum() {
-        mCardNum.addTextChangedListener(new TextWatcher() {
 
+        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum, true);
+        getCardNumUtils.getNum(new GetCardNumUtils.SetNum() {
             @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2,
-                                      int arg3) {
-                getCard_stringTemp = arg0.toString();
-//                LogUtils.i("卡号"+arg0);
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1,
-                                          int arg2, int arg3) {
-                if (getCard_handler == null) {
-                    getCard_handler = new Handler();
-                    getCard_handler.postDelayed(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            LogUtils.d(getCard_stringTemp);
-                            if (!TextUtils.isEmpty(getCard_stringTemp)) {
-                                Intent intent = new Intent(StudentActivity.this, TcpService.class);
-                                intent.putExtra("Num", getCard_stringTemp);
-                                intent.putExtra("Act", 2);
-                                intent.putExtra("ext", "");
-                                startService(intent);
-                            }
-                            mCardNum.setText("");
-                            getCard_handler = null;
-
-                        }
-                    }, 1000);
+            public void setNum(String num) {
+                if (!TextUtils.isEmpty(num)) {
+                    Intent intent = new Intent(StudentActivity.this, TcpService.class);
+                    intent.putExtra("Num", num);
+                    intent.putExtra("Act", 2);
+                    intent.putExtra("ext", "");
+                    startService(intent);
                 }
-            }
-
-            @Override
-            public void afterTextChanged(Editable arg0) {
             }
         });
 
         mTextInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if (!hasFocus){
+                if (!hasFocus) {
                     LogUtils.d("失去焦点");
                     mCardNum.setFocusable(true);
                     mCardNum.requestFocus();
                 }
             }
         });
-
-//        foucus_handler = null;
-//        foucus_handler = new Handler();
-//        foucus_handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                mCardNum.requestFocus();
-//                foucus_handler.postDelayed(this, 1000);
-//            }
-//        }, 1000);
     }
 
     /**
@@ -371,10 +336,15 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
                 File file = new File(FilePath);
                 if (file.exists()) {
 //                    "D:\\\\Website\\\\智慧校园平台\\\\FTP\\\\Voice\\\\" +
-                    VoiceSendMessage msg = new VoiceSendMessage(MSGTYPE.MSGTYPE_VOICE, TimeUtils.currentTimeLong(), studentInfo.getStudent().getPhoto(), studentInfo.getStudent().getAccountname(), FilePath, 0, file.getName(), studentInfo.getStudent().getAccountid(), currentParent.getAccountid());
-                    msg.setSendMsg(true);
-                    chatAdapter.addData(msg);
-                    EventBus.getDefault().post(msg);
+                    try {
+                        VoiceSendMessage msg = new VoiceSendMessage(MSGTYPE.MSGTYPE_VOICE, TimeUtils.currentTimeLong(), studentInfo.getStudent().getPhoto(), studentInfo.getStudent().getAccountname(), FilePath, 0, file.getName(), studentInfo.getStudent().getAccountid(), currentParent.getAccountid());
+                        msg.setSendMsg(true);
+                        chatAdapter.addData(msg);
+                        EventBus.getDefault().post(msg);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        logger.debug(TAG, e.getMessage());
+                    }
                 }
             }
         });
@@ -383,7 +353,7 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
 
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if(keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN){
+                if (keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
                     SendTextMsg();
                     return true;
                 }
@@ -486,6 +456,10 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
                         if (msg.getMsgtype() == 1) {
                             if (msg.getSendid().equals(currentParent.getAccountid())) {
                                 TextReceiveMessage message = new TextReceiveMessage(TimeUtils.parseLong(msg.getCreatetime()), currentParent.getPhoto(), currentParent.getAccountname(), msg.getContent());
+                                msgList.add(message);
+                            } else if (msg.getReceiveid().equals(currentParent.getAccountid())) {
+                                TextSendMessage message = new TextSendMessage(1, TimeUtils.parseLong(msg.getCreatetime()), studentInfo.getStudent().getPhoto(), studentInfo.getStudent().getAccountname(), msg.getContent(), studentId, currentParent.getAccountid());
+                                message.setSendMsg(true);
                                 msgList.add(message);
                             }
                         } else if ((msg.getMsgtype() == 3 || msg.getMsgtype() == 4)) {
@@ -600,23 +574,6 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
     public void cancelRequest() {
         netWorkRequest.CancelPost();
     }
-
-    private GestureDetector.OnGestureListener onGestureListener =
-            new GestureDetector.SimpleOnGestureListener() {
-                @Override
-                public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-                                       float velocityY) {
-                    float x = e2.getX() - e1.getX();
-                    float y = e2.getY() - e1.getY();
-
-                    if (x > 500 && Math.abs(x) > Math.abs(y)) {
-                        mainDialog.dismiss();
-                    } else if (x < -500 && Math.abs(x) > Math.abs(y)) {
-                        mainDialog.show();
-                    }
-                    return true;
-                }
-            };
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {

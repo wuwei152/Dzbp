@@ -2,16 +2,17 @@ package com.md.dzbp.ui.activity;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Editable;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -25,18 +26,26 @@ import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
 import com.md.dzbp.constants.APIConfig;
 import com.md.dzbp.constants.Constant;
+import com.md.dzbp.data.CameraInfo;
 import com.md.dzbp.data.CourseBean;
 import com.md.dzbp.data.LoginEvent;
+import com.md.dzbp.model.DahuaListener;
 import com.md.dzbp.model.DahuaModel;
 import com.md.dzbp.model.NetWorkRequest;
 import com.md.dzbp.model.TimeListener;
 import com.md.dzbp.model.TimeUtils;
 import com.md.dzbp.model.UIDataListener;
 import com.md.dzbp.tcp.TcpService;
+import com.md.dzbp.ui.view.HorizontalListView;
 import com.md.dzbp.ui.view.MainDialog;
 import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
+import com.md.dzbp.utils.GetCardNumUtils;
+import com.md.dzbp.utils.GlideImgManager;
+import com.md.dzbp.utils.MainGestureDetector;
+import com.zhy.adapter.abslistview.CommonAdapter;
+import com.zhy.adapter.abslistview.ViewHolder;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -44,6 +53,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,7 +63,7 @@ import butterknife.OnClick;
 /**
  * 教师打卡后视频查看页面
  */
-public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Callback,TimeListener, UIDataListener {
+public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Callback, TimeListener, UIDataListener {
 
     @BindView(R.id.videoshow_time)
     TextView mTime;
@@ -77,14 +87,11 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
     TextView mAddr;
     @BindView(R.id.videoshow_imgRl)
     RelativeLayout mImgRl;
-    @BindView(R.id.videoshow_qiehuan)
-    ImageView mQiehuan;
     @BindView(R.id.videoshow_mSurface)
     SurfaceView mSurface;
+    @BindView(R.id.videoshow_videoList)
+    HorizontalListView mVideoList;
 
-    private Handler _handler = null;
-    private Handler foucus_handler = null;
-    private String _stringTemp;
     private MainDialog mainDialog;
     private GestureDetector gestureDetector;
     private Dialog dialog;
@@ -95,6 +102,7 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
     private int type = 0;
     private int videoPosition = 0;
     private DahuaModel dahuaModel;
+    private ArrayList<CameraInfo> mCameraInfos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,9 +117,11 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
     @Override
     protected void initUI() {
         LogUtils.d("videoshow--onCreate");
-        mainDialog = new MainDialog(this);
-        gestureDetector = new GestureDetector(VideoShowActivity.this, onGestureListener);
         mAcache = ACache.get(this);
+        mCameraInfos = (ArrayList<CameraInfo>) mAcache.getAsObject("CameraInfo");
+
+        mainDialog = new MainDialog(this);
+        gestureDetector = new GestureDetector(VideoShowActivity.this, MainGestureDetector.getGestureDetector(mainDialog));
         dialog = MyProgressDialog.createLoadingDialog(VideoShowActivity.this, "", this);
         netWorkRequest = new NetWorkRequest(this, this);
         logger = LoggerFactory.getLogger(getClass());
@@ -120,29 +130,47 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
 
     @Override
     protected void initData() {
-        dahuaModel = new DahuaModel(VideoShowActivity.this,mSurface);
+        dahuaModel = new DahuaModel(VideoShowActivity.this, mSurface);
         new TimeUtils(VideoShowActivity.this, this);
 
         mDate.setText(TimeUtils.getStringDate());
         getCardNum();
 
         getUIdata();
-    }
 
-    @OnClick({R.id.videoshow_qiehuan, R.id.videoshow_imgRl})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.videoshow_qiehuan:
-                if (videoPosition == 0) {
-                    videoPosition = 1;
-                } else {
-                    videoPosition = 0;
+        mVideoList.setAdapter(new CommonAdapter<CameraInfo>(VideoShowActivity.this, R.layout.item_video_list, mCameraInfos) {
+            @Override
+            protected void convert(final ViewHolder viewHolder, CameraInfo item, int position) {
+                new DahuaModel(VideoShowActivity.this, item, new DahuaListener() {
+                    @Override
+                    public void resLis(final int code, final boolean isSuccess, final String file) {
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (isSuccess) {
+                                    GlideImgManager.glideLoader(VideoShowActivity.this, file, R.drawable.pic_not_found, R.drawable.pic_not_found, (ImageView) viewHolder.getView(R.id.item_img));
+                                }
+                            }
+                        });
+                    }
+                });
+                viewHolder.setText(R.id.item_text, position + 1 + "路视频");
+            }
+        });
+        mVideoList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                CameraInfo cameraInfo = mCameraInfos.get(position);
+                dahuaModel.stopPlay();
+                dahuaModel.logout();
+                if (mSurface.isAttachedToWindow()) {
+                    dahuaModel.LoginToPlay(cameraInfo.getIp(), cameraInfo.getPort(), cameraInfo.getUsername(), cameraInfo.getPsw());
                 }
-                showToast("切换成功，请稍后...");
-                break;
-        }
+            }
+        });
     }
-
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -166,7 +194,6 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
             mTemp.setText("连接状态：已断开");
             mTemp.setTextColor(getResources().getColor(R.color.conf));
         }
-        dahuaModel.LoginToPlay();
     }
 
     @Override
@@ -174,8 +201,9 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
         super.onPause();
         LogUtils.d("解注册EventBus");
         EventBus.getDefault().unregister(this);
-        dahuaModel.stopPlay();
-        dahuaModel.logout();
+        if (mainDialog != null && mainDialog.isShowing()) {
+            mainDialog.dismiss();
+        }
     }
 
     @Override
@@ -204,78 +232,26 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
      * 读取卡号
      */
     private void getCardNum() {
-        mCardNum.addTextChangedListener(new TextWatcher() {
 
+        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum);
+        getCardNumUtils.getNum(new GetCardNumUtils.SetNum() {
             @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2,
-                                      int arg3) {
-                _stringTemp = arg0.toString();
-//                LogUtils.i("卡号"+arg0);
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1,
-                                          int arg2, int arg3) {
-                if (_handler == null) {
-                    _handler = new Handler();
-                    _handler.postDelayed(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            LogUtils.d(_stringTemp);
-                            if (!TextUtils.isEmpty(_stringTemp)) {
-                                Intent intent = new Intent(VideoShowActivity.this, TcpService.class);
-                                intent.putExtra("Num", _stringTemp);
-                                intent.putExtra("Act", 8);
-                                intent.putExtra("ext", "");
-                                startService(intent);
-                            }
-                            mCardNum.setText("");
-                            _handler = null;
-
-                        }
-                    }, 1000);
+            public void setNum(String num) {
+                if (!TextUtils.isEmpty(num)) {
+                    Intent intent = new Intent(VideoShowActivity.this, TcpService.class);
+                    intent.putExtra("Num", num);
+                    intent.putExtra("Act", 8);
+                    intent.putExtra("ext", "");
+                    startService(intent);
                 }
             }
-
-            @Override
-            public void afterTextChanged(Editable arg0) {
-//                LogUtils.d(arg0);
-            }
         });
-        foucus_handler = null;
-        foucus_handler = new Handler();
-        foucus_handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mCardNum.requestFocus();
-                foucus_handler.postDelayed(this, 1000);
-            }
-        }, 1000);
     }
 
     @Override
     public void getTime(String time) {
         mTime.setText(time);
     }
-
-    private GestureDetector.OnGestureListener onGestureListener =
-            new GestureDetector.SimpleOnGestureListener() {
-                @Override
-                public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-                                       float velocityY) {
-                    float x = e2.getX() - e1.getX();
-                    float y = e2.getY() - e1.getY();
-
-                    if (x > 500 && Math.abs(x) > Math.abs(y)) {
-                        mainDialog.dismiss();
-                    } else if (x < -500 && Math.abs(x) > Math.abs(y)) {
-                        mainDialog.show();
-                    }
-                    return true;
-                }
-            };
-
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -302,24 +278,33 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
      */
     private void setUIData(CourseBean courseBean) {
 
-        if (!TextUtils.isEmpty(courseBean.getPhoto())) {
-            Glide.with(this).load(courseBean.getPhoto()).into(mImg);
+        if (mCameraInfos != null && mCameraInfos.size() > 0) {
+            mImg.setVisibility(View.GONE);
+            mSurface.setVisibility(View.VISIBLE);
+        } else {
+            mImg.setVisibility(View.VISIBLE);
+            mSurface.setVisibility(View.GONE);
+            if (!TextUtils.isEmpty(courseBean.getImage())) {
+                Glide.with(this).load(courseBean.getImage()).into(mImg);
+            } else {
+                Glide.with(this).load(R.drawable.teacher).into(mImg);
+            }
         }
         mClassName.setText(courseBean.getGradeName() + courseBean.getClassName());
         if (!TextUtils.isEmpty(courseBean.getSubjectName())) {
             mCourseName.setText("课程：" + courseBean.getSubjectName());
-        }else {
+        } else {
             mCourseName.setVisibility(View.GONE);
         }
         if (!TextUtils.isEmpty(courseBean.getAccountName())) {
             mTeacherName.setText("教师：" + courseBean.getAccountName());
-        }else {
+        } else {
             mTeacherName.setText("班主任：" + courseBean.getManagerAccountName());
         }
         if (!TextUtils.isEmpty(courseBean.getPeriodName())) {
             mPeriodName.setText("节次：" + courseBean.getPeriodName());
-        }else {
-            mCourseName.setVisibility(View.GONE);
+        } else {
+            mPeriodName.setVisibility(View.GONE);
         }
         mAddr.setText("教室：" + courseBean.getAddress());
     }
@@ -384,8 +369,13 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        dahuaModel.initSurfaceView(mSurface);
         LogUtils.d("surfaceCreated");
+        dahuaModel.initSurfaceView(mSurface);
+
+        if (mCameraInfos != null && mCameraInfos.size() > 0) {
+            CameraInfo cameraInfo = mCameraInfos.get(0);
+            dahuaModel.LoginToPlay(cameraInfo.getIp(), cameraInfo.getPort(), cameraInfo.getUsername(), cameraInfo.getPsw());
+        }
     }
 
     @Override
@@ -395,6 +385,15 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
+        LogUtils.d("surfaceDestroyed");
+        if (mCameraInfos != null && mCameraInfos.size() > 0) {
+            dahuaModel.stopPlay();
+            dahuaModel.logout();
+        }
+    }
 
+    @OnClick(R.id.videoshow_back)
+    public void onViewClicked() {
+        finish();
     }
 }

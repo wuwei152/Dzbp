@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.view.SurfaceView;
 
+import com.apkfuns.logutils.LogUtils;
 import com.company.NetSDK.CB_fRealDataCallBackEx;
 import com.company.NetSDK.CB_fSnapRev;
 import com.company.NetSDK.EM_LOGIN_SPAC_CAP_TYPE;
@@ -13,11 +14,13 @@ import com.company.NetSDK.SDK_RealPlayType;
 import com.company.NetSDK.SNAP_PARAMS;
 import com.company.PlaySDK.IPlaySDK;
 import com.md.dzbp.constants.Constant;
+import com.md.dzbp.data.CameraInfo;
 import com.md.dzbp.utils.FileUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -35,7 +38,7 @@ public class DahuaModel {
     private final Context mContext;
     private int mPlayPort = 0;
     private long mRealHandle = 0;
-    private long mLoginHandle = 0;
+    public long mLoginHandle = 0;
     private SurfaceView mSurface;
     private NET_DEVICEINFO_Ex mDeviceInfo;
     private final int STREAM_BUF_SIZE = 1024 * 1024 * 2;
@@ -44,10 +47,19 @@ public class DahuaModel {
     private final int RAW_AUDIO_VIDEO_MIX_DATA = 0; ///原始音视频混合数据;
     private String TAG = "DahuaModel-->{}";
     private Logger logger;
+    private DahuaListener listener;
 
-    public DahuaModel(Context mContext) {
+    public DahuaModel(Context mContext, DahuaListener listener) {
         this.mContext = mContext;
+        this.listener = listener;
         init();
+    }
+
+    public DahuaModel(Context mContext, CameraInfo cameraInfo, DahuaListener listener) {
+        this.mContext = mContext;
+        this.listener = listener;
+        init();
+        LoginToSnap(cameraInfo.getIp(), cameraInfo.getPort(), cameraInfo.getUsername(), cameraInfo.getPsw());
     }
 
     public DahuaModel(Context context, SurfaceView mSurface) {
@@ -60,13 +72,18 @@ public class DahuaModel {
      * 初始化
      */
     private void init() {
-        NetSDKLib.getInstance().init();
-        mPlayPort = IPlaySDK.PLAYGetFreePort();
-        ///码流类型的hash
-        streamTypeMap.clear();
-        streamTypeMap.put(0, SDK_RealPlayType.SDK_RType_Realplay_0);
-        streamTypeMap.put(1, SDK_RealPlayType.SDK_RType_Realplay_1);
-        logger = LoggerFactory.getLogger(getClass());
+        try {
+//            NetSDKLib.getInstance().init();
+            mPlayPort = IPlaySDK.PLAYGetFreePort();
+            ///码流类型的hash
+            streamTypeMap.clear();
+            streamTypeMap.put(0, SDK_RealPlayType.SDK_RType_Realplay_0);
+            streamTypeMap.put(1, SDK_RealPlayType.SDK_RType_Realplay_1);
+            logger = LoggerFactory.getLogger(getClass());
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(TAG, e.getMessage());
+        }
     }
 
     /**
@@ -77,7 +94,12 @@ public class DahuaModel {
     public void initSurfaceView(final SurfaceView sv) {
         if (sv == null)
             return;
-        IPlaySDK.InitSurface(mPlayPort, sv);
+        try {
+            IPlaySDK.InitSurface(mPlayPort, sv);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(TAG, e.getMessage());
+        }
     }
 
 
@@ -91,15 +113,27 @@ public class DahuaModel {
      * @return
      */
     public boolean login(String address, String port, String username, String password) {
-        Integer err = new Integer(0);
-        mDeviceInfo = new NET_DEVICEINFO_Ex();
-        mLoginHandle = INetSDK.LoginEx2(address, Integer.parseInt(port), username, password, EM_LOGIN_SPAC_CAP_TYPE.EM_LOGIN_SPEC_CAP_MOBILE, null, mDeviceInfo, err);
-        if (0 == mLoginHandle) {
-            int mErrorCode = INetSDK.GetLastError();
-            logger.debug(TAG, "Failed to Login Device " + mErrorCode + "/" + address);
+        try {
+            Integer err = new Integer(0);
+            mDeviceInfo = new NET_DEVICEINFO_Ex();
+            logger.debug(TAG, "开始登录");
+            mLoginHandle = INetSDK.LoginEx2(address, Integer.parseInt(port), username, password, EM_LOGIN_SPAC_CAP_TYPE.EM_LOGIN_SPEC_CAP_MOBILE, null, mDeviceInfo, err);
+            if (0 == mLoginHandle) {
+                int mErrorCode = INetSDK.GetLastError();
+                logger.debug(TAG, "登录失败！" + mErrorCode + "/" + address);
+                if (listener != null)
+                    listener.resLis(0, false, null);
+                return false;
+            }
+            logger.debug(TAG, "登录成功！");
+            return true;
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            logger.error(TAG, "登录出错"+e.getMessage());
+            if (listener != null)
+                listener.resLis(0, false, null);
             return false;
         }
-        return true;
     }
 
     /**
@@ -108,13 +142,18 @@ public class DahuaModel {
      * @return
      */
     public boolean logout() {
+        logger.debug(TAG, "摄像头开始退出登录！");
         if (0 == mLoginHandle) {
+            LogUtils.e("mLoginHandle为0");
             return false;
         }
 
         boolean retLogout = INetSDK.Logout(mLoginHandle);
         if (retLogout) {
             mLoginHandle = 0;
+            logger.debug(TAG, "摄像头退出登录！");
+        }else {
+            logger.debug(TAG, "摄像头退出失败！");
         }
 
         return retLogout;
@@ -131,7 +170,7 @@ public class DahuaModel {
 
         @Override
         protected Boolean doInBackground(String... params) {
-            return login("192.168.0.89", "37777", "admin", "12345");
+            return login(params[0], params[1], params[2], params[3]);
         }
 
         @Override
@@ -144,6 +183,7 @@ public class DahuaModel {
             }
         }
     }
+
     /**
      * 登录后抓图任务
      */
@@ -155,7 +195,7 @@ public class DahuaModel {
 
         @Override
         protected Boolean doInBackground(String... params) {
-            return login("192.168.0.89", "37777", "admin", "12345");
+            return login(params[0], params[1], params[2], params[3]);
         }
 
         @Override
@@ -172,47 +212,58 @@ public class DahuaModel {
     /**
      * 登录后播放
      */
-    public void LoginToPlay(){
+    public void LoginToPlay(String address, String port, String username, String password) {
+        String[] params = {address, port, username, password};
         LoginAndPlayTask loginAndPlayTask = new LoginAndPlayTask();
-        loginAndPlayTask.execute();
+        loginAndPlayTask.execute(params);
     }
+
     /**
      * 登录后抓图
      */
-    public void LoginToSnap(){
+    public void LoginToSnap(String address, String port, String username, String password) {
+        String[] params = {address, port, username, password};
         LoginAndSnapTask loginAndSnapTask = new LoginAndSnapTask();
-        loginAndSnapTask.execute();
+        loginAndSnapTask.execute(params);
     }
 
 
     /**
      * 视频预览前设置
+     *
      * @param channel
      * @param streamType
      * @param sv
      * @return
      */
     public boolean prePlay(int channel, int streamType, SurfaceView sv) {
-        mRealHandle = INetSDK.RealPlayEx(mLoginHandle, channel, streamType);
-        if (mRealHandle == 0) {
-            return false;
-        }
-        boolean isOpened = IPlaySDK.PLAYOpenStream(mPlayPort, null, 0, STREAM_BUF_SIZE) == 0 ? false : true;
-        if (!isOpened) {
-            logger.debug(TAG, "OpenStream Failed");
-            return false;
-        }
-        boolean isPlayin = IPlaySDK.PLAYPlay(mPlayPort, sv) == 0 ? false : true;
-        if (!isPlayin) {
-            logger.debug(TAG, "PLAYPlay Failed");
-            IPlaySDK.PLAYCloseStream(mPlayPort);
-            return false;
-        }
-        boolean isSuccess = IPlaySDK.PLAYPlaySoundShare(mPlayPort) == 0 ? false : true;
-        if (!isSuccess) {
-            logger.debug(TAG, "SoundShare Failed");
-            IPlaySDK.PLAYStop(mPlayPort);
-            IPlaySDK.PLAYCloseStream(mPlayPort);
+        try {
+            mRealHandle = INetSDK.RealPlayEx(mLoginHandle, channel, streamType);
+            if (mRealHandle == 0) {
+                return false;
+            }
+            boolean isOpened = IPlaySDK.PLAYOpenStream(mPlayPort, null, 0, STREAM_BUF_SIZE) == 0 ? false : true;
+            if (!isOpened) {
+                logger.debug(TAG, "OpenStream Failed");
+                return false;
+            }
+            boolean isPlayin = IPlaySDK.PLAYPlay(mPlayPort, sv) == 0 ? false : true;
+            if (!isPlayin) {
+                logger.debug(TAG, "PLAYPlay Failed");
+                IPlaySDK.PLAYCloseStream(mPlayPort);
+                return false;
+            }
+            boolean isSuccess = IPlaySDK.PLAYPlaySoundShare(mPlayPort) == 0 ? false : true;
+            if (!isSuccess) {
+                logger.debug(TAG, "SoundShare Failed");
+                IPlaySDK.PLAYStop(mPlayPort);
+                IPlaySDK.PLAYCloseStream(mPlayPort);
+                return false;
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(TAG, e.getMessage());
             return false;
         }
 //        if (-1 == mCurVolume) {
@@ -220,29 +271,34 @@ public class DahuaModel {
 //        } else {
 //            IPlaySDK.PLAYSetVolume(mPlayPort, mCurVolume);
 //        }
-        return true;
+
     }
 
     /**
      * 开始预览视频
      */
     public void startPlay() {
-        if (!prePlay(0, streamTypeMap.get(0), mSurface)) {
-            logger.debug(TAG, "prePlay returned false..");
-            return;
-        }
-        if (mRealHandle != 0) {
-            mRealDataCallBackEx = new CB_fRealDataCallBackEx() {
-                @Override
-                public void invoke(long rHandle, int dataType, byte[] buffer, int bufSize, int param) {
-//                    logger.debug(TAG, "dataType:" + dataType + "; bufSize:" + bufSize + "; param:" + param);
-                    if (RAW_AUDIO_VIDEO_MIX_DATA == dataType) {
-//                        logger.debug(TAG, "dataType == 0");
-                        IPlaySDK.PLAYInputData(mPlayPort, buffer, buffer.length);
+        try {
+            if (!prePlay(0, streamTypeMap.get(0), mSurface)) {
+                logger.debug(TAG, "prePlay returned false..");
+                return;
+            }
+            if (mRealHandle != 0) {
+                mRealDataCallBackEx = new CB_fRealDataCallBackEx() {
+                    @Override
+                    public void invoke(long rHandle, int dataType, byte[] buffer, int bufSize, int param) {
+                        //                    logger.debug(TAG, "dataType:" + dataType + "; bufSize:" + bufSize + "; param:" + param);
+                        if (RAW_AUDIO_VIDEO_MIX_DATA == dataType) {
+                            //                        logger.debug(TAG, "dataType == 0");
+                            IPlaySDK.PLAYInputData(mPlayPort, buffer, buffer.length);
+                        }
                     }
-                }
-            };
-            INetSDK.SetRealDataCallBackEx(mRealHandle, mRealDataCallBackEx, 1);
+                };
+                INetSDK.SetRealDataCallBackEx(mRealHandle, mRealDataCallBackEx, 1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(TAG, e.getMessage());
         }
     }
 
@@ -257,7 +313,7 @@ public class DahuaModel {
             INetSDK.StopRealPlayEx(mRealHandle);
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error(TAG,e.getMessage());
+            logger.error(TAG, e.getMessage());
         }
         mRealHandle = 0;
     }
@@ -274,7 +330,7 @@ public class DahuaModel {
             INetSDK.StopRealPlayEx(mRealHandle);
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error(TAG,e.getMessage());
+            logger.error(TAG, e.getMessage());
         }
         mRealHandle = 0;
         mSurface = null;
@@ -283,6 +339,7 @@ public class DahuaModel {
 
     /**
      * 远程抓图
+     *
      * @param channel
      */
     public void snap(int channel) {
@@ -302,6 +359,8 @@ public class DahuaModel {
             logger.debug(TAG, "远程抓图成功");
         } else {
             logger.debug(TAG, "远程抓图失败");
+            listener.resLis(1, false, null);
+//            logout();
             return;
         }
     }
@@ -320,8 +379,10 @@ public class DahuaModel {
             }
 
             logger.debug(TAG, "FileName:" + strFileName);
-            if (strFileName.equals(""))
+            if (strFileName.equals("")){
+                logger.debug(TAG, "异常：FileName为空");
                 return;
+            }
 
             FileOutputStream fileStream = null;
 
@@ -330,12 +391,18 @@ public class DahuaModel {
                 logger.debug(TAG, "fileStream");
                 fileStream.write(pBuf, 0, RevLen);
                 fileStream.flush();
+                listener.resLis(1, true, strFileName);
+//                logout();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-                logger.error(TAG,e.getMessage());
+                listener.resLis(1, false, null);
+//                logout();
+                logger.error(TAG, e.getMessage());
             } catch (IOException e) {
                 e.printStackTrace();
-                logger.error(TAG,e.getMessage());
+                listener.resLis(1, false, null);
+//                logout();
+                logger.error(TAG, e.getMessage());
             } finally {
                 try {
                     if (null != fileStream) {
@@ -343,16 +410,20 @@ public class DahuaModel {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
-                    logger.error(TAG,e.getMessage());
+                    logger.error(TAG, e.getMessage());
                 }
             }
         }
     }
 
     private synchronized String createInnerAppFile(String suffix) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
         String time = format.format(new Date());
-        String file = FileUtils.getDiskCacheDir(mContext) + "Screenshot/snap_" + Constant.getDeviceId(mContext)+"_"+time.replace(":", "_") +
+        File dir = new File(FileUtils.getDiskCacheDir(mContext) + "Screenshot/");
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        String file = FileUtils.getDiskCacheDir(mContext) + "Screenshot/snap_" + Constant.getDeviceId(mContext) + "_" + time.replace(":", "_") +
                 "." + suffix;
         return file;
     }

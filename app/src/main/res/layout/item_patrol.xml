@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="20dp">
+        android:padding="15dp">
 
         <TextView
             android:id="@+id/item_name"
@@ -23,7 +23,7 @@
         <ToggleButton
             android:id="@+id/item_check"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="25dp"
             android:layout_gravity="center_horizontal"
             android:background="@android:color/transparent"
             android:button="@drawable/ios7_btn"

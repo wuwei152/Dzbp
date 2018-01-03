@@ -53,9 +53,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="18℃-29℃"
-                    android:visibility="gone"
                     android:textColor="@color/white"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <TextView
@@ -154,13 +154,13 @@
         android:layout_height="match_parent"
         android:layout_weight="540"
         android:orientation="vertical">
+
         <ImageView
-            android:visibility="gone"
             android:layout_width="180dp"
             android:layout_height="100dp"
             android:scaleType="fitXY"
             android:src="@drawable/dianxin"
-            />
+            android:visibility="gone" />
 
         <TextView
             android:layout_width="match_parent"
@@ -186,20 +186,21 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:headerDividersEnabled="true"
             android:divider="@color/line"
-            android:dividerHeight="0.5dp" />
+            android:dividerHeight="0.5dp"
+            android:headerDividersEnabled="true" />
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="#ECE2E1"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:background="#ECE2E1">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:padding="15dp"
                 android:lineSpacingExtra="5dp"
+                android:padding="15dp"
                 android:text="                                               考 场 纪 律 要 求\n\n一、 考生应提前10分钟进入考场，按时参加考试，开考10分钟后，不得进入考场。\n二、 考生进入考场后，按座位号入座，并将《准考证》、《身份证》放在桌子右上角,以备查对，证件不齐者不准进入考场。 \n三、 进入考场，有关物品放在指定地点。不得携带与考试有关的书籍、资料及其它物品到考生座位。 \n四、 进入考场关闭通讯工具，如在考试中使用通讯工具，一律按违反考试纪律处理。 \n五、 考生应保持考场安静，不得吸烟，不得交头接耳，乱窜座位。 \n六、 考生违反考场纪律，经三次提示后，仍不改正，取消考试成绩。 \n七、 考试中不得以任何方式作弊或帮助他人作弊，违者将取消考试成绩，并对违纪者进行通报批评。 \n八、 考试中发现替考等严重违反考试纪律的考生在全局通报批评，并在三年内不得参加职称评审或者考试。 九、 考试中出现计算机设备故障，考生应举手示意，由考场工作人员进行处理。考生不得随意解决，不得进行与考试无关的计算机操作。 \n十、 考试时间为50分钟，到达规定时间系统将自动结束考试。考生交卷后不得在考场内逗留，应迅速离开考场。"
                 android:textColor="@color/text_black"
                 android:textSize="16sp" />

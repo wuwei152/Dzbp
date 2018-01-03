@@ -7,9 +7,7 @@ import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -39,6 +37,8 @@ import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.FileUtils;
+import com.md.dzbp.utils.GetCardNumUtils;
+import com.md.dzbp.utils.MainGestureDetector;
 import com.nanchen.compresshelper.CompressHelper;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
@@ -92,9 +92,6 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
     private SurfaceHolder.Callback callback;
     private Camera camera;
     private String TAG = "SignActivity-->{}";
-    private Handler card_handler = null;
-    private Handler foucus_handler = null;
-    private String card_stringTemp;
     private MainDialog mainDialog;
     private GestureDetector gestureDetector;
     private Dialog dialog;
@@ -124,7 +121,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
         mainDialog = new MainDialog(this);
         mAcache = ACache.get(this);
         logger = LoggerFactory.getLogger(getClass());
-        gestureDetector = new GestureDetector(SignActivity.this, onGestureListener);
+        gestureDetector = new GestureDetector(SignActivity.this, MainGestureDetector.getGestureDetector(mainDialog));
         //获取时间日期
         new TimeUtils(SignActivity.this, this);
         //进度
@@ -168,7 +165,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
     @Override
     protected void onResume() {
         super.onResume();
-        logger.debug(TAG,"签到界面");
+        logger.debug(TAG, "签到界面");
         Constant.SCREENTYPE = 7;
         LogUtils.d("onResume");
         EventBus.getDefault().register(this);
@@ -187,6 +184,9 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
         super.onPause();
         LogUtils.d("onPause");
         EventBus.getDefault().unregister(this);
+        if (mainDialog != null && mainDialog.isShowing()) {
+            mainDialog.dismiss();
+        }
     }
 
 
@@ -212,7 +212,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
                 try {
                     Thread.sleep(300);
 //                    camera = Camera.open();
-                    logger.debug(TAG,"initCamera");
+                    logger.debug(TAG, "initCamera");
                     camera = Camera.open(Camera.getNumberOfCameras() - 1);
                     camera.setPreviewDisplay(mSurface.getHolder());
                     //        camera.setDisplayOrientation(90);
@@ -330,73 +330,17 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
      * 获取刷卡卡号
      */
     private void getCardNum() {
-        mCardNum.addTextChangedListener(new TextWatcher() {
 
+        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum);
+        getCardNumUtils.getNum(new GetCardNumUtils.SetNum() {
             @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2,
-                                      int arg3) {
-                card_stringTemp = arg0.toString();
-//                LogUtils.i("卡号"+arg0);
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1,
-                                          int arg2, int arg3) {
-                if (card_handler == null) {
-                    card_handler = new Handler();
-                    card_handler.postDelayed(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            LogUtils.d(card_stringTemp);
-                            if (!TextUtils.isEmpty(card_stringTemp)) {
-                                TakePicture(card_stringTemp);
-                            } else {
-                                logger.debug(TAG, "获取卡号失败");
-                            }
-                            mCardNum.setText("");
-                            card_handler = null;
-
-                        }
-                    }, 1000);
+            public void setNum(String num) {
+                if (!TextUtils.isEmpty(num)) {
+                    TakePicture(num);
                 }
-            }
-
-            @Override
-            public void afterTextChanged(Editable arg0) {
-//                LogUtils.d(arg0);
             }
         });
-        foucus_handler = null;
-        foucus_handler = new Handler();
-        foucus_handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mCardNum.requestFocus();
-                foucus_handler.postDelayed(this, 1000);
-            }
-        }, 1000);
     }
-
-    /**
-     * 手势滑动弹出框
-     */
-    private GestureDetector.OnGestureListener onGestureListener =
-            new GestureDetector.SimpleOnGestureListener() {
-                @Override
-                public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-                                       float velocityY) {
-                    float x = e2.getX() - e1.getX();
-                    float y = e2.getY() - e1.getY();
-
-                    if (x > 500 && Math.abs(x) > Math.abs(y)) {
-                        mainDialog.dismiss();
-                    } else if (x < -500 && Math.abs(x) > Math.abs(y)) {
-                        mainDialog.show();
-                    }
-                    return true;
-                }
-            };
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -463,12 +407,12 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
 
     @Override
     public void showDialog() {
-        if (dialog != null&&!mainDialog.isShowing()) {
+        if (dialog != null && !mainDialog.isShowing()) {
             try {
                 dialog.show();
             } catch (Exception e) {
                 e.printStackTrace();
-                logger.error(TAG,e.getMessage());
+                logger.error(TAG, e.getMessage());
             }
         }
     }
@@ -515,6 +459,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
 //            showToast("签到失败！");
 //        }
     }
+
     /**
      * 接收到连接信息
      *

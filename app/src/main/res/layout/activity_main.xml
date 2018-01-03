@@ -11,8 +11,16 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="140"
-        android:paddingLeft="15dp"
         android:paddingRight="15dp">
+
+        <ImageView
+            android:id="@+id/main_sclIcon"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerVertical="true"
+            android:layout_margin="15dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/pic_not_found" />
 
         <LinearLayout
             android:id="@+id/main_ll"
@@ -20,6 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@id/main_sclIcon"
             android:orientation="vertical">
 
             <TextView
@@ -38,26 +47,25 @@
                 android:textSize="16sp" />
 
             <TextView
-                android:visibility="gone"
                 android:id="@+id/main_temp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:text=""
                 android:textColor="@color/text_black"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:visibility="gone" />
         </LinearLayout>
 
         <ImageView
-            android:visibility="gone"
             android:layout_width="180dp"
             android:layout_height="100dp"
-            android:layout_toRightOf="@id/main_ll"
-            android:layout_marginLeft="15dp"
             android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:layout_toRightOf="@id/main_ll"
             android:scaleType="fitXY"
             android:src="@drawable/dianxin"
-            />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/main_className"
@@ -65,14 +73,23 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:textColor="@color/text_black"
-            android:textSize="40sp" />
+            android:textSize="45sp" />
+        <TextView
+            android:id="@+id/main_classAlias"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/main_className"
+            android:layout_centerInParent="true"
+            android:textColor="@color/text_black"
+            android:textSize="32sp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="right"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:gravity="right"
             android:orientation="vertical">
 
             <TextView
@@ -191,9 +208,9 @@
                     <TextView
                         android:id="@+id/main_yingdao"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
+                        android:layout_weight="1"
                         android:text=" "
                         android:textColor="@color/text_black"
                         android:textSize="18sp" />
@@ -209,9 +226,9 @@
                     <TextView
                         android:id="@+id/main_shidao"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
+                        android:layout_weight="1"
                         android:text=" "
                         android:textColor="@color/text_black"
                         android:textSize="18sp" />
@@ -227,9 +244,9 @@
                     <TextView
                         android:id="@+id/main_weidao"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
+                        android:layout_weight="1"
                         android:text=" "
                         android:textColor="@color/text_black"
                         android:textSize="18sp" />
@@ -307,14 +324,14 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="200dp"
                     android:layout_marginTop="15dp"
                     android:orientation="horizontal">
 
                     <ImageView
                         android:id="@+id/main_classMng_icon"
-                        android:layout_width="130dp"
-                        android:layout_height="160dp"
+                        android:layout_width="145dp"
+                        android:layout_height="200dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/pic_not_found" />
 
@@ -325,103 +342,83 @@
                         android:layout_marginTop="10dp"
                         android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/main_classMng_name"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/text_black"
-                            android:textSize="20sp" />
+                            android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/main_classMng_course"
-                            android:layout_width="wrap_content"
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="班主任："
+                                android:textColor="@color/black"
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/main_classMng_name"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:textColor="@color/text_black"
+                                android:textSize="20sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="15dp"
-                            android:textColor="@color/text_black"
-                            android:textSize="20sp" />
+                            android:orientation="vertical">
 
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="班主任寄语："
+                                android:layout_marginTop="15dp"
+                                android:textColor="@color/black"
+                                android:textSize="22sp"
+                                android:textStyle="bold" />
+
+                            <ScrollView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="15dp"
+                                android:scrollbars="none">
+
+                                <TextView
+                                    android:id="@+id/main_classMng_course"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:lineSpacingMultiplier="1.2"
+                                    android:letterSpacing="1.1"
+                                    android:textColor="@color/text_black"
+                                    android:textSize="18sp" />
+                            </ScrollView>
+                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
 
-                <LinearLayout
+                <ScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="25dp"
-                    android:visibility="gone"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="班        长："
-                        android:textColor="@color/text_gray"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:layout_width="60dp"
-                        android:layout_height="wrap_content"
-                        android:text="张北欧"
-                        android:textColor="@color/text_black"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="30dp"
-                        android:text="副班长   ："
-                        android:textColor="@color/text_gray"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="陈长安"
-                        android:textColor="@color/text_black"
-                        android:textSize="18sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="80dp"
                     android:layout_marginTop="15dp"
-                    android:visibility="gone"
-                    android:orientation="horizontal">
+                    android:scrollbars="none">
 
                     <TextView
+                        android:id="@+id/main_moto"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="学习委员："
-                        android:textColor="@color/text_gray"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:layout_width="60dp"
-                        android:layout_height="wrap_content"
-                        android:text="苗丽丽"
+                        android:letterSpacing="1.1"
+                        android:lineSpacingMultiplier="1.2"
                         android:textColor="@color/text_black"
                         android:textSize="18sp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="30dp"
-                        android:text="纪律委员："
-                        android:textColor="@color/text_gray"
-                        android:textSize="18sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="陈鹏飞"
-                        android:textColor="@color/text_black"
-                        android:textSize="18sp" />
-                </LinearLayout>
+                </ScrollView>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="30dp"
-                    android:layout_marginTop="60dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginTop="20dp"
                     android:background="@drawable/gray_strack_back"
                     android:orientation="vertical"
                     android:padding="30dp">

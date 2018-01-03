@@ -157,14 +157,15 @@
         android:layout_weight="540"
         android:orientation="vertical"
         android:padding="30dp">
+
         <ImageView
-            android:visibility="gone"
             android:layout_width="180dp"
             android:layout_height="100dp"
             android:layout_gravity="right"
             android:scaleType="fitXY"
             android:src="@drawable/dianxin"
-            />
+            android:visibility="gone" />
+
         <TextView
             android:id="@+id/meet_listTitle"
             android:layout_width="match_parent"
@@ -193,8 +194,8 @@
                 android:id="@+id/meet_listTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_black"
                 android:text="无"
+                android:textColor="@color/text_black"
                 android:textSize="22sp" />
         </LinearLayout>
 
@@ -216,8 +217,8 @@
                 android:id="@+id/meet_listAddr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/text_black"
                 android:text="无"
+                android:textColor="@color/text_black"
                 android:textSize="22sp" />
         </LinearLayout>
 

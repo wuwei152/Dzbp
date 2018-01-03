@@ -30,6 +30,7 @@ public class CourseBean implements Serializable {
     private String address;
     private String accountName;
     private String photo;
+    private String image;
     private String periodName;
     private String className;
     private String subjectId;
@@ -161,5 +162,13 @@ public class CourseBean implements Serializable {
 
     public void setSubjectName(String subjectName) {
         this.subjectName = subjectName;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

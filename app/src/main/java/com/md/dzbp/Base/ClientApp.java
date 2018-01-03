@@ -1,10 +1,12 @@
 package com.md.dzbp.Base;
 
 import android.app.Application;
+import android.text.TextUtils;
 
 import com.apkfuns.logutils.LogLevel;
 import com.apkfuns.logutils.LogUtils;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.md.dzbp.model.NetSDKLib;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.FileUtils;
 
@@ -41,14 +43,17 @@ public class ClientApp extends Application {
         //注册错误处理保存本地
 //        CrashHandler crashHandler = CrashHandler.getInstance();
 //        crashHandler.init(this);
-
+        NetSDKLib.getInstance().init();
         try {
 //            deleteCache();
         } catch (Exception e) {
             logger.error("ClientApp", e.getMessage());
         }
         //加入初始密码
-        mAcache.put("AdminPsw", "1234");
+        String adminPsw = mAcache.getAsString("AdminPsw");
+        if (TextUtils.isEmpty(adminPsw)){
+            mAcache.put("AdminPsw", "1234");
+        }
     }
 
     public static ClientApp getInstance() {

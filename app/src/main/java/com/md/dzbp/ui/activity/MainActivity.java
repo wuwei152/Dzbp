@@ -3,12 +3,17 @@ package com.md.dzbp.ui.activity;
 import android.app.Dialog;
 import android.app.smdt.SmdtManager;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
-import android.text.Editable;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,6 +34,7 @@ import com.md.dzbp.R;
 import com.md.dzbp.adapter.StuListAdapter;
 import com.md.dzbp.constants.APIConfig;
 import com.md.dzbp.constants.Constant;
+import com.md.dzbp.data.CameraInfo;
 import com.md.dzbp.data.ClassInfoBean;
 import com.md.dzbp.data.ClassManagerBean;
 import com.md.dzbp.data.LoginEvent;
@@ -53,7 +59,9 @@ import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.MyRecyclerView;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
+import com.md.dzbp.utils.GetCardNumUtils;
 import com.md.dzbp.utils.GlideImgManager;
+import com.md.dzbp.utils.MainGestureDetector;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -118,6 +126,12 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     TextView mShidao;
     @BindView(R.id.main_weidao)
     TextView mWeidao;
+    @BindView(R.id.main_classAlias)
+    TextView mAlias;
+    @BindView(R.id.main_moto)
+    TextView mMoto;
+    @BindView(R.id.main_sclIcon)
+    ImageView mSclIcon;
     private Runnable ScrollRunnable = new Runnable() {
         @Override
         public void run() {
@@ -139,9 +153,6 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
             }
         }
     };
-    private Handler getCardNum_handler = null;
-    private Handler foucus_handler = null;
-    private String cardNum_stringTemp;
     private ACache mAcache;
     private MainDialog mainDialog;
     private GestureDetector gestureDetector;
@@ -152,7 +163,8 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     private List<MainData.ChatBean> mChatList;
     private Dialog dialog;
     private Logger logger;
-    private String TAG ="MainActivity-->{}";
+    private String TAG = "MainActivity-->{}";
+    private ArrayList<CameraInfo> mCameraInfos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,7 +188,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         dialog = MyProgressDialog.createLoadingDialog(MainActivity.this, "", this);
         netWorkRequest = new NetWorkRequest(this, this);
 
-        gestureDetector = new GestureDetector(MainActivity.this, onGestureListener);
+        gestureDetector = new GestureDetector(MainActivity.this, MainGestureDetector.getGestureDetector(mainDialog));
 
         noticeScroll_handler.postDelayed(ScrollRunnable, 3000);
 
@@ -208,6 +220,14 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
                 startActivity(intent);
             }
         });
+
+        mCameraInfos = new ArrayList<>();
+//        mCameraInfos.add(new CameraInfo("192.168.8.80", "37777", "admin", "12345"));
+//        mCameraInfos.add(new CameraInfo("192.168.8.81", "37777", "admin", "12345"));
+//        mCameraInfos.add(new CameraInfo("172.16.13.222", "37777", "admin", "12345"));
+        mCameraInfos.add(new CameraInfo("192.168.0.89", "37777", "admin", "12345"));
+        mCameraInfos.add(new CameraInfo("192.168.0.80", "37777", "admin", "12345"));
+        mAcache.put("CameraInfo", mCameraInfos);
     }
 
     @Override
@@ -219,14 +239,14 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     @Override
     protected void onResume() {
         super.onResume();
-        logger.debug(TAG,"课中界面");
+        logger.debug(TAG, "课中界面");
         Constant.SCREENTYPE = 0;
         LogUtils.d("注册EventBus");
         EventBus.getDefault().register(this);
         boolean cons = false;
         Object consobj = mAcache.getAsObject("conStatus");
-        if (consobj!=null){
-            cons = (boolean)consobj;
+        if (consobj != null) {
+            cons = (boolean) consobj;
         }
         if (cons) {
             mConStatus.setText("连接状态：已连接");
@@ -237,6 +257,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         }
         getUIdata();
 //        logger.debug(Tag,"");
+
     }
 
     /**
@@ -254,6 +275,9 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         super.onPause();
         LogUtils.d("解注册EventBus");
         EventBus.getDefault().unregister(this);
+        if (mainDialog != null && mainDialog.isShowing()) {
+            mainDialog.dismiss();
+        }
     }
 
     @Override
@@ -306,63 +330,28 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
      * 获取卡号
      */
     private void getCardNum() {
-        mCardNum.addTextChangedListener(new TextWatcher() {
-
+        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum);
+        getCardNumUtils.getNum(new GetCardNumUtils.SetNum() {
             @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2,
-                                      int arg3) {
-                cardNum_stringTemp = arg0.toString();
-//                LogUtils.i("卡号"+arg0);
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1,
-                                          int arg2, int arg3) {
-                if (getCardNum_handler == null) {
-                    getCardNum_handler = new Handler();
-                    getCardNum_handler.postDelayed(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            LogUtils.d(cardNum_stringTemp);
-                            if (!TextUtils.isEmpty(cardNum_stringTemp)) {
-                                Intent intent = new Intent(MainActivity.this, TcpService.class);
-                                intent.putExtra("Num", cardNum_stringTemp);
-                                intent.putExtra("Act", 0);
-                                intent.putExtra("ext", "");
-                                startService(intent);
-                            }
-                            mCardNum.setText("");
-                            getCardNum_handler = null;
-
-                        }
-                    }, 1000);
+            public void setNum(String num) {
+                if (!TextUtils.isEmpty(num)) {
+                    Intent intent = new Intent(MainActivity.this, TcpService.class);
+                    intent.putExtra("Num", num);
+                    intent.putExtra("Act", 0);
+                    intent.putExtra("ext", "");
+                    startService(intent);
                 }
             }
-
-            @Override
-            public void afterTextChanged(Editable arg0) {
-//                LogUtils.d(arg0);
-            }
         });
-        foucus_handler = null;
-        foucus_handler = new Handler();
-        foucus_handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mCardNum.requestFocus();
-                foucus_handler.postDelayed(this, 1000);
-            }
-        }, 1000);
     }
 
     @OnClick({R.id.main_left, R.id.main_right, R.id.main_test})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.main_test:
-//                Intent intent = new Intent(MainActivity.this,TcpService.class);
-//                intent.putExtra("test",0);
-//                startService(intent);
+                Intent intent = new Intent(MainActivity.this, TcpService.class);
+                intent.putExtra("test", 0);
+                startService(intent);
                 break;
             case R.id.main_left:
                 if (mChatList != null && mChatList.size() > 0) {
@@ -406,7 +395,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
             public void onLoadImageView(int position, ImageView imageView, Object parameter) {
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 //                Glide.with(MainActivity.this).load(parameter).into(imageView);
-                GlideImgManager.glideLoader(MainActivity.this,parameter.toString(),R.drawable.pic_not_found,R.drawable.pic_not_found,imageView,"");
+                GlideImgManager.glideLoader(MainActivity.this, parameter.toString(), R.drawable.pic_not_found, R.drawable.pic_not_found, imageView, "");
                 position = position == 0 ? photos.size() - 1 : position - 1;
                 mLoopName.setText(photos.get(position).getDescription());
 //                LogUtils.d(position + "");
@@ -445,28 +434,6 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     public void onDateChangeEvent(UpdateDate event) {
         mDate.setText(TimeUtils.getStringDate());
     }
-
-
-    private GestureDetector.OnGestureListener onGestureListener =
-            new GestureDetector.SimpleOnGestureListener() {
-                @Override
-                public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-                                       float velocityY) {
-                    float x = e2.getX() - e1.getX();
-                    float y = e2.getY() - e1.getY();
-
-                    if (x > 500 && Math.abs(x) > Math.abs(y)) {
-                        mainDialog.dismiss();
-                    } else if (x < -500 && Math.abs(x) > Math.abs(y)) {
-                        try {
-                            mainDialog.show();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    return true;
-                }
-            };
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -511,20 +478,46 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         ClassInfoBean classInfo = mainData.getClassInfo();
         if (classInfo != null) {
             mClassName.setText(classInfo.getGradeName() + classInfo.getClassName());
+            if (!TextUtils.isEmpty(classInfo.getAliasName()) && !classInfo.getAliasName().equals("null")) {
+                mAlias.setText("(" + classInfo.getAliasName() + ")");
+            }
+
             mLoction.setText(classInfo.getAddress());
+            if (!TextUtils.isEmpty(classInfo.getManagerMessage())) {
+                mClassMngCourse.setText(classInfo.getManagerMessage());
+            } else {
+                mClassMngCourse.setText("无");
+            }
+            if (!TextUtils.isEmpty(classInfo.getMotto())) {
+                SpannableString spannableString = new SpannableString("班训：    " + classInfo.getMotto());
+                ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.parseColor("#000000"));
+                RelativeSizeSpan sizeSpan = new RelativeSizeSpan(1.2f);
+                StyleSpan styleSpan_B = new StyleSpan(Typeface.BOLD);
+                spannableString.setSpan(colorSpan, 0, 3, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                spannableString.setSpan(sizeSpan, 0, 3, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                spannableString.setSpan(styleSpan_B, 0, 3, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                mMoto.setText(spannableString);
+            } else {
+                mMoto.setVisibility(View.GONE);
+            }
+
+            if (!TextUtils.isEmpty(classInfo.getSchoolLogo()) && !classInfo.getSchoolLogo().equals("null")) {
+                GlideImgManager.glideLoader(MainActivity.this, classInfo.getSchoolLogo(), R.drawable.pic_not_found, R.drawable.pic_not_found, mSclIcon, 1);
+            } else {
+                mSclIcon.setVisibility(View.GONE);
+            }
         }
         ClassManagerBean classManager = mainData.getClassManager();
         if (classManager != null) {
             Glide.with(MainActivity.this).load(classManager.getPhoto()).into(mClassMngIcon);
-            mClassMngName.setText("班主任：" + classManager.getAccountName());
-            mClassMngCourse.setText("任    课：" + classManager.getSubjects().toString());
+            mClassMngName.setText(classManager.getAccountName());
         }
         List<MainData.NoticeBean> notice = mainData.getNotice();
         if (notice != null) {
             setNoticeList(notice);
         }
 
-        if (mainData.getPhotos() != null&&mainData.getPhotos().size()>0) {
+        if (mainData.getPhotos() != null && mainData.getPhotos().size() > 0) {
             setPager(mainData.getPhotos());
         }
 
@@ -571,12 +564,12 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
 
     @Override
     public void showDialog() {
-        if (dialog != null&&!mainDialog.isShowing()) {
+        if (dialog != null && !mainDialog.isShowing()) {
             try {
                 dialog.show();
             } catch (Exception e) {
                 e.printStackTrace();
-                logger.error(TAG,e.getMessage());
+                logger.error(TAG, e.getMessage());
             }
         }
     }

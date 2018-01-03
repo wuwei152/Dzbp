@@ -11,7 +11,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.apkfuns.logutils.LogUtils;
 import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
 import com.md.dzbp.constants.APIConfig;
@@ -163,10 +165,15 @@ public class SettingActivity extends BaseActivity implements UIDataListener {
                 }
             }
         } else if (code == 3) {
+            LogUtils.d(data.toString());
             if (data != null) {
-                String deviceId = (String) data;
+
+                JSONObject object = JSONObject.parseObject(((JSONObject)data).toJSONString());
+                String deviceId = object.getString("deviceId");
+                String qrcode = object.getString("qrcode");
                 if (!TextUtils.isEmpty(deviceId)) {
                     mAcache.put("DeviceId", deviceId);
+                    mAcache.put("qrcode", qrcode);
                     startActivity(new Intent(this, MainActivity.class));
                 }
             }

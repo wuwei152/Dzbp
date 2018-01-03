@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -26,6 +27,7 @@ import com.md.dzbp.ui.activity.SignActivity;
 import com.md.dzbp.ui.activity.StudentActivity;
 import com.md.dzbp.ui.activity.TeacherActivity;
 import com.md.dzbp.utils.ACache;
+import com.md.dzbp.utils.GlideImgManager;
 
 /**
  * 创建自定义的dialog
@@ -39,6 +41,8 @@ public class MainDialog extends Dialog {
     private EditText et;
     private final ACache mAcache;
     private InputMethodManager imm;
+    private LinearLayout actll;
+    private ImageView erweima;
 
     public MainDialog(Context context) {
         super(context, R.style.MyDialog);
@@ -68,6 +72,7 @@ public class MainDialog extends Dialog {
     public void dismiss() {
         closeBoard();
         et.setText("");
+        actll.setVisibility(View.GONE);
         super.dismiss();
     }
 
@@ -98,6 +103,10 @@ public class MainDialog extends Dialog {
         bt2 = (TextView) findViewById(R.id.bt2);
         et = (EditText) findViewById(R.id.et);
         ll = (LinearLayout) findViewById(R.id.ll);
+        actll = (LinearLayout) findViewById(R.id.actll);
+        erweima = (ImageView) findViewById(R.id.erweima);
+
+        GlideImgManager.glideLoader(context,mAcache.getAsString("qrcode"),R.drawable.pic_not_found,R.drawable.pic_not_found,erweima);
 
         imm = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -207,6 +216,7 @@ public class MainDialog extends Dialog {
                 if (!YZ()){
                     return;
                 }
+                actll.setVisibility(View.VISIBLE);
                 //显示状态栏
                 smdt.smdtSetStatusBar(context, true);
                 closeBoard();
@@ -217,6 +227,7 @@ public class MainDialog extends Dialog {
             public void onClick(View view) {
                 //隐藏状态栏
                 smdt.smdtSetStatusBar(context, false);
+                actll.setVisibility(View.GONE);
                 closeBoard();
             }
         });

@@ -4,14 +4,9 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Editable;
-import android.text.Spannable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -28,7 +23,6 @@ import com.md.dzbp.constants.APIConfig;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.CourseBean;
 import com.md.dzbp.data.LoginEvent;
-import com.md.dzbp.model.DahuaModel;
 import com.md.dzbp.model.NetWorkRequest;
 import com.md.dzbp.model.TimeListener;
 import com.md.dzbp.model.TimeUtils;
@@ -38,7 +32,8 @@ import com.md.dzbp.ui.view.MainDialog;
 import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
-import com.md.dzbp.utils.EaseSmileUtils;
+import com.md.dzbp.utils.GetCardNumUtils;
+import com.md.dzbp.utils.MainGestureDetector;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -50,7 +45,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 
 /**
  * 上课页面
@@ -80,9 +74,6 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     @BindView(R.id.teacher_imgRl)
     RelativeLayout mImgRl;
 
-    private Handler _handler = null;
-    private Handler foucus_handler = null;
-    private String _stringTemp;
     private MainDialog mainDialog;
     private GestureDetector gestureDetector;
     private Dialog dialog;
@@ -105,7 +96,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     protected void initUI() {
         LogUtils.d("teacher--onCreate");
         mainDialog = new MainDialog(this);
-        gestureDetector = new GestureDetector(TeacherActivity.this, onGestureListener);
+        gestureDetector = new GestureDetector(TeacherActivity.this, MainGestureDetector.getGestureDetector(mainDialog));
         mAcache = ACache.get(this);
         dialog = MyProgressDialog.createLoadingDialog(TeacherActivity.this, "", this);
         netWorkRequest = new NetWorkRequest(this, this);
@@ -150,6 +141,9 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
         super.onPause();
         LogUtils.d("解注册EventBus");
         EventBus.getDefault().unregister(this);
+        if (mainDialog != null && mainDialog.isShowing()) {
+            mainDialog.dismiss();
+        }
     }
 
     @Override
@@ -177,78 +171,25 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
      * 读取卡号
      */
     private void getCardNum() {
-        mCardNum.addTextChangedListener(new TextWatcher() {
-
+        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum);
+        getCardNumUtils.getNum(new GetCardNumUtils.SetNum() {
             @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2,
-                                      int arg3) {
-                _stringTemp = arg0.toString();
-//                LogUtils.i("卡号"+arg0);
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1,
-                                          int arg2, int arg3) {
-                if (_handler == null) {
-                    _handler = new Handler();
-                    _handler.postDelayed(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            LogUtils.d(_stringTemp);
-                            if (!TextUtils.isEmpty(_stringTemp)) {
-                                Intent intent = new Intent(TeacherActivity.this, TcpService.class);
-                                intent.putExtra("Num", _stringTemp);
-                                intent.putExtra("Act", 1);
-                                intent.putExtra("ext", "");
-                                startService(intent);
-                            }
-                            mCardNum.setText("");
-                            _handler = null;
-
-                        }
-                    }, 1000);
+            public void setNum(String num) {
+                if (!TextUtils.isEmpty(num)) {
+                    Intent intent = new Intent(TeacherActivity.this, TcpService.class);
+                    intent.putExtra("Num", num);
+                    intent.putExtra("Act", 1);
+                    intent.putExtra("ext", "");
+                    startService(intent);
                 }
             }
-
-            @Override
-            public void afterTextChanged(Editable arg0) {
-//                LogUtils.d(arg0);
-            }
         });
-        foucus_handler = null;
-        foucus_handler = new Handler();
-        foucus_handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mCardNum.requestFocus();
-                foucus_handler.postDelayed(this, 1000);
-            }
-        }, 1000);
     }
 
     @Override
     public void getTime(String time) {
         mTime.setText(time);
     }
-
-    private GestureDetector.OnGestureListener onGestureListener =
-            new GestureDetector.SimpleOnGestureListener() {
-                @Override
-                public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-                                       float velocityY) {
-                    float x = e2.getX() - e1.getX();
-                    float y = e2.getY() - e1.getY();
-
-                    if (x > 500 && Math.abs(x) > Math.abs(y)) {
-                        mainDialog.dismiss();
-                    } else if (x < -500 && Math.abs(x) > Math.abs(y)) {
-                        mainDialog.show();
-                    }
-                    return true;
-                }
-            };
-
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -274,24 +215,26 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
      * @param courseBean
      */
     private void setUIData(CourseBean courseBean) {
-        if (!TextUtils.isEmpty(courseBean.getPhoto())) {
-            Glide.with(this).load(courseBean.getPhoto()).into(mImg);
+        if (!TextUtils.isEmpty(courseBean.getImage())) {
+            Glide.with(this).load(courseBean.getImage()).into(mImg);
+        } else {
+            Glide.with(this).load(R.drawable.teacher).into(mImg);
         }
         mClassName.setText(courseBean.getGradeName() + courseBean.getClassName());
         if (!TextUtils.isEmpty(courseBean.getSubjectName())) {
             mCourseName.setText("课程：" + courseBean.getSubjectName());
-        }else {
+        } else {
             mCourseName.setVisibility(View.GONE);
         }
         if (!TextUtils.isEmpty(courseBean.getAccountName())) {
             mTeacherName.setText("教师：" + courseBean.getAccountName());
-        }else {
+        } else {
             mTeacherName.setText("班主任：" + courseBean.getManagerAccountName());
         }
         if (!TextUtils.isEmpty(courseBean.getPeriodName())) {
             mPeriodName.setText("节次：" + courseBean.getPeriodName());
-        }else {
-            mCourseName.setVisibility(View.GONE);
+        } else {
+            mPeriodName.setVisibility(View.GONE);
         }
         mAddr.setText("教室：" + courseBean.getAddress());
     }

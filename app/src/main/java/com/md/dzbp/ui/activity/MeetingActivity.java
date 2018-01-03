@@ -4,10 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.UserHandle;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.EditText;
@@ -35,6 +32,8 @@ import com.md.dzbp.ui.view.MainDialog;
 import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
+import com.md.dzbp.utils.GetCardNumUtils;
+import com.md.dzbp.utils.MainGestureDetector;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -92,9 +91,6 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
     @BindView(R.id.meet_QRcodeText)
     TextView mQRcodeText;
 
-    private Handler card_handler = null;
-    private Handler foucus_handler = null;
-    private String card_stringTemp;
     private MainDialog mainDialog;
     private GestureDetector gestureDetector;
     private Dialog dialog;
@@ -121,7 +117,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
         mainDialog = new MainDialog(this);
         mAcache = ACache.get(this);
         logger = LoggerFactory.getLogger(getClass());
-        gestureDetector = new GestureDetector(MeetingActivity.this, onGestureListener);
+        gestureDetector = new GestureDetector(MeetingActivity.this, MainGestureDetector.getGestureDetector(mainDialog));
         //获取时间日期
         new TimeUtils(MeetingActivity.this, this);
         //进度
@@ -147,7 +143,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
     @Override
     protected void onResume() {
         super.onResume();
-        logger.debug(TAG,"会议界面");
+        logger.debug(TAG, "会议界面");
         Constant.SCREENTYPE = 6;
         EventBus.getDefault().register(this);
         boolean cons = (boolean) mAcache.getAsObject("conStatus");
@@ -165,6 +161,9 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
     protected void onPause() {
         super.onPause();
         EventBus.getDefault().unregister(this);
+        if (mainDialog != null && mainDialog.isShowing()) {
+            mainDialog.dismiss();
+        }
     }
 
     /**
@@ -230,77 +229,20 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
      * 获取刷卡卡号
      */
     private void getCardNum() {
-        mCardNum.addTextChangedListener(new TextWatcher() {
-
+        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum);
+        getCardNumUtils.getNum(new GetCardNumUtils.SetNum() {
             @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2,
-                                      int arg3) {
-                card_stringTemp = arg0.toString();
-//                LogUtils.i("卡号"+arg0);
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1,
-                                          int arg2, int arg3) {
-                if (card_handler == null) {
-                    card_handler = new Handler();
-                    card_handler.postDelayed(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            LogUtils.d(card_stringTemp);
-                            if (!TextUtils.isEmpty(card_stringTemp) && meetingbean != null) {
-                                Intent intent = new Intent(MeetingActivity.this, TcpService.class);
-                                intent.putExtra("Num", card_stringTemp);
-                                intent.putExtra("Act", 6);
-                                intent.putExtra("ext", meetingbean.getId());
-                                startService(intent);
-                            } else {
-                                logger.debug("MeetingActivity-->{}", "获取卡号失败或会议为空");
-                            }
-                            mCardNum.setText("");
-                            card_handler = null;
-
-                        }
-                    }, 1000);
+            public void setNum(String num) {
+                if (!TextUtils.isEmpty(num)) {
+                    Intent intent = new Intent(MeetingActivity.this, TcpService.class);
+                    intent.putExtra("Num", num);
+                    intent.putExtra("Act", 6);
+                    intent.putExtra("ext", meetingbean.getId());
+                    startService(intent);
                 }
-            }
-
-            @Override
-            public void afterTextChanged(Editable arg0) {
-//                LogUtils.d(arg0);
             }
         });
-        foucus_handler = null;
-        foucus_handler = new Handler();
-        foucus_handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mCardNum.requestFocus();
-                foucus_handler.postDelayed(this, 1000);
-            }
-        }, 1000);
     }
-
-    /**
-     * 手势滑动弹出框
-     */
-    private GestureDetector.OnGestureListener onGestureListener =
-            new GestureDetector.SimpleOnGestureListener() {
-                @Override
-                public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-                                       float velocityY) {
-                    float x = e2.getX() - e1.getX();
-                    float y = e2.getY() - e1.getY();
-
-                    if (x > 500 && Math.abs(x) > Math.abs(y)) {
-                        mainDialog.dismiss();
-                    } else if (x < -500 && Math.abs(x) > Math.abs(y)) {
-                        mainDialog.show();
-                    }
-                    return true;
-                }
-            };
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -332,12 +274,12 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
 
     @Override
     public void showDialog() {
-        if (dialog != null&&!mainDialog.isShowing()) {
+        if (dialog != null && !mainDialog.isShowing()) {
             try {
                 dialog.show();
             } catch (Exception e) {
                 e.printStackTrace();
-                logger.error(TAG,e.getMessage());
+                logger.error(TAG, e.getMessage());
             }
         }
     }

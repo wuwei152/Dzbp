@@ -5,9 +5,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.webkit.WebView;
@@ -29,6 +27,8 @@ import com.md.dzbp.tcp.TcpService;
 import com.md.dzbp.ui.view.MainDialog;
 import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.myToast;
+import com.md.dzbp.utils.GetCardNumUtils;
+import com.md.dzbp.utils.MainGestureDetector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +84,7 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
         mainDialog = new MainDialog(this);
         dialog = MyProgressDialog.createLoadingDialog(this, "", this);
         netWorkRequest = new NetWorkRequest(this, this);
-        gestureDetector = new GestureDetector(NoticeActivity.this, onGestureListener);
+        gestureDetector = new GestureDetector(NoticeActivity.this, MainGestureDetector.getGestureDetector(mainDialog));
 
         logger = LoggerFactory.getLogger(getClass());
 
@@ -93,6 +93,7 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
             noticeId = intent.getStringExtra("id");
         }
     }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -102,6 +103,7 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
         }
         getUIdata();
     }
+
     @Override
     protected void initData() {
         getCardNum();
@@ -113,7 +115,7 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
     @Override
     protected void onResume() {
         super.onResume();
-        logger.debug(TAG,"通知界面");
+        logger.debug(TAG, "通知界面");
         Constant.SCREENTYPE = 5;
     }
 
@@ -127,81 +129,25 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
         netWorkRequest.doGetRequest(0, Constant.getUrl(NoticeActivity.this, APIConfig.GET_NOTICE), true, map);
     }
 
+
     /**
      * 获取卡号
      */
     private void getCardNum() {
-        mCardNum.addTextChangedListener(new TextWatcher() {
-
+        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum);
+        getCardNumUtils.getNum(new GetCardNumUtils.SetNum() {
             @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2,
-                                      int arg3) {
-                _stringTemp = arg0.toString();
-//                LogUtils.i("卡号"+arg0);
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1,
-                                          int arg2, int arg3) {
-                if (_handler == null) {
-                    _handler = new Handler();
-                    _handler.postDelayed(new Runnable() {
-
-                        @Override
-                        public void run() {
-                            LogUtils.d(_stringTemp);
-                            if (!TextUtils.isEmpty(_stringTemp)) {
-                                Intent intent = new Intent(NoticeActivity.this, TcpService.class);
-                                intent.putExtra("Num", _stringTemp);
-                                intent.putExtra("Act", 5);
-                                intent.putExtra("ext", "");
-                                startService(intent);
-                            }
-                            mCardNum.setText("");
-                            _handler = null;
-
-                        }
-                    }, 1000);
+            public void setNum(String num) {
+                if (!TextUtils.isEmpty(num)) {
+                    Intent intent = new Intent(NoticeActivity.this, TcpService.class);
+                    intent.putExtra("Num", num);
+                    intent.putExtra("Act", 5);
+                    intent.putExtra("ext", "");
+                    startService(intent);
                 }
-            }
-
-            @Override
-            public void afterTextChanged(Editable arg0) {
-//                LogUtils.d(arg0);
             }
         });
-        foucus_handler = null;
-        foucus_handler = new Handler();
-        foucus_handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mCardNum.requestFocus();
-                foucus_handler.postDelayed(this, 1000);
-            }
-        }, 1000);
     }
-
-    private GestureDetector.OnGestureListener onGestureListener =
-            new GestureDetector.SimpleOnGestureListener() {
-                @Override
-                public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-                                       float velocityY) {
-                    try {
-                        float x = e2.getX() - e1.getX();
-                        float y = e2.getY() - e1.getY();
-
-                        if (x > 500 && Math.abs(x) > Math.abs(y)) {
-                            mainDialog.dismiss();
-                        } else if (x < -500 && Math.abs(x) > Math.abs(y)) {
-                            mainDialog.show();
-                        }
-
-                    } catch (Exception e) {
-                    }
-                    return true;
-                }
-            };
-
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -247,12 +193,12 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
 
     @Override
     public void showDialog() {
-        if (dialog != null&&!mainDialog.isShowing()) {
+        if (dialog != null && !mainDialog.isShowing()) {
             try {
                 dialog.show();
             } catch (Exception e) {
                 e.printStackTrace();
-                logger.error(TAG,e.getMessage());
+                logger.error(TAG, e.getMessage());
             }
         }
     }
@@ -289,7 +235,7 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
         if (mp == null) {
             mp = MediaPlayer.create(NoticeActivity.this, R.raw.notify_alert);
             logger.debug(TAG, "初始化");
-        }else {
+        } else {
             logger.debug(TAG, "重新开始播放");
             try {
                 mp.prepare();
@@ -345,6 +291,9 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
         if (mp != null) {
             mp.stop();
         }
+        if (mainDialog != null && mainDialog.isShowing()) {
+            mainDialog.dismiss();
+        }
     }
 
     @Override
@@ -360,7 +309,7 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
         super.onDestroy();
         if (mp != null) {
             mp.stop();
-            mp=null;
+            mp = null;
         }
     }
 }

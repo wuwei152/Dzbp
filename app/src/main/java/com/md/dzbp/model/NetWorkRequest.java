@@ -64,7 +64,7 @@ public class NetWorkRequest {
 
             @Override
             protected void onSuccess(String response) {
-                LogUtils.d(flag + "/"    );
+                LogUtils.d(flag + "/" +response   );
                 if (TextUtils.isEmpty(response)) {
                     return;
                 } else {

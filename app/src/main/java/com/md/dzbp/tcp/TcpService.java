@@ -51,9 +51,10 @@ public class TcpService extends Service {
             LogUtils.d("onStartCommand:----"+num+"/"+Act+"/"+ext);
             mManager.sendCardNum(num,Act,ext);
         }else if (intent!=null&&intent.hasExtra("test")){
-            mManager.test();
+//            mManager.test();
+//            mManager.messageHandle.TakeSnap();
         }else if (intent!=null&&intent.hasExtra("Log")){
-            mManager.messageHandle.GetLog(0);
+//            mManager.messageHandle.GetLog(0);
         }
 
         return super.onStartCommand(intent, flags, startId);
@@ -84,7 +85,7 @@ public class TcpService extends Service {
         jsonObject.put("VoicePath",event.getVoicePath());
 
         logger.debug("TcpService开始发送语音消息-->{}",jsonObject.toJSONString());
-        mManager.messageHandle.uploadFile(event.getMsgType(),event.getVoiceLocalPath(),Constant.Ftp_Voice,0xA601,jsonObject.toJSONString());
+        mManager.messageHandle.sendVoiceMsg(event.getMsgType(),event.getVoiceLocalPath(),Constant.Ftp_Voice,0xA601,jsonObject.toJSONString());
     }
     /**
      * 发送文字消息

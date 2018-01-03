@@ -111,7 +111,7 @@ public class PatrolBean {
         private String accountId;
         private String periodId;
         private String accountName;
-        private Object photo;
+        private String photo;
         private String periodName;
         private String subjectId;
         private String subjectName;
@@ -140,11 +140,11 @@ public class PatrolBean {
             this.accountName = accountName;
         }
 
-        public Object getPhoto() {
+        public String getPhoto() {
             return photo;
         }
 
-        public void setPhoto(Object photo) {
+        public void setPhoto(String photo) {
             this.photo = photo;
         }
 

@@ -13,6 +13,7 @@
         android:background="@drawable/dialog_mainback"
         android:gravity="center_vertical"
         android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -25,8 +26,8 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/gray_strack_back"
                 android:hint="请输入管理员密码"
-                android:padding="10dp"
                 android:inputType="textPassword"
+                android:padding="10dp"
                 android:textColor="@color/text_black"
                 android:textSize="16sp" />
         </LinearLayout>
@@ -34,8 +35,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
             android:layout_marginBottom="50dp"
+            android:layout_marginTop="20dp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -62,159 +63,178 @@
                 android:textSize="16sp" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/act1"
+        <LinearLayout
+            android:id="@+id/actll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="15dp"
-            android:gravity="center"
-            android:text="首页"
-            android:textColor="@color/text_black"
-            android:textSize="18sp" />
+            android:orientation="vertical"
+            android:visibility="gone">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="15dp"
-            android:background="@color/line" />
+            <TextView
+                android:id="@+id/act1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="15dp"
+                android:gravity="center"
+                android:text="首页"
+                android:textColor="@color/text_black"
+                android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/act2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="15dp"
-            android:gravity="center"
-            android:text="上课"
-            android:textColor="@color/text_black"
-            android:textSize="18sp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="15dp"
+                android:background="@color/line" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="15dp"
-            android:background="@color/line" />
+            <TextView
+                android:id="@+id/act2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="15dp"
+                android:gravity="center"
+                android:text="上课"
+                android:textColor="@color/text_black"
+                android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/act3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="15dp"
-            android:gravity="center"
-            android:text="学生"
-            android:textColor="@color/text_black"
-            android:textSize="18sp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="15dp"
+                android:background="@color/line" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="15dp"
-            android:background="@color/line" />
+            <TextView
+                android:id="@+id/act3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="15dp"
+                android:gravity="center"
+                android:text="学生"
+                android:textColor="@color/text_black"
+                android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/act4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="15dp"
-            android:gravity="center"
-            android:text="考试"
-            android:textColor="@color/text_black"
-            android:textSize="18sp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="15dp"
+                android:background="@color/line" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="15dp"
-            android:background="@color/line" />
+            <TextView
+                android:id="@+id/act4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="15dp"
+                android:gravity="center"
+                android:text="考试"
+                android:textColor="@color/text_black"
+                android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/act5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="15dp"
-            android:gravity="center"
-            android:text="巡查"
-            android:textColor="@color/text_black"
-            android:textSize="18sp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="15dp"
+                android:background="@color/line" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="15dp"
-            android:background="@color/line" />
+            <TextView
+                android:id="@+id/act5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="15dp"
+                android:gravity="center"
+                android:text="巡查"
+                android:textColor="@color/text_black"
+                android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/act6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="15dp"
-            android:gravity="center"
-            android:text="通知"
-            android:textColor="@color/text_black"
-            android:textSize="18sp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="15dp"
+                android:background="@color/line" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="15dp"
-            android:background="@color/line" />
+            <TextView
+                android:id="@+id/act6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="15dp"
+                android:gravity="center"
+                android:text="通知"
+                android:textColor="@color/text_black"
+                android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/act7"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="15dp"
-            android:gravity="center"
-            android:text="会议"
-            android:textColor="@color/text_black"
-            android:textSize="18sp" />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="15dp"
-            android:background="@color/line" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="15dp"
+                android:background="@color/line" />
 
-        <TextView
-            android:id="@+id/act8"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="15dp"
-            android:gravity="center"
-            android:text="签到"
-            android:textColor="@color/text_black"
-            android:textSize="18sp" />
+            <TextView
+                android:id="@+id/act7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="15dp"
+                android:gravity="center"
+                android:text="会议"
+                android:textColor="@color/text_black"
+                android:textSize="18sp" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginLeft="15dp"
-            android:background="@color/line" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="15dp"
+                android:background="@color/line" />
 
-        <TextView
-            android:id="@+id/act9"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="15dp"
-            android:gravity="center"
-            android:text="发送日志"
-            android:visibility="gone"
-            android:textColor="@color/text_black"
-            android:textSize="18sp" />
+            <TextView
+                android:id="@+id/act8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="15dp"
+                android:gravity="center"
+                android:text="签到"
+                android:textColor="@color/text_black"
+                android:textSize="18sp" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:visibility="gone"
-            android:layout_marginLeft="15dp"
-            android:background="@color/line" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="15dp"
+                android:background="@color/line" />
+
+            <TextView
+                android:id="@+id/act9"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="15dp"
+                android:gravity="center"
+                android:text="发送日志"
+                android:textColor="@color/text_black"
+                android:textSize="18sp"
+                android:visibility="gone" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="15dp"
+                android:background="@color/line"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/erweima"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:scaleType="fitXY"
+
+            />
 
     </LinearLayout>
 </RelativeLayout>
