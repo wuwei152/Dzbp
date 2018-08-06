@@ -115,7 +115,8 @@ public class ServerManager {
     /**
      * 测试
      */
-    int type =1;
+    int type = 1;
+
     public void test() {
 
 //        final Handler handler = new Handler(Looper.getMainLooper());
@@ -176,7 +177,7 @@ public class ServerManager {
      * 发送卡号
      */
     public void sendCardNum(String num, int act, String ext) {
-        logger.debug("发送卡号", "是否已登录" + messageHandle.IsEnable);
+        logger.debug("发送卡号" + num , "是否已登录" + messageHandle.IsEnable);
         if (messageHandle.IsEnable) {
             try {
                 TCPMessage message = new TCPMessage(0xA550);

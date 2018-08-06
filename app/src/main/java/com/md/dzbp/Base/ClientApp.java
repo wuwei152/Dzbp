@@ -33,27 +33,26 @@ public class ClientApp extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-        logger = LoggerFactory.getLogger(getClass());
         initLogs();
         mAcache = ACache.get(this);
         Fresco.initialize(this);
         OkHttpFinalConfiguration.Builder builder = new OkHttpFinalConfiguration.Builder();
         OkHttpFinal.getInstance().init(builder.build());
 
-        //注册错误处理保存本地
-//        CrashHandler crashHandler = CrashHandler.getInstance();
-//        crashHandler.init(this);
         NetSDKLib.getInstance().init();
         try {
-//            deleteCache();
+            deleteCache();
         } catch (Exception e) {
-            logger.error("ClientApp", e.getMessage());
+            LogUtils.e(e.getMessage());
+//            logger.error("ClientApp", e.getMessage());
         }
         //加入初始密码
         String adminPsw = mAcache.getAsString("AdminPsw");
         if (TextUtils.isEmpty(adminPsw)){
             mAcache.put("AdminPsw", "1234");
         }
+
+        logger = LoggerFactory.getLogger(getClass());
     }
 
     public static ClientApp getInstance() {
@@ -90,7 +89,7 @@ public class ClientApp extends Application {
                 public void run() {
                     logger.debug("ClientApp", "删除缓存！");
                     ArrayList<File> files = new ArrayList<>();
-//                    File file1 = new File(FileUtils.getDiskCacheDir(ClientApp.this) + "Log");
+                    File file1 = new File(FileUtils.getDiskCacheDir(ClientApp.this) + "Log");
                     File file2 = new File(FileUtils.getDiskCacheDir(ClientApp.this) + "receiveVoice");
                     File file3 = new File(FileUtils.getDiskCacheDir(ClientApp.this) + "SendVoiceCache");
                     File file4 = new File(FileUtils.getDiskCacheDir(ClientApp.this) + "Apk");
@@ -98,7 +97,7 @@ public class ClientApp extends Application {
                     File file6 = new File(FileUtils.getDiskCacheDir(ClientApp.this) + "Screenshot");
                     File file7 = new File(FileUtils.getDiskCacheDir(ClientApp.this) + "sign");
                     File file8 = new File(FileUtils.getDiskCacheDir(ClientApp.this) + "sign_compress");
-//                    files.add(file1);
+                    files.add(file1);
                     files.add(file2);
                     files.add(file3);
                     files.add(file4);

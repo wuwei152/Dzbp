@@ -375,6 +375,9 @@ public class MsgHandleUtil {
                 filedir.mkdirs();
             }
             smdtManager.smdtTakeScreenshot(FileUtils.getDiskCacheDir(context) + "Screenshot/", "screenshot_" + timeStr + ".png", context);
+
+//            BitmapUtils.getScreenViewBitmap(new MainActivity());
+
             final File yuanfile = new File(FileUtils.getDiskCacheDir(context) + "Screenshot/screenshot_" + timeStr + ".png");
             if (yuanfile.exists()) {
                 logger.debug(TAG, "获取截屏成功！");

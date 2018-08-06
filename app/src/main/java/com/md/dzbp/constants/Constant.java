@@ -31,7 +31,7 @@ public class Constant {
     public static String FtpUserName = "ftp-device";
     public static String FtpPsw = "1234";
     //设备参数
-    public static String DeviceId = "e9d50961-3a47-460f-bfc9-1398e3b64c4e";
+//    public static String DeviceId = "e9d50961-3a47-460f-bfc9-1398e3b64c4e";
 
     //存储路径
     public static String Ftp_Log = "/Log/";
@@ -68,7 +68,7 @@ public class Constant {
         ACache mAcache = ACache.get(context);
         String mDeviceId = mAcache.getAsString("DeviceId");
         if (TextUtils.isEmpty(mDeviceId)) {
-            return DeviceId;
+            return "";
         } else {
             return mDeviceId;
         }

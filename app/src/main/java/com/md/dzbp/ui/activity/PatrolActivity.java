@@ -92,6 +92,8 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
     TextView mShidao;
     @BindView(R.id.patrol_weidao)
     TextView mWeidao;
+    @BindView(R.id.patrol_confrim)
+    TextView mConfrim;
     @BindView(R.id.patrol_img)
     ImageView mImg;
     @BindView(R.id.patrol_mSurface)
@@ -356,7 +358,7 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
         if (classManager != null) {
             GlideImgManager.glideLoader(PatrolActivity.this, classManager.getPhoto(), R.drawable.pic_not_found, R.drawable.pic_not_found, mMngIcon);
             mMngName.setText("班主任：" + classManager.getAccountName());
-            mMngCourse.setText("任课：" + classManager.getSubjects().toString());
+//            mMngCourse.setText("任课：" + classManager.getSubjects().toString());
         }
         List<PatrolBean.InspectionParametersBean> inspectionParameters = patrolBean.getInspectionParameters();
         if (inspectionParameters != null && inspectionParameters.size() > 0) {
@@ -376,6 +378,9 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
                     });
                 }
             });
+            mConfrim.setVisibility(View.VISIBLE);
+        }else {
+            mConfrim.setVisibility(View.INVISIBLE);
         }
 
         PatrolBean.AttendanceBean attendance = patrolBean.getAttendance();
