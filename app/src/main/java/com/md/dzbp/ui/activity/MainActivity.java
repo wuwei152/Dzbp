@@ -221,13 +221,14 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
             }
         });
 
-        mCameraInfos = new ArrayList<>();
+//        mCameraInfos = new ArrayList<>();
 //        mCameraInfos.add(new CameraInfo("192.168.8.80", "37777", "admin", "12345"));//二中
 //        mCameraInfos.add(new CameraInfo("192.168.8.81", "37777", "admin", "12345"));//二中
 //        mCameraInfos.add(new CameraInfo("172.16.13.222", "37777", "admin", "12345"));//六中
 //        mCameraInfos.add(new CameraInfo("192.168.0.89", "37777", "admin", "12345"));//测试
-        mCameraInfos.add(new CameraInfo("192.168.0.80", "37777", "admin", "12345"));//测试
-        mAcache.put("CameraInfo", mCameraInfos);
+//        mCameraInfos.add(new CameraInfo("192.168.0.80", "37777", "admin", "12345"));//测试
+//        mCameraInfos.add(new CameraInfo("192.168.0.112", "37777", "admin", "yc123456"));//测试
+//        mAcache.put("CameraInfo", mCameraInfos);
     }
 
     @Override

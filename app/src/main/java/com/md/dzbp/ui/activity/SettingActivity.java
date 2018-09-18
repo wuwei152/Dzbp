@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,9 +18,10 @@ import com.apkfuns.logutils.LogUtils;
 import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
 import com.md.dzbp.constants.APIConfig;
+import com.md.dzbp.constants.Constant;
+import com.md.dzbp.data.CameraInfo;
 import com.md.dzbp.data.SchoolAreaBean;
 import com.md.dzbp.data.SchoolBean;
-import com.md.dzbp.model.DahuaModel;
 import com.md.dzbp.model.NetWorkRequest;
 import com.md.dzbp.model.UIDataListener;
 import com.md.dzbp.ui.view.MyProgressDialog;
@@ -28,7 +30,6 @@ import com.md.dzbp.ui.view.dropdownmenu.DropdownMenu;
 import com.md.dzbp.ui.view.dropdownmenu.MenuManager;
 import com.md.dzbp.ui.view.dropdownmenu.OnDropdownItemClickListener;
 import com.md.dzbp.utils.ACache;
-import com.md.dzbp.constants.Constant;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -55,6 +56,8 @@ public class SettingActivity extends BaseActivity implements UIDataListener {
     DropdownMenu mArea;
     @BindView(R.id.set_confirm)
     TextView mConfirm;
+    @BindView(R.id.set_ip)
+    EditText mIp;
     private NetWorkRequest netWorkRequest;
     private Dialog dialog;
     private ArrayList<SchoolBean> schoolList;
@@ -121,6 +124,17 @@ public class SettingActivity extends BaseActivity implements UIDataListener {
                     showToast("请选择区域");
                     return;
                 }
+                if (TextUtils.isEmpty(mIp.getText().toString())) {
+                    showToast("请输入IP");
+                    return;
+                }
+
+                ArrayList<CameraInfo> mCameraInfos = new ArrayList<>();
+                mCameraInfos.add(new CameraInfo(mIp.getText().toString().trim(), "37777", "admin", "yc123456"));//测试
+                mAcache.put("CameraInfo", mCameraInfos);
+                LogUtils.d(mCameraInfos.get(0));
+
+
                 Map map = new HashMap();
                 map.put("schoolId", schoolId);
                 map.put("schoolAreaId", areaId);
@@ -168,7 +182,7 @@ public class SettingActivity extends BaseActivity implements UIDataListener {
             LogUtils.d(data.toString());
             if (data != null) {
 
-                JSONObject object = JSONObject.parseObject(((JSONObject)data).toJSONString());
+                JSONObject object = JSONObject.parseObject(((JSONObject) data).toJSONString());
                 String deviceId = object.getString("deviceId");
                 String qrcode = object.getString("qrcode");
                 if (!TextUtils.isEmpty(deviceId)) {

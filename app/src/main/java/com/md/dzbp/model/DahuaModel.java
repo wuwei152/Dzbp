@@ -343,7 +343,7 @@ public class DahuaModel {
      * @param channel
      */
     public void snap(int channel) {
-        ///设置抓图回调
+        //设置抓图回调
         TestfSnapRev stCb = new TestfSnapRev();
         INetSDK.SetSnapRevCallBack(stCb);
 

@@ -49,7 +49,7 @@ public class ClientApp extends Application {
         //加入初始密码
         String adminPsw = mAcache.getAsString("AdminPsw");
         if (TextUtils.isEmpty(adminPsw)){
-            mAcache.put("AdminPsw", "1234");
+            mAcache.put("AdminPsw", "12345");
         }
 
         logger = LoggerFactory.getLogger(getClass());
