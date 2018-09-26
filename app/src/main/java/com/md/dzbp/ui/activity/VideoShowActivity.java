@@ -29,6 +29,7 @@ import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.CameraInfo;
 import com.md.dzbp.data.CourseBean;
 import com.md.dzbp.data.LoginEvent;
+import com.md.dzbp.data.ScreenShotEvent;
 import com.md.dzbp.model.DahuaListener;
 import com.md.dzbp.model.DahuaModel;
 import com.md.dzbp.model.NetWorkRequest;
@@ -44,6 +45,7 @@ import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.GetCardNumUtils;
 import com.md.dzbp.utils.GlideImgManager;
 import com.md.dzbp.utils.MainGestureDetector;
+import com.md.dzbp.utils.SnapUtils;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -116,6 +118,7 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
 
     @Override
     protected void initUI() {
+        EventBus.getDefault().register(this);
         LogUtils.d("videoshow--onCreate");
         mAcache = ACache.get(this);
         mCameraInfos = (ArrayList<CameraInfo>) mAcache.getAsObject("CameraInfo");
@@ -217,6 +220,7 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
         super.onDestroy();
         LogUtils.d("videoshowAct--onDestroy");
         dahuaModel.releaseRes();
+        EventBus.getDefault().unregister(this);
     }
 
     /**
@@ -396,4 +400,5 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
     public void onViewClicked() {
         finish();
     }
+
 }

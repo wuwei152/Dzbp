@@ -3,11 +3,14 @@ package com.md.dzbp.tcp;
 import android.app.smdt.SmdtManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
@@ -17,6 +20,7 @@ import com.md.dzbp.constants.Constant;
 import com.md.dzbp.constants.ERRORTYPE;
 import com.md.dzbp.data.CameraInfo;
 import com.md.dzbp.data.MsgSendStatus;
+import com.md.dzbp.data.ScreenShotEvent;
 import com.md.dzbp.data.VoiceSendMessage;
 import com.md.dzbp.ftp.FTP;
 import com.md.dzbp.model.DahuaListener;
@@ -42,6 +46,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -148,7 +153,7 @@ public class MsgHandleUtil {
      * @param xyh 协议号
      * @param b
      */
-    private void yingda(int xyh, boolean b, String diviceId, String path, int id) {
+    public void yingda(int xyh, boolean b, String diviceId, String path, int id) {
         try {
             TCPMessage message = new TCPMessage(xyh);
             message.Write(id);
@@ -366,68 +371,71 @@ public class MsgHandleUtil {
      * @param msgid505
      */
     public void TakeScreenshot(final int msgid505) {
-        try {
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");//设置日期格式
-            final String timeStr = df.format(new Date());
-            logger.debug(TAG, "A505开始截屏");
-            File filedir = new File(FileUtils.getDiskCacheDir(context) + "Screenshot");
-            if (!filedir.exists()) {
-                filedir.mkdirs();
-            }
-            smdtManager.smdtTakeScreenshot(FileUtils.getDiskCacheDir(context) + "Screenshot/", "screenshot_" + timeStr + ".png", context);
 
-//            BitmapUtils.getScreenViewBitmap(new MainActivity());
-
-            final File yuanfile = new File(FileUtils.getDiskCacheDir(context) + "Screenshot/screenshot_" + timeStr + ".png");
-            if (yuanfile.exists()) {
-                logger.debug(TAG, "获取截屏成功！");
-                CompressImg(yuanfile, FileUtils.getDiskCacheDir(context) + "Screenshot", new OnCompressListener() {
-                    @Override
-                    public void onStart() {
-                        logger.debug(TAG, "开始压缩");
-                    }
-
-                    @Override
-                    public void onSuccess(final File cplfile) {
-                        logger.debug(TAG, "压缩截屏文件成功！");
-                        UploadFile(cplfile.getAbsolutePath(), Constant.Ftp_Screenshot, new FileHandle() {
-                            @Override
-                            public void handleSuccess(int code, String data) {
-                                logger.debug(TAG, data + "-----shanchuan-jietu-successful");
-                                yingda(0xA505, true, deviceId, data, msgid505);
-                            }
-
-                            @Override
-                            public void handleFail(int code, String data) {
-                                logger.debug(TAG, "-----shangchuan-jietu-fail---");
-                                yingda(0xA505, false, deviceId, msgid505);
-                            }
-
-                            @Override
-                            public void handleFinished(int code, String data) {
-                                if (cplfile.exists()) {
-                                    cplfile.delete();
-                                }
-                                if (yuanfile.exists()) {
-                                    yuanfile.delete();
-                                }
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        logger.debug(TAG, "压缩截屏文件失败！" + e.getMessage());
-                        yingda(0xA505, false, deviceId, msgid505);
-                    }
-                });
-            } else {
-                logger.debug(TAG, "获取截屏文件失败！");
-                yingda(0xA505, false, deviceId, msgid505);
-            }
-        } catch (Exception e) {
-            logger.debug(TAG, e.getMessage());
-        }
+        ScreenShotEvent event = new ScreenShotEvent(true, msgid505,  deviceId);
+        EventBus.getDefault().post(event);
+//        try {
+//            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");//设置日期格式
+//            final String timeStr = df.format(new Date());
+//            logger.debug(TAG, "A505开始截屏");
+//            File filedir = new File(FileUtils.getDiskCacheDir(context) + "Screenshot");
+//            if (!filedir.exists()) {
+//                filedir.mkdirs();
+//            }
+//            smdtManager.smdtTakeScreenshot(FileUtils.getDiskCacheDir(context) + "Screenshot/", "screenshot_" + timeStr + ".png", context);
+//
+////            BitmapUtils.getScreenViewBitmap(new MainActivity());
+//
+//            final File yuanfile = new File(FileUtils.getDiskCacheDir(context) + "Screenshot/screenshot_" + timeStr + ".png");
+//            if (yuanfile.exists()) {
+//                logger.debug(TAG, "获取截屏成功！");
+//                CompressImg(yuanfile, FileUtils.getDiskCacheDir(context) + "Screenshot", new OnCompressListener() {
+//                    @Override
+//                    public void onStart() {
+//                        logger.debug(TAG, "开始压缩");
+//                    }
+//
+//                    @Override
+//                    public void onSuccess(final File cplfile) {
+//                        logger.debug(TAG, "压缩截屏文件成功！");
+//                        UploadFile(cplfile.getAbsolutePath(), Constant.Ftp_Screenshot, new FileHandle() {
+//                            @Override
+//                            public void handleSuccess(int code, String data) {
+//                                logger.debug(TAG, data + "-----shanchuan-jietu-successful");
+//                                yingda(0xA505, true, deviceId, data, msgid505);
+//                            }
+//
+//                            @Override
+//                            public void handleFail(int code, String data) {
+//                                logger.debug(TAG, "-----shangchuan-jietu-fail---");
+//                                yingda(0xA505, false, deviceId, msgid505);
+//                            }
+//
+//                            @Override
+//                            public void handleFinished(int code, String data) {
+//                                if (cplfile.exists()) {
+//                                    cplfile.delete();
+//                                }
+//                                if (yuanfile.exists()) {
+//                                    yuanfile.delete();
+//                                }
+//                            }
+//                        });
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        logger.debug(TAG, "压缩截屏文件失败！" + e.getMessage());
+//                        yingda(0xA505, false, deviceId, msgid505);
+//                    }
+//                });
+//            } else {
+//                logger.debug(TAG, "获取截屏文件失败！");
+//                yingda(0xA505, false, deviceId, msgid505);
+//            }
+//        } catch (Exception e) {
+//            logger.debug(TAG, e.getMessage());
+//        }
     }
 
     /**

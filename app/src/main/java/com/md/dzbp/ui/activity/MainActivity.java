@@ -41,6 +41,7 @@ import com.md.dzbp.data.LoginEvent;
 import com.md.dzbp.data.MainData;
 import com.md.dzbp.data.MainUpdateEvent;
 import com.md.dzbp.data.MessageBase;
+import com.md.dzbp.data.ScreenShotEvent;
 import com.md.dzbp.data.UpdateDate;
 import com.md.dzbp.model.NetWorkRequest;
 import com.md.dzbp.model.TimeListener;
@@ -62,6 +63,7 @@ import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.GetCardNumUtils;
 import com.md.dzbp.utils.GlideImgManager;
 import com.md.dzbp.utils.MainGestureDetector;
+import com.md.dzbp.utils.SnapUtils;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 

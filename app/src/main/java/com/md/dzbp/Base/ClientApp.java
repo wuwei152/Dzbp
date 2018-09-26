@@ -35,6 +35,7 @@ public class ClientApp extends Application {
         instance = this;
         initLogs();
         mAcache = ACache.get(this);
+        logger = LoggerFactory.getLogger(getClass());
         Fresco.initialize(this);
         OkHttpFinalConfiguration.Builder builder = new OkHttpFinalConfiguration.Builder();
         OkHttpFinal.getInstance().init(builder.build());
@@ -44,15 +45,15 @@ public class ClientApp extends Application {
             deleteCache();
         } catch (Exception e) {
             LogUtils.e(e.getMessage());
-//            logger.error("ClientApp", e.getMessage());
+            logger.error("ClientApp", e.getMessage());
         }
         //加入初始密码
         String adminPsw = mAcache.getAsString("AdminPsw");
-        if (TextUtils.isEmpty(adminPsw)){
-            mAcache.put("AdminPsw", "12345");
+        if (TextUtils.isEmpty(adminPsw)) {
+            mAcache.put("AdminPsw", "135792468");
         }
 
-        logger = LoggerFactory.getLogger(getClass());
+
     }
 
     public static ClientApp getInstance() {
@@ -76,7 +77,8 @@ public class ClientApp extends Application {
         int numCount = 0;
         if (num != null) {
             numCount = (int) num;
-            logger.debug("ClientApp", "登录次数："+numCount);
+            LogUtils.d("登录次数：" + numCount);
+            logger.debug("ClientApp", "登录次数：" + numCount);
         }
         if (numCount <= 15) {
             numCount++;
@@ -87,7 +89,7 @@ public class ClientApp extends Application {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    logger.debug("ClientApp", "删除缓存！");
+                    logger.debug("ClientApp", "开始删除缓存！");
                     ArrayList<File> files = new ArrayList<>();
                     File file1 = new File(FileUtils.getDiskCacheDir(ClientApp.this) + "Log");
                     File file2 = new File(FileUtils.getDiskCacheDir(ClientApp.this) + "receiveVoice");
@@ -105,11 +107,17 @@ public class ClientApp extends Application {
                     files.add(file6);
                     files.add(file7);
                     files.add(file8);
-                    for (File f : files) {
-                        if (f.exists()) {
-                            File[] files2 = f.listFiles();
-                            for (int i = 0; i < files2.length; i++) {
-                                files2[i].delete();
+                    for (int j = 0; j < files.size(); j++) {
+                        if (files.get(j).exists()) {
+                            File[] files2 = files.get(j).listFiles();
+                            if (files2 != null && files2.length > 0) {
+                                for (int i = 0; i < files2.length; i++) {
+                                    if (files2[i].exists()) {
+                                        if (!(j == 0 && i == files2.length - 1)){//保留最近的Log文件
+                                            files2[i].delete();
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

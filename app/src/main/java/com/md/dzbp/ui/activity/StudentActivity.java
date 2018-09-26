@@ -37,6 +37,7 @@ import com.md.dzbp.data.HistoryMsg;
 import com.md.dzbp.data.ImageReceiveMessage;
 import com.md.dzbp.data.MessageBase;
 import com.md.dzbp.data.MsgSendStatus;
+import com.md.dzbp.data.ScreenShotEvent;
 import com.md.dzbp.data.StudentInfoBean;
 import com.md.dzbp.data.TextReceiveMessage;
 import com.md.dzbp.data.TextSendMessage;
@@ -54,6 +55,7 @@ import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.GetCardNumUtils;
 import com.md.dzbp.utils.MainGestureDetector;
+import com.md.dzbp.utils.SnapUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -432,6 +434,7 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -579,4 +582,5 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
     public boolean onTouchEvent(MotionEvent event) {
         return gestureDetector.onTouchEvent(event);
     }
+
 }

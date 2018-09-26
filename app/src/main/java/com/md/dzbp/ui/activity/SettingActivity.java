@@ -81,6 +81,7 @@ public class SettingActivity extends BaseActivity implements UIDataListener {
         mAcache = ACache.get(SettingActivity.this);
         dialog = MyProgressDialog.createLoadingDialog(this, "", this);
         netWorkRequest = new NetWorkRequest(this, this);
+
     }
 
     @Override

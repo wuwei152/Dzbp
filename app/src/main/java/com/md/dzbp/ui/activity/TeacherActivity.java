@@ -23,6 +23,7 @@ import com.md.dzbp.constants.APIConfig;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.CourseBean;
 import com.md.dzbp.data.LoginEvent;
+import com.md.dzbp.data.ScreenShotEvent;
 import com.md.dzbp.model.NetWorkRequest;
 import com.md.dzbp.model.TimeListener;
 import com.md.dzbp.model.TimeUtils;
@@ -34,6 +35,7 @@ import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.GetCardNumUtils;
 import com.md.dzbp.utils.MainGestureDetector;
+import com.md.dzbp.utils.SnapUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -155,6 +157,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
         LogUtils.d("teacherAct--onDestroy");
     }
 
@@ -296,4 +299,5 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
             mTemp.setTextColor(getResources().getColor(R.color.conf));
         }
     }
+
 }

@@ -6,6 +6,11 @@ import android.view.Window;
 
 import com.apkfuns.logutils.LogUtils;
 import com.md.dzbp.R;
+import com.md.dzbp.data.ScreenShotEvent;
+import com.md.dzbp.utils.SnapUtils;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.ButterKnife;
 import cn.finalteam.okhttpfinal.HttpCycleContext;
@@ -63,5 +68,19 @@ public abstract class BaseActivity extends AppCompatActivity implements HttpCycl
     @Override
     public String getHttpTaskKey() {
         return HTTP_TASK_KEY;
+    }
+
+    /**
+     * 发送截屏回复
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onScreenshotEvent(ScreenShotEvent event) {
+        if (event.isSend()) {
+            LogUtils.d("开始截屏");
+            SnapUtils snapUtils = new SnapUtils(this,event.getDeviceId(),event.getMsgid());
+            snapUtils.requestScreenShot();
+        }
     }
 }

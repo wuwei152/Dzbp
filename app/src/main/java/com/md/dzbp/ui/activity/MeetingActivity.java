@@ -22,6 +22,7 @@ import com.md.dzbp.constants.APIConfig;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.LoginEvent;
 import com.md.dzbp.data.Meetingbean;
+import com.md.dzbp.data.ScreenShotEvent;
 import com.md.dzbp.data.SignEvent;
 import com.md.dzbp.model.NetWorkRequest;
 import com.md.dzbp.model.TimeListener;
@@ -34,6 +35,7 @@ import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.GetCardNumUtils;
 import com.md.dzbp.utils.MainGestureDetector;
+import com.md.dzbp.utils.SnapUtils;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -115,6 +117,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
     protected void initUI() {
         //主菜单
         mainDialog = new MainDialog(this);
+        EventBus.getDefault().register(this);
         mAcache = ACache.get(this);
         logger = LoggerFactory.getLogger(getClass());
         gestureDetector = new GestureDetector(MeetingActivity.this, MainGestureDetector.getGestureDetector(mainDialog));
@@ -338,5 +341,10 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
             mTemp.setText("连接状态：已断开");
             mTemp.setTextColor(getResources().getColor(R.color.conf));
         }
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

@@ -33,6 +33,7 @@ import com.md.dzbp.data.CameraInfo;
 import com.md.dzbp.data.ClassInfoBean;
 import com.md.dzbp.data.ClassManagerBean;
 import com.md.dzbp.data.PatrolBean;
+import com.md.dzbp.data.ScreenShotEvent;
 import com.md.dzbp.model.DahuaListener;
 import com.md.dzbp.model.DahuaModel;
 import com.md.dzbp.model.NetWorkRequest;
@@ -46,9 +47,13 @@ import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.GetCardNumUtils;
 import com.md.dzbp.utils.GlideImgManager;
 import com.md.dzbp.utils.MainGestureDetector;
+import com.md.dzbp.utils.SnapUtils;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -156,6 +161,7 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
 
     @Override
     protected void initData() {
+        EventBus.getDefault().register(this);
         getCardNum();
 
         getUIdata();
@@ -227,6 +233,7 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
     protected void onDestroy() {
         super.onDestroy();
         dahuaModel.releaseRes();
+        EventBus.getDefault().unregister(this);
     }
 
     /**
@@ -459,4 +466,5 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
             dahuaModel.logout();
         }
     }
+
 }

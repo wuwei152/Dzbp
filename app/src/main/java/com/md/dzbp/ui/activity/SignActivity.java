@@ -24,6 +24,7 @@ import com.md.dzbp.R;
 import com.md.dzbp.constants.APIConfig;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.LoginEvent;
+import com.md.dzbp.data.ScreenShotEvent;
 import com.md.dzbp.data.SignEvent;
 import com.md.dzbp.data.SignInfoBean;
 import com.md.dzbp.model.NetWorkRequest;
@@ -39,6 +40,7 @@ import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.FileUtils;
 import com.md.dzbp.utils.GetCardNumUtils;
 import com.md.dzbp.utils.MainGestureDetector;
+import com.md.dzbp.utils.SnapUtils;
 import com.nanchen.compresshelper.CompressHelper;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
@@ -118,6 +120,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
 
     @Override
     protected void initUI() {
+        EventBus.getDefault().register(this);
         mainDialog = new MainDialog(this);
         mAcache = ACache.get(this);
         logger = LoggerFactory.getLogger(getClass());
@@ -200,7 +203,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        LogUtils.d("onDestroy");
+        EventBus.getDefault().unregister(this);
     }
 
     //相机参数的初始化设置
@@ -476,4 +479,5 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
             mTemp.setTextColor(getResources().getColor(R.color.conf));
         }
     }
+
 }

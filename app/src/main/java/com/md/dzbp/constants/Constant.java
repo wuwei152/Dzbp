@@ -14,31 +14,32 @@ public class Constant {
     /**
      * 服务器地址
      */
-//    public static String IP = "119.97.137.22";//武汉
+    public static String IP = "119.97.137.22";//武汉
 //    public static String IP = "119.97.137.24";
 //    public static String IP = "192.168.0.52";
+//    public static String IP = "192.168.0.102";
 
-    public static String IP = "119.97.137.24";//宜昌
+//    public static String IP = "119.97.137.24";//宜昌
 
     /**
      * API地址
      */
-//    public static final String BASE_HOST = "http://www.cnzhxy.com/";//武汉
-    public static final String BASE_HOST = "http://yc.cnzhxy.com/";//宜昌
+    public static final String BASE_HOST = "http://www.cnzhxy.com/";//武汉
+//    public static final String BASE_HOST = "http://yc.cnzhxy.com/";//宜昌
 //    public static final String BASE_HOST = "http://test.cnzhxy.com/";
 //    public static final String BASE_HOST = "http://192.168.0.237:9999/";
 
     public static int PORT = 9898;
     public static String FtpHostName = "119.97.137.24";
     public static int FtpPort = 21;
-//    public static String FtpUserName = "ftp-device";
-//    public static String FtpPsw = "1234";
+    public static String FtpUserName = "ftp-device";
+    public static String FtpPsw = "1234";
 
     /**
      * 宜昌
      */
-    public static String FtpUserName = "ftp-zhxy";
-    public static String FtpPsw = "Hxy_2017";
+//    public static String FtpUserName = "ftp-zhxy";
+//    public static String FtpPsw = "Hxy_2017";
 
 
     //设备参数

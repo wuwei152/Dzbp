@@ -21,6 +21,7 @@ import com.md.dzbp.R;
 import com.md.dzbp.constants.APIConfig;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.NoticeBean;
+import com.md.dzbp.data.ScreenShotEvent;
 import com.md.dzbp.model.NetWorkRequest;
 import com.md.dzbp.model.UIDataListener;
 import com.md.dzbp.tcp.TcpService;
@@ -29,7 +30,11 @@ import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.GetCardNumUtils;
 import com.md.dzbp.utils.MainGestureDetector;
+import com.md.dzbp.utils.SnapUtils;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,6 +86,7 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
 
     @Override
     protected void initUI() {
+        EventBus.getDefault().register(this);
         mainDialog = new MainDialog(this);
         dialog = MyProgressDialog.createLoadingDialog(this, "", this);
         netWorkRequest = new NetWorkRequest(this, this);
@@ -307,6 +313,7 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
         if (mp != null) {
             mp.stop();
             mp = null;

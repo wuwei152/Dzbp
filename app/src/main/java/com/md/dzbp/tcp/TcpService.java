@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.apkfuns.logutils.LogUtils;
+import com.md.dzbp.data.ScreenShotEvent;
 import com.md.dzbp.data.TextSendMessage;
 import com.md.dzbp.data.VoiceSendMessage;
 import com.md.dzbp.constants.Constant;
@@ -44,16 +45,16 @@ public class TcpService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent!=null&&intent.hasExtra("Num")) {
+        if (intent != null && intent.hasExtra("Num")) {
             String num = intent.getStringExtra("Num");
-            int Act = intent.getIntExtra("Act",0);
+            int Act = intent.getIntExtra("Act", 0);
             String ext = intent.getStringExtra("ext");
-            LogUtils.d("onStartCommand:----"+num+"/"+Act+"/"+ext);
-            mManager.sendCardNum(num,Act,ext);
-        }else if (intent!=null&&intent.hasExtra("test")){
+            LogUtils.d("onStartCommand:----" + num + "/" + Act + "/" + ext);
+            mManager.sendCardNum(num, Act, ext);
+        } else if (intent != null && intent.hasExtra("test")) {
 //            mManager.test();
 //            mManager.messageHandle.TakeSnap();
-        }else if (intent!=null&&intent.hasExtra("Log")){
+        } else if (intent != null && intent.hasExtra("Log")) {
 //            mManager.messageHandle.GetLog(0);
         }
 
@@ -73,34 +74,53 @@ public class TcpService extends Service {
 
     /**
      * 发送语音消息
+     *
      * @param event
      */
     @Subscribe(threadMode = ThreadMode.BACKGROUND) //在ui线程执行
     public void onDataSynEvent(VoiceSendMessage event) {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("MsgType",event.getMsgType());
-        jsonObject.put("ToUserName",event.getToUserName());
-        jsonObject.put("FromUserName",event.getFromUserName());
-        jsonObject.put("CreateTime",event.getCreateTime());
-        jsonObject.put("VoicePath",event.getVoicePath());
+        jsonObject.put("MsgType", event.getMsgType());
+        jsonObject.put("ToUserName", event.getToUserName());
+        jsonObject.put("FromUserName", event.getFromUserName());
+        jsonObject.put("CreateTime", event.getCreateTime());
+        jsonObject.put("VoicePath", event.getVoicePath());
 
-        logger.debug("TcpService开始发送语音消息-->{}",jsonObject.toJSONString());
-        mManager.messageHandle.sendVoiceMsg(event.getMsgType(),event.getVoiceLocalPath(),Constant.Ftp_Voice,0xA601,jsonObject.toJSONString());
+        logger.debug("TcpService开始发送语音消息-->{}", jsonObject.toJSONString());
+        mManager.messageHandle.sendVoiceMsg(event.getMsgType(), event.getVoiceLocalPath(), Constant.Ftp_Voice, 0xA601, jsonObject.toJSONString());
     }
+
     /**
      * 发送文字消息
+     *
      * @param event
      */
     @Subscribe(threadMode = ThreadMode.BACKGROUND) //在ui线程执行
     public void onTextInputEvent(TextSendMessage event) {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("MsgType",event.getMsgType());
-        jsonObject.put("ToUserName",event.getToUserName());
-        jsonObject.put("FromUserName",event.getFromUserName());
-        jsonObject.put("CreateTime",event.getCreateTime());
-        jsonObject.put("Content",event.getContent());
+        jsonObject.put("MsgType", event.getMsgType());
+        jsonObject.put("ToUserName", event.getToUserName());
+        jsonObject.put("FromUserName", event.getFromUserName());
+        jsonObject.put("CreateTime", event.getCreateTime());
+        jsonObject.put("Content", event.getContent());
 
-        logger.debug("TcpService开始发送文字消息-->{}",jsonObject.toJSONString());
-        mManager.messageHandle.sendTextMsg(event.getMsgType(),0xA601,jsonObject.toJSONString());
+        logger.debug("TcpService开始发送文字消息-->{}", jsonObject.toJSONString());
+        mManager.messageHandle.sendTextMsg(event.getMsgType(), 0xA601, jsonObject.toJSONString());
+    }
+
+    /**
+     * 发送截屏回复
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.BACKGROUND) //在ui线程执行
+    public void onScreenshotEvent(ScreenShotEvent event) {
+        if (!event.isSend()) {
+            if (event.isSuccess()) {
+                mManager.messageHandle.msgHandleUtil.yingda(0xA505, true, event.getDeviceId(), event.getData(), event.getMsgid());
+            } else {
+                mManager.messageHandle.msgHandleUtil.yingda(0xA505, false, event.getDeviceId(), event.getMsgid());
+            }
+        }
     }
 }
