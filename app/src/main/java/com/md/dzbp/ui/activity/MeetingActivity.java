@@ -93,8 +93,6 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
     @BindView(R.id.meet_QRcodeText)
     TextView mQRcodeText;
 
-    private MainDialog mainDialog;
-    private GestureDetector gestureDetector;
     private Dialog dialog;
     private NetWorkRequest netWorkRequest;
     private List<Meetingbean.MeetingUserListBean> meetingUserList;
@@ -115,12 +113,9 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
 
     @Override
     protected void initUI() {
-        //主菜单
-        mainDialog = new MainDialog(this);
         EventBus.getDefault().register(this);
         mAcache = ACache.get(this);
         logger = LoggerFactory.getLogger(getClass());
-        gestureDetector = new GestureDetector(MeetingActivity.this, MainGestureDetector.getGestureDetector(mainDialog));
         //获取时间日期
         new TimeUtils(MeetingActivity.this, this);
         //进度
@@ -164,9 +159,6 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
     protected void onPause() {
         super.onPause();
         EventBus.getDefault().unregister(this);
-        if (mainDialog != null && mainDialog.isShowing()) {
-            mainDialog.dismiss();
-        }
     }
 
     /**
@@ -245,11 +237,6 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
                 }
             }
         });
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return gestureDetector.onTouchEvent(event);
     }
 
     @Override

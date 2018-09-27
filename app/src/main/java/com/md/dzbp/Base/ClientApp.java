@@ -80,7 +80,7 @@ public class ClientApp extends Application {
             LogUtils.d("登录次数：" + numCount);
             logger.debug("ClientApp", "登录次数：" + numCount);
         }
-        if (numCount <= 15) {
+        if (numCount <= 30) {
             numCount++;
             mAcache.put("NumCount", numCount);
         } else {

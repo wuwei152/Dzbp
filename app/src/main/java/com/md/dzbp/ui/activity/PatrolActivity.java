@@ -108,8 +108,6 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
     @BindView(R.id.patrol_videoList)
     HorizontalListView mVideoList;
     private Dialog dialog;
-    private MainDialog mainDialog;
-    private GestureDetector gestureDetector;
     private NetWorkRequest netWorkRequest;
     private PatrolBean patrolBean;
     private String userId;
@@ -141,8 +139,6 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
 
         dialog = MyProgressDialog.createLoadingDialog(this, "", this);
         netWorkRequest = new NetWorkRequest(this, this);
-        mainDialog = new MainDialog(this);
-        gestureDetector = new GestureDetector(PatrolActivity.this, MainGestureDetector.getGestureDetector(mainDialog));
 
         logger = LoggerFactory.getLogger(getClass());
         mSurface.getHolder().addCallback(this);
@@ -218,9 +214,6 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
     protected void onPause() {
         super.onPause();
         LogUtils.d("onPause");
-        if (mainDialog != null && mainDialog.isShowing()) {
-            mainDialog.dismiss();
-        }
     }
 
     @Override

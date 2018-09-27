@@ -64,8 +64,6 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
     private Handler _handler = null;
     private Handler foucus_handler = null;
     private String _stringTemp;
-    private MainDialog mainDialog;
-    private GestureDetector gestureDetector;
     private Dialog dialog;
     private NetWorkRequest netWorkRequest;
     private NoticeBean noticeBean;
@@ -87,10 +85,8 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
     @Override
     protected void initUI() {
         EventBus.getDefault().register(this);
-        mainDialog = new MainDialog(this);
         dialog = MyProgressDialog.createLoadingDialog(this, "", this);
         netWorkRequest = new NetWorkRequest(this, this);
-        gestureDetector = new GestureDetector(NoticeActivity.this, MainGestureDetector.getGestureDetector(mainDialog));
 
         logger = LoggerFactory.getLogger(getClass());
 
@@ -153,13 +149,6 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
                 }
             }
         });
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-//        return super.dispatchTouchEvent(ev);
-        LogUtils.d(gestureDetector.onTouchEvent(ev));
-        return super.dispatchTouchEvent(ev);
     }
 
     @Override
@@ -296,9 +285,6 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
         super.onPause();
         if (mp != null) {
             mp.stop();
-        }
-        if (mainDialog != null && mainDialog.isShowing()) {
-            mainDialog.dismiss();
         }
     }
 

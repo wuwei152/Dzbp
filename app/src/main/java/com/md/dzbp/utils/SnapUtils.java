@@ -9,7 +9,6 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.apkfuns.logutils.LogUtils;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.constants.ERRORTYPE;
 import com.md.dzbp.data.ScreenShotEvent;
@@ -107,6 +106,10 @@ public class SnapUtils {
      */
     public File saveBitmap2Pic(Bitmap bitmap, String fileName) {
         try {
+            File filedir = new File(FileUtils.getDiskCacheDir(context) + "Screenshot");
+            if (!filedir.exists()){
+                filedir.mkdirs();
+            }
             File file = new File(FileUtils.getDiskCacheDir(context) + "Screenshot", fileName);
             file.createNewFile();//在window中没问题，但是在Android上必须加这一句，否然报异常 java.io.FileNotFoundException: xxx: open failed: EROFS (Read-only file system)
             FileOutputStream out = new FileOutputStream(file);

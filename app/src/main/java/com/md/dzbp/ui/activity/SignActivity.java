@@ -94,8 +94,6 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
     private SurfaceHolder.Callback callback;
     private Camera camera;
     private String TAG = "SignActivity-->{}";
-    private MainDialog mainDialog;
-    private GestureDetector gestureDetector;
     private Dialog dialog;
     private NetWorkRequest netWorkRequest;
     private Camera.Parameters parameters;
@@ -121,10 +119,8 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
     @Override
     protected void initUI() {
         EventBus.getDefault().register(this);
-        mainDialog = new MainDialog(this);
         mAcache = ACache.get(this);
         logger = LoggerFactory.getLogger(getClass());
-        gestureDetector = new GestureDetector(SignActivity.this, MainGestureDetector.getGestureDetector(mainDialog));
         //获取时间日期
         new TimeUtils(SignActivity.this, this);
         //进度
@@ -187,9 +183,6 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
         super.onPause();
         LogUtils.d("onPause");
         EventBus.getDefault().unregister(this);
-        if (mainDialog != null && mainDialog.isShowing()) {
-            mainDialog.dismiss();
-        }
     }
 
 
@@ -343,11 +336,6 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
                 }
             }
         });
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return gestureDetector.onTouchEvent(event);
     }
 
     @Override

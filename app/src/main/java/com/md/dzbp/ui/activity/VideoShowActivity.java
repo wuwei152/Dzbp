@@ -94,8 +94,6 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
     @BindView(R.id.videoshow_videoList)
     HorizontalListView mVideoList;
 
-    private MainDialog mainDialog;
-    private GestureDetector gestureDetector;
     private Dialog dialog;
     private NetWorkRequest netWorkRequest;
     private ACache mAcache;
@@ -123,8 +121,6 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
         mAcache = ACache.get(this);
         mCameraInfos = (ArrayList<CameraInfo>) mAcache.getAsObject("CameraInfo");
 
-        mainDialog = new MainDialog(this);
-        gestureDetector = new GestureDetector(VideoShowActivity.this, MainGestureDetector.getGestureDetector(mainDialog));
         dialog = MyProgressDialog.createLoadingDialog(VideoShowActivity.this, "", this);
         netWorkRequest = new NetWorkRequest(this, this);
         logger = LoggerFactory.getLogger(getClass());
@@ -204,9 +200,6 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
         super.onPause();
         LogUtils.d("解注册EventBus");
         EventBus.getDefault().unregister(this);
-        if (mainDialog != null && mainDialog.isShowing()) {
-            mainDialog.dismiss();
-        }
     }
 
     @Override
@@ -255,11 +248,6 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
     @Override
     public void getTime(String time) {
         mTime.setText(time);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return gestureDetector.onTouchEvent(event);
     }
 
     @Override

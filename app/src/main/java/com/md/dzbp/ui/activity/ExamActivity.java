@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -14,20 +13,15 @@ import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.Exam;
-import com.md.dzbp.data.ScreenShotEvent;
 import com.md.dzbp.model.TimeListener;
 import com.md.dzbp.model.TimeUtils;
 import com.md.dzbp.tcp.TcpService;
 import com.md.dzbp.ui.view.MainDialog;
 import com.md.dzbp.utils.GetCardNumUtils;
-import com.md.dzbp.utils.MainGestureDetector;
-import com.md.dzbp.utils.SnapUtils;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,8 +42,7 @@ public class ExamActivity extends BaseActivity implements TimeListener {
     @BindView(R.id.exam_list)
     ListView mListview;
 
-    private MainDialog mainDialog;
-    private GestureDetector gestureDetector;
+
     private String TAG = "ExamActivity-->{}";
     private Logger logger;
 
@@ -67,8 +60,8 @@ public class ExamActivity extends BaseActivity implements TimeListener {
     protected void initUI() {
 
         EventBus.getDefault().register(this);
-        mainDialog = new MainDialog(this);
-        gestureDetector = new GestureDetector(ExamActivity.this, MainGestureDetector.getGestureDetector(mainDialog));
+
+
 
         logger = LoggerFactory.getLogger(ExamActivity.class);
     }
@@ -93,9 +86,6 @@ public class ExamActivity extends BaseActivity implements TimeListener {
     @Override
     protected void onPause() {
         super.onPause();
-        if (mainDialog != null && mainDialog.isShowing()) {
-            mainDialog.dismiss();
-        }
     }
 
     @Override
@@ -137,10 +127,7 @@ public class ExamActivity extends BaseActivity implements TimeListener {
         });
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return gestureDetector.onTouchEvent(event);
-    }
+
 
     @Override
     public void getTime(String time) {

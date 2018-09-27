@@ -104,8 +104,6 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
     private ChatAdapter chatAdapter;
 
     private ACache mAcache;
-    private MainDialog mainDialog;
-    private GestureDetector gestureDetector;
     private LinearLayoutManager linearLayoutManager;
     private ParentListAdapter parentListAdapter;
     private Dialog dialog;
@@ -139,9 +137,6 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
         }
         logger = LoggerFactory.getLogger(getClass());
         mAcache = ACache.get(this);
-
-        mainDialog = new MainDialog(this);
-        gestureDetector = new GestureDetector(StudentActivity.this, MainGestureDetector.getGestureDetector(mainDialog));
 
         currentParent = new StudentInfoBean.ParentsBean();
         studentInfo = new StudentInfoBean();
@@ -208,9 +203,6 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
         super.onPause();
         LogUtils.d("EventBus解注册");
         EventBus.getDefault().unregister(this);
-        if (mainDialog != null && mainDialog.isShowing()) {
-            mainDialog.dismiss();
-        }
     }
 
     @Override
@@ -576,11 +568,6 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
     @Override
     public void cancelRequest() {
         netWorkRequest.CancelPost();
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return gestureDetector.onTouchEvent(event);
     }
 
 }

@@ -76,8 +76,6 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     @BindView(R.id.teacher_imgRl)
     RelativeLayout mImgRl;
 
-    private MainDialog mainDialog;
-    private GestureDetector gestureDetector;
     private Dialog dialog;
     private NetWorkRequest netWorkRequest;
     private ACache mAcache;
@@ -97,8 +95,6 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     @Override
     protected void initUI() {
         LogUtils.d("teacher--onCreate");
-        mainDialog = new MainDialog(this);
-        gestureDetector = new GestureDetector(TeacherActivity.this, MainGestureDetector.getGestureDetector(mainDialog));
         mAcache = ACache.get(this);
         dialog = MyProgressDialog.createLoadingDialog(TeacherActivity.this, "", this);
         netWorkRequest = new NetWorkRequest(this, this);
@@ -143,9 +139,6 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
         super.onPause();
         LogUtils.d("解注册EventBus");
         EventBus.getDefault().unregister(this);
-        if (mainDialog != null && mainDialog.isShowing()) {
-            mainDialog.dismiss();
-        }
     }
 
     @Override
@@ -192,11 +185,6 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     @Override
     public void getTime(String time) {
         mTime.setText(time);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return gestureDetector.onTouchEvent(event);
     }
 
     @Override

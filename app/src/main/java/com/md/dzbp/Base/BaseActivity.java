@@ -2,11 +2,16 @@ package com.md.dzbp.Base;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.Window;
 
 import com.apkfuns.logutils.LogUtils;
 import com.md.dzbp.R;
 import com.md.dzbp.data.ScreenShotEvent;
+import com.md.dzbp.ui.activity.ExamActivity;
+import com.md.dzbp.ui.view.MainDialog;
+import com.md.dzbp.utils.MainGestureDetector;
 import com.md.dzbp.utils.SnapUtils;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -18,6 +23,8 @@ import cn.finalteam.okhttpfinal.HttpCycleContext;
 public abstract class BaseActivity extends AppCompatActivity implements HttpCycleContext {
 
     protected final String HTTP_TASK_KEY = "HttpTaskKey_" + hashCode();
+    protected MainDialog mainDialog;
+    protected GestureDetector gestureDetector;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +39,8 @@ public abstract class BaseActivity extends AppCompatActivity implements HttpCycl
         //打印打开的activity的类名和所在的包
         LogUtils.i(getClass().getName());
         ButterKnife.bind(this) ;
+        mainDialog = new MainDialog(this);
+        gestureDetector = new GestureDetector(BaseActivity.this, MainGestureDetector.getGestureDetector(mainDialog));
         initUI();
         initData();
     }
@@ -60,6 +69,19 @@ public abstract class BaseActivity extends AppCompatActivity implements HttpCycl
     protected abstract void initData();
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        if (mainDialog != null && mainDialog.isShowing()) {
+            mainDialog.dismiss();
+        }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return gestureDetector.onTouchEvent(event);
+    }
+
+    @Override
     public void onBackPressed() {
         finish();
         overridePendingTransition(0, R.anim.base_slide_out);
@@ -78,9 +100,13 @@ public abstract class BaseActivity extends AppCompatActivity implements HttpCycl
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onScreenshotEvent(ScreenShotEvent event) {
         if (event.isSend()) {
-            LogUtils.d("开始截屏");
-            SnapUtils snapUtils = new SnapUtils(this,event.getDeviceId(),event.getMsgid());
-            snapUtils.requestScreenShot();
+            try {
+                LogUtils.d("开始截屏");
+                SnapUtils snapUtils = new SnapUtils(this,event.getDeviceId(),event.getMsgid());
+                snapUtils.requestScreenShot();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 }

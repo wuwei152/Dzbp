@@ -156,8 +156,6 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         }
     };
     private ACache mAcache;
-    private MainDialog mainDialog;
-    private GestureDetector gestureDetector;
     private StuListAdapter stuListAdapter;
     private NetWorkRequest netWorkRequest;
     private LinearLayoutManager linearLayoutManager;
@@ -184,13 +182,8 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         startService(new Intent(this, TcpService.class));
         mAcache = ACache.get(this);
 
-
-        mainDialog = new MainDialog(this);
-
         dialog = MyProgressDialog.createLoadingDialog(MainActivity.this, "", this);
         netWorkRequest = new NetWorkRequest(this, this);
-
-        gestureDetector = new GestureDetector(MainActivity.this, MainGestureDetector.getGestureDetector(mainDialog));
 
         noticeScroll_handler.postDelayed(ScrollRunnable, 3000);
 
@@ -278,9 +271,6 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         super.onPause();
         LogUtils.d("解注册EventBus");
         EventBus.getDefault().unregister(this);
-        if (mainDialog != null && mainDialog.isShowing()) {
-            mainDialog.dismiss();
-        }
     }
 
     @Override
@@ -436,11 +426,6 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
     public void onDateChangeEvent(UpdateDate event) {
         mDate.setText(TimeUtils.getStringDate());
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return gestureDetector.onTouchEvent(event);
     }
 
     @Override
