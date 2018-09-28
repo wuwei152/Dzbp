@@ -291,7 +291,7 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
      */
     private void getCardNum() {
 
-        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum, true);
+        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum, true,this);
         getCardNumUtils.getNum(new GetCardNumUtils.SetNum() {
             @Override
             public void setNum(String num) {

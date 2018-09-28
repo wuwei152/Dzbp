@@ -56,7 +56,9 @@ public abstract class BaseActivity extends AppCompatActivity implements HttpCycl
         overridePendingTransition(R.anim.base_slide_right_in, R.anim.base_slide_remain);
     }
 
-    ;
+    public MainDialog getDialog(){
+        return mainDialog;
+    }
 
     /**
      * 初始化UI

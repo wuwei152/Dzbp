@@ -230,7 +230,7 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
      */
     private void getCardNum() {
 
-        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum);
+        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum,this);
         getCardNumUtils.getNum(new GetCardNumUtils.SetNum() {
             @Override
             public void setNum(String num) {

@@ -224,7 +224,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
      * 获取刷卡卡号
      */
     private void getCardNum() {
-        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum);
+        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum,this);
         getCardNumUtils.getNum(new GetCardNumUtils.SetNum() {
             @Override
             public void setNum(String num) {

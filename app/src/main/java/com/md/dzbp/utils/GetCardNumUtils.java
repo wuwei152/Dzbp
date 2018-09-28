@@ -7,6 +7,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.apkfuns.logutils.LogUtils;
+import com.md.dzbp.Base.BaseActivity;
 
 /**
  * Created by Administrator on 2017/12/26.
@@ -16,9 +17,11 @@ public class GetCardNumUtils {
 
     private Handler foucus_handler;
     private EditText et;
+    private BaseActivity act;
 
-    public GetCardNumUtils(final EditText et) {
+    public GetCardNumUtils(final EditText et, BaseActivity activity) {
         this.et = et;
+        this.act = activity;
         foucus_handler = null;
         foucus_handler = new Handler();
         foucus_handler.postDelayed(new Runnable() {
@@ -30,7 +33,7 @@ public class GetCardNumUtils {
         }, 1000);
     }
 
-    public GetCardNumUtils(EditText et, boolean f) {
+    public GetCardNumUtils(EditText et, boolean f, BaseActivity activity) {
         this.et = et;
     }
 
@@ -47,7 +50,11 @@ public class GetCardNumUtils {
                     String num = et.getText().toString().trim();
                     if (!TextUtils.isEmpty(num) && !"\n".equals(num)) {
                         LogUtils.d(num + "卡号");
-                        setNum.setNum(num);
+                        if (num.equals("1557434005")){
+                            act.getDialog().show();
+                        }else {
+                            setNum.setNum(num);
+                        }
                     }
                     et.setText("");
                 }
@@ -59,4 +66,6 @@ public class GetCardNumUtils {
     public interface SetNum {
         public void setNum(String num);
     }
+
+
 }

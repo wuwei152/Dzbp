@@ -90,7 +90,7 @@ public class ExamActivity extends BaseActivity implements TimeListener {
 
     @Override
     protected void initData() {
-        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum);
+        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum,this);
         getCardNumUtils.getNum(new GetCardNumUtils.SetNum() {
             @Override
             public void setNum(String num) {
