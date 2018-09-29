@@ -167,7 +167,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
         logger.debug(TAG, "签到界面");
         Constant.SCREENTYPE = 7;
         LogUtils.d("onResume");
-        EventBus.getDefault().register(this);
+//        EventBus.getDefault().register(this);
         boolean cons = (boolean) mAcache.getAsObject("conStatus");
         if (cons) {
             mTemp.setText("连接状态：已连接");
@@ -182,7 +182,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
     protected void onPause() {
         super.onPause();
         LogUtils.d("onPause");
-        EventBus.getDefault().unregister(this);
+//        EventBus.getDefault().unregister(this);
     }
 
 
@@ -434,21 +434,26 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
 
     @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
     public void onDataStatusEvent(SignEvent event) {
-        if (event.getType() == 1 && event.isStatus()) {
-//            showToast(event.getName() + "签到成功！");
-            if (studentsList != null && studentsList.size() > 0) {
-                for (SignInfoBean.StudentBean m : studentsList) {
-                    if (m.getAccountid().equals(event.getId())) {
-                        m.setState(1);
-                        logger.debug("SignActivity", "匹配成功，签到成功！");
+
+        try {
+            if (event.getType() == 1 && event.isStatus()) {
+    //            showToast(event.getName() + "签到成功！");
+                if (studentsList != null && studentsList.size() > 0) {
+                    for (SignInfoBean.StudentBean m : studentsList) {
+                        if (m.getAccountid().equals(event.getId())) {
+                            m.setState(1);
+                            logger.debug("SignActivity", "匹配成功，签到成功！");
+                        }
                     }
+                    setGridData(studentsList);
                 }
-                setGridData(studentsList);
             }
-        }
 //        else if (event.getType() == 1 && !event.isStatus()) {
 //            showToast("签到失败！");
 //        }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

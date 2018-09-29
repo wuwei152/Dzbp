@@ -143,7 +143,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
         super.onResume();
         logger.debug(TAG, "会议界面");
         Constant.SCREENTYPE = 6;
-        EventBus.getDefault().register(this);
+//        EventBus.getDefault().register(this);
         boolean cons = (boolean) mAcache.getAsObject("conStatus");
         if (cons) {
             mTemp.setText("连接状态：已连接");
@@ -158,7 +158,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
     @Override
     protected void onPause() {
         super.onPause();
-        EventBus.getDefault().unregister(this);
+//        EventBus.getDefault().unregister(this);
     }
 
     /**
@@ -300,16 +300,20 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
 
     @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
     public void onDataStatusEvent(SignEvent event) {
-        if (event.getType() == 0 && event.isStatus()) {
-            if (meetingUserList != null) {
-                for (Meetingbean.MeetingUserListBean m : meetingUserList) {
-                    if (m.getAccountId().equals(event.getId())) {
-                        m.setSigninStatus(1);
-                        logger.debug("MeetingActivity-->{}", "匹配成功，签到成功！");
+        try {
+            if (event.getType() == 0 && event.isStatus()) {
+                if (meetingUserList != null) {
+                    for (Meetingbean.MeetingUserListBean m : meetingUserList) {
+                        if (m.getAccountId().equals(event.getId())) {
+                            m.setSigninStatus(1);
+                            logger.debug("MeetingActivity-->{}", "匹配成功，签到成功！");
+                        }
                     }
+                    setGridData(meetingUserList);
                 }
-                setGridData(meetingUserList);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

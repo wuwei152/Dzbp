@@ -8,6 +8,7 @@ import com.apkfuns.logutils.LogUtils;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.md.dzbp.model.NetSDKLib;
 import com.md.dzbp.utils.ACache;
+import com.md.dzbp.utils.CrashHandler;
 import com.md.dzbp.utils.FileUtils;
 
 import org.slf4j.Logger;
@@ -36,6 +37,10 @@ public class ClientApp extends Application {
         initLogs();
         mAcache = ACache.get(this);
         logger = LoggerFactory.getLogger(getClass());
+
+        CrashHandler crashHandler = CrashHandler.getInstance();
+        crashHandler.init(this);
+
         Fresco.initialize(this);
         OkHttpFinalConfiguration.Builder builder = new OkHttpFinalConfiguration.Builder();
         OkHttpFinal.getInstance().init(builder.build());

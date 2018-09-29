@@ -47,6 +47,7 @@ import com.md.dzbp.model.NetWorkRequest;
 import com.md.dzbp.model.TimeListener;
 import com.md.dzbp.model.TimeUtils;
 import com.md.dzbp.model.UIDataListener;
+import com.md.dzbp.tcp.RemoteService;
 import com.md.dzbp.tcp.TcpService;
 import com.md.dzbp.ui.view.ListViewForScrollView;
 import com.md.dzbp.ui.view.LoopViewPagerLayout.BannerInfo;
@@ -180,6 +181,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     protected void initUI() {
         LogUtils.d("main--onCreate");
         startService(new Intent(this, TcpService.class));
+        startService(new Intent(this, RemoteService.class));
         mAcache = ACache.get(this);
 
         dialog = MyProgressDialog.createLoadingDialog(MainActivity.this, "", this);

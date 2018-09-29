@@ -4,8 +4,7 @@
     <!-- [START gcm_permission] -->
     <permission
         android:name="com.dahuatech.netsdk.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" >
-    </permission>
+        android:protectionLevel="signature"></permission>
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.dahuatech.netsdk.permission.C2D_MESSAGE" />
@@ -55,6 +54,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:persistent="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.activity.SplashActivity"
@@ -115,8 +115,14 @@
 
         <service
             android:name=".tcp.TcpService"
-            android:enabled="true" />
+            android:enabled="true">
+            <!--<intent-filter android:priority="1000"></intent-filter>-->
+        </service>
 
+        <!--运行在新进程-->
+        <service
+            android:name=".tcp.RemoteService"
+            android:process=".remoteservice"/>
         <receiver
             android:name=".tcp.TcpServiceInstalledReceiver"
             android:exported="true">

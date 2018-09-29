@@ -5,6 +5,7 @@ package com.md.dzbp.utils;
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -13,6 +14,8 @@ import android.os.Environment;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.md.dzbp.ui.activity.MainActivity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,6 +103,11 @@ public class CrashHandler implements UncaughtExceptionHandler {
             public void run() {
                 Looper.prepare();
                 Toast.makeText(mContext, "程序出现异常,请稍后！", Toast.LENGTH_LONG).show();
+
+                Intent intent = new Intent(mContext, MainActivity.class);//异常后跳屏重启
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mContext.startActivity(intent);
+                logger.error("崩溃重启信息-->{}","重新打开主页面");
                 Looper.loop();
             }
         }.start();
