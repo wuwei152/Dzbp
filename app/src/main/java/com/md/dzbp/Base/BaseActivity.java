@@ -24,7 +24,7 @@ public abstract class BaseActivity extends AppCompatActivity implements HttpCycl
 
     protected final String HTTP_TASK_KEY = "HttpTaskKey_" + hashCode();
     protected MainDialog mainDialog;
-    protected GestureDetector gestureDetector;
+//    protected GestureDetector gestureDetector;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +40,7 @@ public abstract class BaseActivity extends AppCompatActivity implements HttpCycl
         LogUtils.i(getClass().getName());
         ButterKnife.bind(this) ;
         mainDialog = new MainDialog(this);
-        gestureDetector = new GestureDetector(BaseActivity.this, MainGestureDetector.getGestureDetector(mainDialog));
+//        gestureDetector = new GestureDetector(BaseActivity.this, MainGestureDetector.getGestureDetector(mainDialog));
         initUI();
         initData();
     }
@@ -78,10 +78,10 @@ public abstract class BaseActivity extends AppCompatActivity implements HttpCycl
         }
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return gestureDetector.onTouchEvent(event);
-    }
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        return gestureDetector.onTouchEvent(event);
+//    }
 
     @Override
     public void onBackPressed() {

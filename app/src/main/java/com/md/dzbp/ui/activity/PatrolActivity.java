@@ -298,15 +298,15 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
         }
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        try {
-            return gestureDetector.onTouchEvent(event);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        try {
+//            return gestureDetector.onTouchEvent(event);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+//    }
 
 
     @Override

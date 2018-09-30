@@ -38,8 +38,8 @@ public class ClientApp extends Application {
         mAcache = ACache.get(this);
         logger = LoggerFactory.getLogger(getClass());
 
-//        CrashHandler crashHandler = CrashHandler.getInstance();
-//        crashHandler.init(this);
+        CrashHandler crashHandler = CrashHandler.getInstance();
+        crashHandler.init(this);
 
         Fresco.initialize(this);
         OkHttpFinalConfiguration.Builder builder = new OkHttpFinalConfiguration.Builder();
