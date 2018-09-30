@@ -6,6 +6,8 @@ import android.text.TextUtils;
 import com.md.dzbp.data.FtpParams;
 import com.md.dzbp.utils.ACache;
 
+import java.util.ArrayList;
+
 /**
  * 设备参数
  * Created by Administrator on 2017/8/22.
@@ -90,6 +92,25 @@ public class Constant {
         } else {
             return mDeviceId;
         }
+    }
+
+    /**
+     * 获取管理卡号
+     */
+    public static ArrayList<String> getAdminNum() {
+        ArrayList<String> numList = new ArrayList<String>();
+        numList.clear();
+        numList.add("1553792053");
+        numList.add("1560283157");
+        numList.add("1560471029");
+        numList.add("1561044917");
+        numList.add("1555720933");
+        numList.add("1557423733");
+        numList.add("1555820501");
+        numList.add("1555819413");
+        numList.add("1555820549");
+        numList.add("2773717515");
+        return numList;
     }
 
 }

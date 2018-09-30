@@ -167,7 +167,9 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
         logger.debug(TAG, "签到界面");
         Constant.SCREENTYPE = 7;
         LogUtils.d("onResume");
-//        EventBus.getDefault().register(this);
+        if (!EventBus.getDefault().isRegistered(this)) {//加上判断
+            EventBus.getDefault().register(this);
+        }
         boolean cons = (boolean) mAcache.getAsObject("conStatus");
         if (cons) {
             mTemp.setText("连接状态：已连接");
@@ -182,7 +184,6 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
     protected void onPause() {
         super.onPause();
         LogUtils.d("onPause");
-//        EventBus.getDefault().unregister(this);
     }
 
 
@@ -194,9 +195,17 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        if (EventBus.getDefault().isRegistered(this))//加上判断
+            EventBus.getDefault().unregister(this);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
     }
 
     //相机参数的初始化设置
@@ -327,7 +336,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
      */
     private void getCardNum() {
 
-        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum,this);
+        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum, this);
         getCardNumUtils.getNum(new GetCardNumUtils.SetNum() {
             @Override
             public void setNum(String num) {
@@ -437,7 +446,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
 
         try {
             if (event.getType() == 1 && event.isStatus()) {
-    //            showToast(event.getName() + "签到成功！");
+                //            showToast(event.getName() + "签到成功！");
                 if (studentsList != null && studentsList.size() > 0) {
                     for (SignInfoBean.StudentBean m : studentsList) {
                         if (m.getAccountid().equals(event.getId())) {

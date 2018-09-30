@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,19 +21,15 @@ import com.md.dzbp.constants.APIConfig;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.CourseBean;
 import com.md.dzbp.data.LoginEvent;
-import com.md.dzbp.data.ScreenShotEvent;
 import com.md.dzbp.model.NetWorkRequest;
 import com.md.dzbp.model.TimeListener;
 import com.md.dzbp.model.TimeUtils;
 import com.md.dzbp.model.UIDataListener;
 import com.md.dzbp.tcp.TcpService;
-import com.md.dzbp.ui.view.MainDialog;
 import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.GetCardNumUtils;
-import com.md.dzbp.utils.MainGestureDetector;
-import com.md.dzbp.utils.SnapUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -123,7 +117,9 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
         super.onResume();
         logger.debug(TAG, "上课界面");
         Constant.SCREENTYPE = 1;
-        EventBus.getDefault().register(this);
+        if (!EventBus.getDefault().isRegistered(this)) {//加上判断
+            EventBus.getDefault().register(this);
+        }
         boolean cons = (boolean) mAcache.getAsObject("conStatus");
         if (cons) {
             mTemp.setText("连接状态：已连接");
@@ -138,7 +134,8 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     protected void onPause() {
         super.onPause();
         LogUtils.d("解注册EventBus");
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this))//加上判断
+            EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -150,7 +147,8 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this))//加上判断
+            EventBus.getDefault().unregister(this);
         LogUtils.d("teacherAct--onDestroy");
     }
 

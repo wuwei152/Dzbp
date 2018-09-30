@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.md.dzbp.R;
+import com.md.dzbp.constants.Constant;
 import com.md.dzbp.tcp.TcpService;
 import com.md.dzbp.ui.activity.ExamActivity;
 import com.md.dzbp.ui.activity.MainActivity;
@@ -28,6 +29,8 @@ import com.md.dzbp.ui.activity.StudentActivity;
 import com.md.dzbp.ui.activity.TeacherActivity;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.GlideImgManager;
+
+import java.util.ArrayList;
 
 /**
  * 创建自定义的dialog
@@ -43,6 +46,7 @@ public class MainDialog extends Dialog {
     private InputMethodManager imm;
     private LinearLayout actll;
     private ImageView erweima;
+    private ArrayList<String> adminNum;
 
     public MainDialog(Context context) {
         super(context, R.style.MyDialog);
@@ -106,21 +110,23 @@ public class MainDialog extends Dialog {
         actll = (LinearLayout) findViewById(R.id.actll);
         erweima = (ImageView) findViewById(R.id.erweima);
 
-        GlideImgManager.glideLoader(context,mAcache.getAsString("qrcode"),R.drawable.pic_not_found,R.drawable.pic_not_found,erweima);
+        adminNum = Constant.getAdminNum();
 
-        imm = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        GlideImgManager.glideLoader(context, mAcache.getAsString("qrcode"), R.drawable.pic_not_found, R.drawable.pic_not_found, erweima);
+
+        imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imm.hideSoftInputFromWindow(et.getWindowToken(),0);
+                imm.hideSoftInputFromWindow(et.getWindowToken(), 0);
             }
         });
 
         act1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!YZ()){
+                if (!YZ()) {
                     return;
                 }
                 context.startActivity(new Intent(context, MainActivity.class));
@@ -130,7 +136,7 @@ public class MainDialog extends Dialog {
         act2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!YZ()){
+                if (!YZ()) {
                     return;
                 }
                 context.startActivity(new Intent(context, TeacherActivity.class));
@@ -140,7 +146,7 @@ public class MainDialog extends Dialog {
         act3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!YZ()){
+                if (!YZ()) {
                     return;
                 }
                 context.startActivity(new Intent(context, StudentActivity.class));
@@ -150,7 +156,7 @@ public class MainDialog extends Dialog {
         act4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!YZ()){
+                if (!YZ()) {
                     return;
                 }
                 context.startActivity(new Intent(context, ExamActivity.class));
@@ -160,7 +166,7 @@ public class MainDialog extends Dialog {
         act5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!YZ()){
+                if (!YZ()) {
                     return;
                 }
                 context.startActivity(new Intent(context, PatrolActivity.class));
@@ -170,7 +176,7 @@ public class MainDialog extends Dialog {
         act6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!YZ()){
+                if (!YZ()) {
                     return;
                 }
                 context.startActivity(new Intent(context, NoticeActivity.class));
@@ -180,7 +186,7 @@ public class MainDialog extends Dialog {
         act7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!YZ()){
+                if (!YZ()) {
                     return;
                 }
                 context.startActivity(new Intent(context, MeetingActivity.class));
@@ -190,7 +196,7 @@ public class MainDialog extends Dialog {
         act8.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!YZ()){
+                if (!YZ()) {
                     return;
                 }
                 context.startActivity(new Intent(context, SignActivity.class));
@@ -200,11 +206,11 @@ public class MainDialog extends Dialog {
         act9.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!YZ()){
+                if (!YZ()) {
                     return;
                 }
                 Intent intent = new Intent(context, TcpService.class);
-                intent.putExtra("Log","");
+                intent.putExtra("Log", "");
                 context.startService(intent);
                 dismiss();
             }
@@ -213,7 +219,7 @@ public class MainDialog extends Dialog {
         bt1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!YZ()){
+                if (!YZ()) {
                     return;
                 }
                 actll.setVisibility(View.VISIBLE);
@@ -235,19 +241,23 @@ public class MainDialog extends Dialog {
 
     }
 
-    private boolean YZ(){
+    private boolean YZ() {
         if (TextUtils.isEmpty(et.getText().toString())) {
             myToast.toast(context, "请输入管理密码！");
             return false;
         }
         String adminPsw = mAcache.getAsString("AdminPsw");
-        String psw = et.getText().toString();
-        if (psw.equals(adminPsw)||psw.equals("1557434005")) {
-            return true;
-        }else {
-            myToast.toast(context, "密码错误！");
-            return false;
+        if (!adminNum.contains(adminPsw)) {
+            adminNum.add(adminPsw);
         }
+        String psw = et.getText().toString();
+        for (String s : adminNum) {
+            if (psw.equals(s)) {
+                return true;
+            }
+        }
+        myToast.toast(context, "密码错误！");
+        return false;
     }
 
 }

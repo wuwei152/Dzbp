@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -29,7 +27,6 @@ import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.CameraInfo;
 import com.md.dzbp.data.CourseBean;
 import com.md.dzbp.data.LoginEvent;
-import com.md.dzbp.data.ScreenShotEvent;
 import com.md.dzbp.model.DahuaListener;
 import com.md.dzbp.model.DahuaModel;
 import com.md.dzbp.model.NetWorkRequest;
@@ -38,14 +35,11 @@ import com.md.dzbp.model.TimeUtils;
 import com.md.dzbp.model.UIDataListener;
 import com.md.dzbp.tcp.TcpService;
 import com.md.dzbp.ui.view.HorizontalListView;
-import com.md.dzbp.ui.view.MainDialog;
 import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.GetCardNumUtils;
 import com.md.dzbp.utils.GlideImgManager;
-import com.md.dzbp.utils.MainGestureDetector;
-import com.md.dzbp.utils.SnapUtils;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -116,7 +110,6 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
 
     @Override
     protected void initUI() {
-        EventBus.getDefault().register(this);
         LogUtils.d("videoshow--onCreate");
         mAcache = ACache.get(this);
         mCameraInfos = (ArrayList<CameraInfo>) mAcache.getAsObject("CameraInfo");
@@ -184,7 +177,9 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
         super.onResume();
         logger.debug(TAG, "教师视频界面");
         Constant.SCREENTYPE = 1;
-        EventBus.getDefault().register(this);
+        if (!EventBus.getDefault().isRegistered(this)) {//加上判断
+            EventBus.getDefault().register(this);
+        }
         boolean cons = (boolean) mAcache.getAsObject("conStatus");
         if (cons) {
             mTemp.setText("连接状态：已连接");
@@ -199,7 +194,8 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
     protected void onPause() {
         super.onPause();
         LogUtils.d("解注册EventBus");
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this))//加上判断
+            EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -213,7 +209,8 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
         super.onDestroy();
         LogUtils.d("videoshowAct--onDestroy");
         dahuaModel.releaseRes();
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this))//加上判断
+            EventBus.getDefault().unregister(this);
     }
 
     /**

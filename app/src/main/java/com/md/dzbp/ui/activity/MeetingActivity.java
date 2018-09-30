@@ -113,7 +113,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
 
     @Override
     protected void initUI() {
-        EventBus.getDefault().register(this);
+
         mAcache = ACache.get(this);
         logger = LoggerFactory.getLogger(getClass());
         //获取时间日期
@@ -143,7 +143,9 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
         super.onResume();
         logger.debug(TAG, "会议界面");
         Constant.SCREENTYPE = 6;
-//        EventBus.getDefault().register(this);
+        if (!EventBus.getDefault().isRegistered(this)) {//加上判断
+            EventBus.getDefault().register(this);
+        }
         boolean cons = (boolean) mAcache.getAsObject("conStatus");
         if (cons) {
             mTemp.setText("连接状态：已连接");
@@ -159,6 +161,13 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
     protected void onPause() {
         super.onPause();
 //        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (EventBus.getDefault().isRegistered(this))//加上判断
+            EventBus.getDefault().unregister(this);
     }
 
     /**
@@ -232,7 +241,12 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
                     Intent intent = new Intent(MeetingActivity.this, TcpService.class);
                     intent.putExtra("Num", num);
                     intent.putExtra("Act", 6);
-                    intent.putExtra("ext", meetingbean.getId());
+                    if (meetingbean!=null){
+                        intent.putExtra("ext", meetingbean.getId());
+                    }else {
+                        showToast("无参会人员信息");
+                        return;
+                    }
                     startService(intent);
                 }
             }
@@ -336,6 +350,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this))//加上判断
+            EventBus.getDefault().unregister(this);
     }
 }

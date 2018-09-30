@@ -240,7 +240,9 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         logger.debug(TAG, "课中界面");
         Constant.SCREENTYPE = 0;
         LogUtils.d("注册EventBus");
-        EventBus.getDefault().register(this);
+        if (!EventBus.getDefault().isRegistered(this)) {//加上判断
+            EventBus.getDefault().register(this);
+        }
         boolean cons = false;
         Object consobj = mAcache.getAsObject("conStatus");
         if (consobj != null) {
@@ -272,13 +274,14 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     protected void onPause() {
         super.onPause();
         LogUtils.d("解注册EventBus");
-        EventBus.getDefault().unregister(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         LogUtils.d("main--onStop");
+        if (EventBus.getDefault().isRegistered(this))//加上判断
+            EventBus.getDefault().unregister(this);
     }
 
     /**
@@ -416,6 +419,8 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         if (noticeScroll_handler != null && ScrollRunnable != null) {
             noticeScroll_handler.removeCallbacks(ScrollRunnable);
         }
+        if (EventBus.getDefault().isRegistered(this))//加上判断
+            EventBus.getDefault().unregister(this);
     }
 
     //更新时间

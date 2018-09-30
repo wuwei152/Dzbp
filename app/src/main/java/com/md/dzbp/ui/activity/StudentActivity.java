@@ -8,9 +8,7 @@ import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.GestureDetector;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -37,7 +35,6 @@ import com.md.dzbp.data.HistoryMsg;
 import com.md.dzbp.data.ImageReceiveMessage;
 import com.md.dzbp.data.MessageBase;
 import com.md.dzbp.data.MsgSendStatus;
-import com.md.dzbp.data.ScreenShotEvent;
 import com.md.dzbp.data.StudentInfoBean;
 import com.md.dzbp.data.TextReceiveMessage;
 import com.md.dzbp.data.TextSendMessage;
@@ -48,14 +45,11 @@ import com.md.dzbp.model.TimeUtils;
 import com.md.dzbp.model.UIDataListener;
 import com.md.dzbp.tcp.TcpService;
 import com.md.dzbp.ui.view.AudioRecorder.AudioRecorderButton;
-import com.md.dzbp.ui.view.MainDialog;
 import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.MyRecyclerView;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.GetCardNumUtils;
-import com.md.dzbp.utils.MainGestureDetector;
-import com.md.dzbp.utils.SnapUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -195,14 +189,23 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
         logger.debug(TAG, "学生界面");
         Constant.SCREENTYPE = 2;
         LogUtils.d("EventBus注册");
-        EventBus.getDefault().register(this);
+        if (!EventBus.getDefault().isRegistered(this)) {//加上判断
+            EventBus.getDefault().register(this);
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         LogUtils.d("EventBus解注册");
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this))//加上判断
+            EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
     }
 
     @Override
@@ -426,7 +429,8 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
+        if (EventBus.getDefault().isRegistered(this))//加上判断
+            EventBus.getDefault().unregister(this);
     }
 
     @Override
