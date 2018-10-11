@@ -99,7 +99,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     protected void initData() {
         new TimeUtils(TeacherActivity.this, this);
 
-        mDate.setText(TimeUtils.getStringDate());
+
         getCardNum();
 
         getUIdata();
@@ -159,6 +159,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
         Map map = new HashMap();
         map.put("deviceId", Constant.getDeviceId(this));
         netWorkRequest.doGetRequest(0, Constant.getUrl(this, APIConfig.GET_COURSE), true, map);
+        mDate.setText(TimeUtils.getStringDate());
     }
 
     /**

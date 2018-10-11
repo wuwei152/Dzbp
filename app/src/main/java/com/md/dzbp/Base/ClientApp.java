@@ -68,7 +68,7 @@ public class ClientApp extends Application {
 
     private void initLogs() {
         LogUtils.getLogConfig()
-                .configAllowLog(true)
+                .configAllowLog(false)
                 .configTagPrefix("MyApp")
                 .configShowBorders(true)
                 .configLevel(LogLevel.TYPE_VERBOSE);

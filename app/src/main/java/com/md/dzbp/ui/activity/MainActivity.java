@@ -206,7 +206,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     @Override
     protected void initData() {
         new TimeUtils(MainActivity.this, this);
-        mDate.setText(TimeUtils.getStringDate());
+
         getCardNum();
 
         mNoticeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -268,6 +268,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         map.put("deviceId", Constant.getDeviceId(MainActivity.this));
         netWorkRequest.doGetRequest(0, Constant.getUrl(MainActivity.this, APIConfig.GET_Main), true, map);
         netWorkRequest.doGetRequest(2, Constant.getUrl(MainActivity.this, APIConfig.GET_LOAD_MSG), false, map);
+        mDate.setText(TimeUtils.getStringDate());
     }
 
     @Override
