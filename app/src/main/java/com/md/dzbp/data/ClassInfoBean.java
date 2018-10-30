@@ -1,10 +1,12 @@
 package com.md.dzbp.data;
 
+import java.io.Serializable;
+
 /**
  * 教室信息
  * Created by Administrator on 2017/9/16.
  */
-public class ClassInfoBean {
+public class ClassInfoBean implements Serializable{
     /**
      * gradeName : 高一年级
      * classId : 766bda76-3b5a-434d-a184-86e995291fe3

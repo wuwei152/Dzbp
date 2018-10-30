@@ -1,11 +1,12 @@
 package com.md.dzbp.data;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by Administrator on 2017/9/16.
  */
-public class ClassManagerBean {
+public class ClassManagerBean  implements Serializable {
     /**
      * accountId : 342fa921-572e-42f8-8541-6e53d5e92e4f
      * accountName : 张博

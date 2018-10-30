@@ -95,7 +95,7 @@ public class MessageHandle {
                     logger.debug(TAG, "0xA002设置开关机指令：关" + guanji + "/开" + kaiji);
                     smdtManager.smdtSetTimingSwitchMachine(guanji, kaiji, "1");
 
-                    LogUtils.d(psw);
+                    LogUtils.d("psw:"+psw);
 
                     FtpParams params = new FtpParams(ftp_ip, ftp_port, ftp_name, ftp_psw, web_api);
                     mACache.put("FtpParams", params);
@@ -282,7 +282,7 @@ public class MessageHandle {
             case 0xA555://通用屏幕跳转
                 int type555 = tcpMessage.ReadInt();
                 logger.debug("0xA555收到通用屏幕跳转指令", type555 + "");
-                msgHandleUtil.gotoActivity(type555, "", "");
+//                msgHandleUtil.gotoActivity(type555, "", "");
                 msgHandleUtil.yingda(0xA555, true, deviceId);
                 break;
             case 0xA600://收消息
@@ -404,7 +404,7 @@ public class MessageHandle {
             public void run() {
                 logger.debug(TAG, "发送心跳" + XTfailNum);
                 try {
-                    if (client == null || !IsEnable || XTfailNum > 2) {
+                    if (client == null || !IsEnable || XTfailNum > 3) {
                         logger.debug(TAG, "心跳异常，断开连接");
                         x_handler.removeCallbacks(this);
                         Stop();

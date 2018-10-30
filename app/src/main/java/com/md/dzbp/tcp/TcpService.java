@@ -20,12 +20,17 @@ import com.md.dzbp.data.ScreenShotEvent;
 import com.md.dzbp.data.TextSendMessage;
 import com.md.dzbp.data.VoiceSendMessage;
 import com.md.dzbp.constants.Constant;
+import com.md.dzbp.data.WorkTimePeriod;
+import com.md.dzbp.data.WorkTimePoint;
+import com.md.dzbp.task.SwitchTask;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
 
 /**
  * Tcp服务
@@ -37,6 +42,7 @@ public class TcpService extends Service {
     private Logger logger;
     private LocalBinder binder;
     private LocalConn conn;
+    private SwitchTask mSwitchTask;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -54,6 +60,22 @@ public class TcpService extends Service {
         mManager = ServerManager.getInstance(this);
         EventBus.getDefault().register(this);
         logger = LoggerFactory.getLogger(getClass());
+
+        ArrayList<WorkTimePeriod> list = new ArrayList<>();
+//        String taskTag, String name, int type, String triggerTime_A, String triggerTime_B
+        list.add(new WorkTimePeriod("111","1",0,"?:?:?:14:35:00","?:?:?:14:46:00"));
+        list.add(new WorkTimePeriod("222","1",0,"?:?:?:14:46:30","?:?:?:14:47:00"));
+        list.add(new WorkTimePeriod("223","7",1,"?:?:?:14:46:40","?:?:?:14:49:10"));
+        list.add(new WorkTimePeriod("333","1",0,"?:?:?:14:47:30","?:?:?:14:48:00"));
+        list.add(new WorkTimePeriod("333","3",2,"?:?:?:14:47:22","?:?:?:14:47:34"));
+        list.add(new WorkTimePeriod("544","1",0,"?:?:?:14:48:30","?:?:?:14:49:00"));
+        list.add(new WorkTimePeriod("555","1",0,"?:?:?:14:49:30","?:?:?:14:00:00"));
+        list.add(new WorkTimePeriod("666","1",0,"?:?:?:14:00:30","?:?:?:14:01:00"));
+
+        mSwitchTask = SwitchTask.getInstance(this);
+        mSwitchTask.SetTaskList(WorkTimePoint.GetWorkTimePointList(list));
+        mSwitchTask.TaskRun();
+//        mSwitchTask.CheckCurrentTask();
     }
 
     @Override

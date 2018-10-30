@@ -47,6 +47,17 @@ public class TimeUtils {
         String timeStr = df.format(new Date());
         return timeStr;
     }
+    public static String getCurrentDate() {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy:MM:dd");//设置日期格式
+        String timeStr = df.format(new Date());
+        return timeStr;
+    }
+
+    public static String getCurrentTime(String pattern) {
+        SimpleDateFormat df = new SimpleDateFormat(pattern);//设置日期格式
+        String timeStr = df.format(new Date());
+        return timeStr;
+    }
 
     public static String countDown(int mTime) {
         return mTime / 1000 + "";
@@ -79,10 +90,11 @@ public class TimeUtils {
         Date date = new Date();
         return toString(date);
     }
+
     // 获取当前时间，字符串形式
     public static String currentTimelog() {
         Date date = new Date();
-        return toString(date).replaceAll(" ","").replaceAll(":","_");
+        return toString(date).replaceAll(" ", "").replaceAll(":", "_");
     }
 
     // 从字符串, 获取日期, 如time = "2016-3-16 4:12:16"
@@ -101,6 +113,7 @@ public class TimeUtils {
     public static Date toDate(long millSec) {
         return new Date(millSec);
     }
+
     // 从long, 获取日期
     public static String toDateString(long millSec) {
 
@@ -113,7 +126,7 @@ public class TimeUtils {
         return format.format(date);
     }
 
-    public static String  getStringDate(){
+    public static String getStringDate() {
         //获取当前日期
         Calendar ca = Calendar.getInstance();
         int year = ca.get(Calendar.YEAR);//获取年份
@@ -147,7 +160,7 @@ public class TimeUtils {
         return dateNow;
     }
 
-    public static long parseLong(String time){
+    public static long parseLong(String time) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date date = sdf.parse(time);
@@ -156,5 +169,24 @@ public class TimeUtils {
             e.printStackTrace();
         }
         return 0;
+    }
+
+
+    public static  boolean compareDate(String time1, String time2){
+        try {
+            //如果想比较日期则写成"yyyy-MM-dd"就可以了
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd:hh:mm:ss");
+            //将字符串形式的时间转化为Date类型的时间
+            Date a = sdf.parse(time1);
+            Date b = sdf.parse(time2);
+            //Date类的一个方法，如果a早于b返回true，否则返回false
+            if (a.before(b))
+                return true;
+            else
+                return false;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

@@ -237,7 +237,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     @Override
     protected void onResume() {
         super.onResume();
-        logger.debug(TAG, "课中界面");
+        logger.debug(TAG, "下课界面");
         Constant.SCREENTYPE = 0;
         LogUtils.d("注册EventBus");
         if (!EventBus.getDefault().isRegistered(this)) {//加上判断
@@ -255,6 +255,12 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
             mConStatus.setText("连接状态：已断开");
             mConStatus.setTextColor(getResources().getColor(R.color.conf));
         }
+        //首先加载缓存
+        MainData mainData = (MainData) mAcache.getAsObject("MainData");
+        LogUtils.d(mainData);
+        if (mainData != null) {
+            setUIData(mainData);
+        }
         getUIdata();
 //        logger.debug(Tag,"");
 
@@ -266,7 +272,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     private void getUIdata() {
         Map map = new HashMap();
         map.put("deviceId", Constant.getDeviceId(MainActivity.this));
-        netWorkRequest.doGetRequest(0, Constant.getUrl(MainActivity.this, APIConfig.GET_Main), true, map);
+        netWorkRequest.doGetRequest(0, Constant.getUrl(MainActivity.this, APIConfig.GET_Main), false, map);
         netWorkRequest.doGetRequest(2, Constant.getUrl(MainActivity.this, APIConfig.GET_LOAD_MSG), false, map);
         mDate.setText(TimeUtils.getStringDate());
     }
@@ -329,7 +335,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
      * 获取卡号
      */
     private void getCardNum() {
-        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum,this);
+        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum, this);
         getCardNumUtils.getNum(new GetCardNumUtils.SetNum() {
             @Override
             public void setNum(String num) {
@@ -348,9 +354,9 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.main_test:
-                Intent intent = new Intent(MainActivity.this, TcpService.class);
-                intent.putExtra("test", 0);
-                startService(intent);
+//                Intent intent = new Intent(MainActivity.this, TcpService.class);
+//                intent.putExtra("test", 0);
+//                startService(intent);
                 break;
             case R.id.main_left:
                 if (mChatList != null && mChatList.size() > 0) {
@@ -444,6 +450,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
                 });
                 if (mainData != null) {
                     setUIData(mainData);
+                    mAcache.put("MainData", mainData);
                 }
             }
         } else if (code == 2) {

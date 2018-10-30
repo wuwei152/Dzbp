@@ -89,7 +89,7 @@ public class MainData implements Serializable {
         this.attendance = attendance;
     }
 
-    public static class NoticeBean {
+    public static class NoticeBean  implements Serializable{
         /**
          * content : <p>丰富的速度</p>
          * createaccountid : 342fa921-572e-42f8-8541-6e53d5e92e4f
@@ -135,7 +135,7 @@ public class MainData implements Serializable {
         }
     }
 
-    public static class ChatBean {
+    public static class ChatBean  implements Serializable{
         /**
          * accountid : 4a61925c-48f2-416a-872d-d49f1e4aed6b
          * accountname : 吴伟111
@@ -181,7 +181,7 @@ public class MainData implements Serializable {
         }
     }
 
-    public static class CourseBean {
+    public static class CourseBean  implements Serializable{
         /**
          * accountname : 万亮
          * period : 8:10-8:50
@@ -237,7 +237,7 @@ public class MainData implements Serializable {
         }
     }
 
-    public static class AttendanceBean {
+    public static class AttendanceBean  implements Serializable{
 
         /**
          * yindao : 3
@@ -273,7 +273,7 @@ public class MainData implements Serializable {
             this.weidao = weidao;
         }
     }
-    public static class PhotosBean {
+    public static class PhotosBean  implements Serializable{
 
         /**
          * description : 的范德萨发梵蒂冈地方个梵蒂冈梵蒂冈梵蒂冈梵蒂冈放大嘎达删除相册V型从V型从
@@ -309,7 +309,7 @@ public class MainData implements Serializable {
             this.url = url;
         }
     }
-    public static class MoralScoreBean {
+    public static class MoralScoreBean  implements Serializable{
 
         /**
          * id : ded95542-4da5-4611-b3cc-88dce55aa4d6
