@@ -21,7 +21,7 @@ public class ServerManager {
     private static ServerManager instance = null;
     private final Logger logger;
     private Context context;
-    private static int retryTime = 10000;
+    private static int retryTime = 20000;
     private Handler handler = new Handler(Looper.getMainLooper());
     private TcpClient client;
     public final MessageHandle messageHandle;

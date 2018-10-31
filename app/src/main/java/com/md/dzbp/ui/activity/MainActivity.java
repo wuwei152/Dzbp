@@ -257,7 +257,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         }
         //首先加载缓存
         MainData mainData = (MainData) mAcache.getAsObject("MainData");
-        LogUtils.d(mainData);
+//        LogUtils.d(mainData);
         if (mainData != null) {
             setUIData(mainData);
         }
@@ -481,11 +481,14 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         ClassInfoBean classInfo = mainData.getClassInfo();
         if (classInfo != null) {
             mClassName.setText(classInfo.getGradeName() + classInfo.getClassName());
+            mAcache.put("ClassName", classInfo.getClassName());
+            mAcache.put("GradeName",classInfo.getGradeName());
             if (!TextUtils.isEmpty(classInfo.getAliasName()) && !classInfo.getAliasName().equals("null")) {
                 mAlias.setText("(" + classInfo.getAliasName() + ")");
             }
 
             mLoction.setText(classInfo.getAddress());
+            mAcache.put("Address",classInfo.getAddress());
             if (!TextUtils.isEmpty(classInfo.getManagerMessage())) {
                 mClassMngCourse.setText(classInfo.getManagerMessage());
             } else {
@@ -526,6 +529,22 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
 
         if (mainData.getCourse() != null) {
             setCourseList(mainData.getCourse());
+
+
+            //保存课程数据，提供上课页面信息
+            ArrayList<MainData.CourseBean> course = (ArrayList<MainData.CourseBean>) mainData.getCourse();
+            for (MainData.CourseBean courseBean : course) {
+                String period = courseBean.getPeriod();
+                if (!TextUtils.isEmpty(period)){
+                    String start = period.substring(0,period.indexOf("-"))+":00";
+                    String end = period.substring(period.indexOf("-")+1,period.length())+":00";
+                    courseBean.setStartTime(start);
+                    courseBean.setEndTime(end);
+                }
+            }
+            mAcache.put("Course",course);
+
+
         }
         mChatList = mainData.getChat();
         if (mChatList != null) {
@@ -655,5 +674,9 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
             mConStatus.setText("连接状态：已断开");
             mConStatus.setTextColor(getResources().getColor(R.color.conf));
         }
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 }

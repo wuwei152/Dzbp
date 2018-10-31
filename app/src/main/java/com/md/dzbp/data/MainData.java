@@ -195,6 +195,8 @@ public class MainData implements Serializable {
         private int serial;
         private String subjectname;
         private String remarks;
+        private String startTime;
+        private String endTime;
 
         public String getRemarks() {
             return remarks;
@@ -234,6 +236,22 @@ public class MainData implements Serializable {
 
         public void setSubjectname(String subjectname) {
             this.subjectname = subjectname;
+        }
+
+        public String getStartTime() {
+            return startTime;
+        }
+
+        public void setStartTime(String startTime) {
+            this.startTime = startTime;
+        }
+
+        public String getEndTime() {
+            return endTime;
+        }
+
+        public void setEndTime(String endTime) {
+            this.endTime = endTime;
         }
     }
 

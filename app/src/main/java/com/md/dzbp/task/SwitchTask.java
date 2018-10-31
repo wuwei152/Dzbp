@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.apkfuns.logutils.LogUtils;
+import com.md.dzbp.data.WorkTimePeriod;
 import com.md.dzbp.data.WorkTimePoint;
 import com.md.dzbp.model.TimeUtils;
 import com.md.dzbp.ui.activity.MainActivity;
@@ -11,6 +12,7 @@ import com.md.dzbp.ui.activity.MeetingActivity;
 import com.md.dzbp.ui.activity.NoticeActivity;
 import com.md.dzbp.ui.activity.SignActivity;
 import com.md.dzbp.ui.activity.TeacherActivity;
+import com.md.dzbp.utils.ACache;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,10 +42,21 @@ public class SwitchTask extends Timer {
     private static final String TAG = "SwitchTask-->{}";
     private Logger logger;
     private int CheckTag;
+    private final ACache mACache;
 
     private SwitchTask(Context context) {
         this.context = context;
         mList = new ArrayList<>();
+        mACache = ACache.get(context);
+        try {
+            ArrayList<WorkTimePeriod> list = (ArrayList<WorkTimePeriod>) mACache.getAsObject("Task");
+            if (list != null) {
+                ArrayList<WorkTimePoint> list1 = WorkTimePoint.GetWorkTimePointList(list);
+                SetTaskList(list1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         logger = LoggerFactory.getLogger(context.getClass());
         timerTask = new TimerTask() {
             public void run() {
@@ -77,6 +90,7 @@ public class SwitchTask extends Timer {
     public void SetTaskList(ArrayList<WorkTimePoint> mList) {
         this.mList = mList;
         LogUtils.d(mList);
+        CheckCurrentTask();
     }
 
     public void AddTaskList(ArrayList<WorkTimePoint> list) {
@@ -85,6 +99,14 @@ public class SwitchTask extends Timer {
         }
         mList.addAll(list);
         ListSort(mList);
+        CheckCurrentTask();
+    }
+
+    public ArrayList<WorkTimePoint> GetTaskList() {
+        if (mList == null) {
+            mList = new ArrayList<>();
+        }
+        return mList;
     }
 
     /**
@@ -145,8 +167,8 @@ public class SwitchTask extends Timer {
                     context.startActivity(intent);
                     point.setTaskstate(1);
                     logger.debug(TAG, "屏幕跳转成功-下课页面" + currentTime);
-                }else {
-                    logger.debug(TAG, "屏幕切换失败level:" + level+"/"+point.getTaskstate());
+                } else {
+                    logger.debug(TAG, "屏幕切换失败level:" + level + "/" + point.getTaskstate());
                 }
                 break;
             case 1:
@@ -171,14 +193,15 @@ public class SwitchTask extends Timer {
                     }
                     point.setTaskstate(1);
                     logger.debug(TAG, "屏幕跳转成功-会议结束" + currentTime);
-                }else {
-                    logger.debug(TAG, "屏幕切换失败level:" + level+"/"+point.getTaskstate());
+                } else {
+                    logger.debug(TAG, "屏幕切换失败level:" + level + "/" + point.getTaskstate());
                 }
                 break;
             case 2:
                 if (point.getStartTask() == 0 && point.getTaskstate() == 0) {
                     //通知开始
                     Intent intent = new Intent(context, NoticeActivity.class);
+                    intent.putExtra("id",point.getTaskTag());
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                     level = 1;
@@ -197,8 +220,8 @@ public class SwitchTask extends Timer {
                     }
                     point.setTaskstate(1);
                     logger.debug(TAG, "屏幕跳转成功-通知结束" + currentTime);
-                }else {
-                    logger.debug(TAG, "屏幕切换失败level:" + level+"/"+point.getTaskstate());
+                } else {
+                    logger.debug(TAG, "屏幕切换失败level:" + level + "/" + point.getTaskstate());
                 }
                 break;
             case 4:
@@ -216,8 +239,8 @@ public class SwitchTask extends Timer {
                     context.startActivity(intent);
                     point.setTaskstate(1);
                     logger.debug(TAG, "屏幕跳转成功-考勤模式结束" + currentTime);
-                }else {
-                    logger.debug(TAG, "屏幕切换失败level:" + level+"/"+point.getTaskstate());
+                } else {
+                    logger.debug(TAG, "屏幕切换失败level:" + level + "/" + point.getTaskstate());
                 }
                 break;
             default:
@@ -281,7 +304,7 @@ public class SwitchTask extends Timer {
         logger.debug(TAG, "开始检查当前时间已执行的任务并执行");
         String currentTime = TimeUtils.getCurrentTime("yyyy:MM:dd:HH:mm:ss");
         if (mList == null || mList.size() == 0) {
-            logger.debug(TAG,"时间列表为空");
+            logger.debug(TAG, "时间列表为空");
             return;
         }
         int endTask = 0;
@@ -324,16 +347,16 @@ public class SwitchTask extends Timer {
                     toStartPoint = point;
                 }
             }
-        }else {
-            logger.debug(TAG,"未找到最近的已结束任务");
+        } else {
+            logger.debug(TAG, "未找到最近的已结束任务");
         }
 
         if (toStartPoint != null) {
             toStartPoint.setTaskstate(0);//执行前对任务已执行状态置0，不然无法执行
-            logger.debug(TAG,"检查结束，开始跳转："+toStartPoint.getName());
+            logger.debug(TAG, "检查结束，开始跳转：" + toStartPoint.getName());
             StartTask(currentTime, toStartPoint);
         } else {
-            logger.debug(TAG,"检查结束，未找到跳转页面");
+            logger.debug(TAG, "检查结束，未找到跳转页面");
             Intent intent = new Intent(context, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);

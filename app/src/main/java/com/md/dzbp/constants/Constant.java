@@ -44,7 +44,8 @@ public class Constant {
 //    public static final String BASE_HOST = "http://test.cnzhxy.com/";
 //    public static final String BASE_HOST = "http://192.168.0.237:9999/";
 
-    public static int PORT = 9898;
+//    public static int PORT = 9898;
+    public static int PORT = 9896;
     public static String FtpHostName = "119.97.137.24";
     public static int FtpPort = 21;
 //

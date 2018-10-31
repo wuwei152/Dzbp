@@ -21,6 +21,7 @@ import com.md.dzbp.constants.APIConfig;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.CourseBean;
 import com.md.dzbp.data.LoginEvent;
+import com.md.dzbp.data.MainData;
 import com.md.dzbp.model.NetWorkRequest;
 import com.md.dzbp.model.TimeListener;
 import com.md.dzbp.model.TimeUtils;
@@ -37,6 +38,10 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,6 +80,9 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     private ACache mAcache;
     private String TAG = "TeacherActivity-->{}";
     private Logger logger;
+    private String className;
+    private String address;
+    private String gradeName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +101,11 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
         dialog = MyProgressDialog.createLoadingDialog(TeacherActivity.this, "", this);
         netWorkRequest = new NetWorkRequest(this, this);
         logger = LoggerFactory.getLogger(getClass());
+
+        className = mAcache.getAsString("ClassName");
+        gradeName = mAcache.getAsString("GradeName");
+        address = mAcache.getAsString("Address");
+
     }
 
     @Override
@@ -128,6 +141,27 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
             mTemp.setText("连接状态：已断开");
             mTemp.setTextColor(getResources().getColor(R.color.conf));
         }
+
+        //首先加载本地数据
+        try {
+            CourseBean cb = new CourseBean();
+            cb.setAddress(address);
+            cb.setClassName(className);
+            cb.setGradeName(gradeName);
+            String current  = TimeUtils.getCurrentTime1();
+            ArrayList<MainData.CourseBean> course = (ArrayList<MainData.CourseBean>) mAcache.getAsObject("Course");
+//            LogUtils.d(course);
+            for (MainData.CourseBean courseBean : course) {
+                if (compareDate(courseBean.getStartTime(),current)&&compareDate(current,courseBean.getEndTime())){
+                    cb.setPeriodName(courseBean.getRemarks());
+                    cb.setAccountName(courseBean.getAccountname());
+                    cb.setSubjectName(courseBean.getSubjectname());
+                }
+            }
+            setUIData(cb);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -158,7 +192,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     private void getUIdata() {
         Map map = new HashMap();
         map.put("deviceId", Constant.getDeviceId(this));
-        netWorkRequest.doGetRequest(0, Constant.getUrl(this, APIConfig.GET_COURSE), true, map);
+        netWorkRequest.doGetRequest(0, Constant.getUrl(this, APIConfig.GET_COURSE), false, map);
         mDate.setText(TimeUtils.getStringDate());
     }
 
@@ -213,6 +247,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
         mClassName.setText(courseBean.getGradeName() + courseBean.getClassName());
         if (!TextUtils.isEmpty(courseBean.getSubjectName())) {
             mCourseName.setText("课程：" + courseBean.getSubjectName());
+            mCourseName.setVisibility(View.VISIBLE);
         } else {
             mCourseName.setVisibility(View.GONE);
         }
@@ -223,6 +258,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
         }
         if (!TextUtils.isEmpty(courseBean.getPeriodName())) {
             mPeriodName.setText("节次：" + courseBean.getPeriodName());
+            mPeriodName.setVisibility(View.VISIBLE);
         } else {
             mPeriodName.setVisibility(View.GONE);
         }
@@ -285,6 +321,24 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
             mTemp.setText("连接状态：已断开");
             mTemp.setTextColor(getResources().getColor(R.color.conf));
         }
+    }
+
+    public  boolean compareDate(String time1, String time2){
+        try {
+            //如果想比较日期则写成"yyyy-MM-dd"就可以了
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            //将字符串形式的时间转化为Date类型的时间
+            Date a = sdf.parse(time1);
+            Date b = sdf.parse(time2);
+            //Date类的一个方法，如果a早于b返回true，否则返回false
+            if (a.before(b))
+                return true;
+            else
+                return false;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }

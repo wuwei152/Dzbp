@@ -117,7 +117,7 @@ public abstract class SocketTransceiver implements Runnable {
 				// final String s = in.readUTF();
 				// this.onReceive(addr, s);
 
-				byte[] buff = new byte[2048];
+				byte[] buff = new byte[20480];
 				in.read(buff);
 				List<TCPMessage> messageList = r.Resolve(buff);
 //				Log.i("socket", "共解析到" + messageList.size() + "条消息");

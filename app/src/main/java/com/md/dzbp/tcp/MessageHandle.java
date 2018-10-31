@@ -13,6 +13,7 @@ import com.md.dzbp.constants.Constant;
 import com.md.dzbp.constants.ERRORTYPE;
 import com.md.dzbp.data.FtpParams;
 import com.md.dzbp.data.ImageReceiveMessage;
+import com.md.dzbp.data.MainData;
 import com.md.dzbp.data.MainUpdateEvent;
 import com.md.dzbp.data.MessageBase;
 import com.md.dzbp.data.MsgSendStatus;
@@ -21,7 +22,10 @@ import com.md.dzbp.data.TextReceiveMessage;
 import com.md.dzbp.data.UpdateDate;
 import com.md.dzbp.data.VoiceReceiveMessage;
 import com.md.dzbp.data.VoiceSendMessage;
+import com.md.dzbp.data.WorkTimePeriod;
+import com.md.dzbp.data.WorkTimePoint;
 import com.md.dzbp.ftp.FTP;
+import com.md.dzbp.task.SwitchTask;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
 
@@ -33,8 +37,10 @@ import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 
 /**
  * 处理接收消息，回应消息
@@ -61,7 +67,7 @@ public class MessageHandle {
         mACache = ACache.get(context);
         deviceId = Constant.getDeviceId(context);
         logger = LoggerFactory.getLogger(context.getClass());
-        msgHandleUtil = new MsgHandleUtil(context,client);
+        msgHandleUtil = new MsgHandleUtil(context, client);
     }
 
     public void handleMessage(TCPMessage tcpMessage) {
@@ -94,8 +100,18 @@ public class MessageHandle {
                     String kaiji = tcpMessage.ReadString(length2);
                     logger.debug(TAG, "0xA002设置开关机指令：关" + guanji + "/开" + kaiji);
                     smdtManager.smdtSetTimingSwitchMachine(guanji, kaiji, "1");
-
-                    LogUtils.d("psw:"+psw);
+                    int length3 = tcpMessage.ReadInt();
+                    String task = tcpMessage.ReadString(length3);
+                    LogUtils.d(task);
+                    ArrayList<WorkTimePeriod> list = JSON.parseObject(task.toString(), new TypeReference<ArrayList<WorkTimePeriod>>() {
+                    });
+                    LogUtils.d(list);
+                    mACache.put("Task",list);
+                    if (list != null) {
+                        ArrayList<WorkTimePoint> list1 = WorkTimePoint.GetWorkTimePointList(list);
+                        SwitchTask.getInstance(context).SetTaskList(list1);
+                    }
+                    LogUtils.d("psw:" + psw);
 
                     FtpParams params = new FtpParams(ftp_ip, ftp_port, ftp_name, ftp_psw, web_api);
                     mACache.put("FtpParams", params);
@@ -282,7 +298,7 @@ public class MessageHandle {
             case 0xA555://通用屏幕跳转
                 int type555 = tcpMessage.ReadInt();
                 logger.debug("0xA555收到通用屏幕跳转指令", type555 + "");
-//                msgHandleUtil.gotoActivity(type555, "", "");
+                msgHandleUtil.gotoActivity(type555, "", "");
                 msgHandleUtil.yingda(0xA555, true, deviceId);
                 break;
             case 0xA600://收消息
@@ -326,6 +342,33 @@ public class MessageHandle {
                 String broadcastUrl = tcpMessage.ReadString(length602);
                 logger.debug(TAG, "0xA602收到广播消息：" + broadcastUrl);
                 msgHandleUtil.downloadBroadcast(0xA602, Constant.Ftp_Broadcast + "/" + broadcastUrl, broadcastUrl, msgid602);
+                break;
+            case 0xA604://下发、删除任务
+                int taskType = tcpMessage.ReadInt();//任务类型  0作息时间；1会议；2通知；3考试
+                int opType = tcpMessage.ReadInt();//操作类型  0下发；1删除
+                int length604 = tcpMessage.ReadInt();
+                String data604 = tcpMessage.ReadString(length604);//数据 当操作类型为0时为任务json，当类型为1时为业务ObjectID
+                logger.debug(TAG, "0xA604收到下发、删除任务消息：" + opType + "///" + data604);
+
+                if (opType == 0) {
+                    ArrayList<WorkTimePeriod> list = JSON.parseObject(data604.toString(), new TypeReference<ArrayList<WorkTimePeriod>>() {
+                    });
+                    LogUtils.d(list);
+                    if (list != null) {
+                        ArrayList<WorkTimePoint> list1 = WorkTimePoint.GetWorkTimePointList(list);
+                        SwitchTask.getInstance(context).AddTaskList(list1);
+                    }
+                } else if (opType == 1) {
+                    ArrayList<WorkTimePoint> list = SwitchTask.getInstance(context).GetTaskList();
+                    Iterator<WorkTimePoint> sListIterator = list.iterator();
+                    while (sListIterator.hasNext()) {
+                        WorkTimePoint e = sListIterator.next();
+                        if (e.getTaskTag().equals(data604)) {
+                            sListIterator.remove();
+                        }
+                    }
+                    SwitchTask.getInstance(context).SetTaskList(list);
+                }
                 break;
             case 0xA605://会议签到
                 int status605 = tcpMessage.ReadInt();
@@ -379,12 +422,12 @@ public class MessageHandle {
                 break;
             case 0xA609://摄像头截屏
 //                int status609 = tcpMessage.ReadInt();
-                logger.debug(TAG, "0xA609收到摄像头截屏指令" );
-                msgHandleUtil.yingda(0xA609,true,deviceId);
+                logger.debug(TAG, "0xA609收到摄像头截屏指令");
+                msgHandleUtil.yingda(0xA609, true, deviceId);
                 msgHandleUtil.TakeVideoPic();
                 break;
             case 0xA610://摄像头截屏成功后回复
-                logger.debug(TAG, "0xA610收到摄像头截屏回复指令" );
+                logger.debug(TAG, "0xA610收到摄像头截屏回复指令");
                 break;
             default:
                 break;
@@ -451,7 +494,7 @@ public class MessageHandle {
      * 发送语音消息
      */
     public void sendVoiceMsg(final int msgType, final String fileName, final String ftpPath, final int xyh, final String JsonMsg) {
-        msgHandleUtil.uploadVoiceFile(msgType, fileName,ftpPath, xyh, JsonMsg);
+        msgHandleUtil.uploadVoiceFile(msgType, fileName, ftpPath, xyh, JsonMsg);
     }
 
     /**
@@ -460,6 +503,7 @@ public class MessageHandle {
     public void sendTextMsg(final int msgType, final int xyh, final String JsonMsg) {
         msgHandleUtil.yingda(xyh, msgType, deviceId, JsonMsg);
     }
+
     /**
      * 获取snap
      */
