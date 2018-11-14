@@ -196,7 +196,11 @@ public class ServerManager {
                 logger.debug("发送卡号失败", e.getMessage());
             }
         } else {
-            showToast("暂未授权该班牌，请联系系统管理员！");
+            if (act==7){
+                showToast("刷卡成功，已存储刷卡信息！");
+            }else {
+                showToast("网络暂时不通畅，请稍后再试！");
+            }
             login();
         }
     }

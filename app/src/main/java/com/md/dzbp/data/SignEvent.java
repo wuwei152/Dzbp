@@ -6,10 +6,11 @@ import java.io.Serializable;
  * Created by Administrator on 2017/9/13.
  */
 public class SignEvent implements Serializable {
-    private int type;
+    private int type;          //0会议签到  1考勤签到
     private boolean status;
     private String id;
     private String name;
+    private String cardNum;
 
     public SignEvent() {
     }
@@ -18,7 +19,23 @@ public class SignEvent implements Serializable {
         this.type = type;
         this.status = status;
         this.id = id;
-        this.name=name;
+        this.name = name;
+    }
+
+    public SignEvent(int type, boolean status, String id, String name, String cardNum) {
+        this.type = type;
+        this.status = status;
+        this.id = id;
+        this.name = name;
+        this.cardNum = cardNum;
+    }
+
+    public String getCardNum() {
+        return cardNum;
+    }
+
+    public void setCardNum(String cardNum) {
+        this.cardNum = cardNum;
     }
 
     public int getType() {

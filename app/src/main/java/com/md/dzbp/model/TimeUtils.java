@@ -52,6 +52,11 @@ public class TimeUtils {
         String timeStr = df.format(new Date());
         return timeStr;
     }
+    public static String getCurrentTime2() {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        String timeStr = df.format(new Date());
+        return timeStr;
+    }
     public static String getCurrentDate() {
         SimpleDateFormat df = new SimpleDateFormat("yyyy:MM:dd");//设置日期格式
         String timeStr = df.format(new Date());
@@ -180,7 +185,7 @@ public class TimeUtils {
     public static  boolean compareDate(String time1, String time2){
         try {
             //如果想比较日期则写成"yyyy-MM-dd"就可以了
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd:hh:mm:ss");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd:HH:mm:ss");
             //将字符串形式的时间转化为Date类型的时间
             Date a = sdf.parse(time1);
             Date b = sdf.parse(time2);
@@ -193,5 +198,40 @@ public class TimeUtils {
             e.printStackTrace();
         }
         return false;
+    }
+    /**
+     * 两个时间相差距离多少天多少小时多少分多少秒
+     * @param str1 时间参数 1 格式：1990-01-01 12:00:00
+     * @param str2 时间参数 2 格式：2009-01-01 12:00:00
+     * @return long[] 返回值为：{天, 时, 分, 秒}
+     */
+    public static long[] getDistanceTimes(String str1, String str2) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date one;
+        Date two;
+        long day = 0;
+        long hour = 0;
+        long min = 0;
+        long sec = 0;
+        try {
+            one = df.parse(str1);
+            two = df.parse(str2);
+            long time1 = one.getTime();
+            long time2 = two.getTime();
+            long diff ;
+            if(time1<time2) {
+                diff = time2 - time1;
+            } else {
+                diff = time1 - time2;
+            }
+            day = diff / (24 * 60 * 60 * 1000);
+            hour = (diff / (60 * 60 * 1000) - day * 24);
+            min = ((diff / (60 * 1000)) - day * 24 * 60 - hour * 60);
+            sec = (diff/1000-day*24*60*60-hour*60*60-min*60);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        long[] times = {day, hour, min, sec};
+        return times;
     }
 }

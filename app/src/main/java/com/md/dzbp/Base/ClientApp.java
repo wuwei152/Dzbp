@@ -10,6 +10,7 @@ import com.md.dzbp.model.NetSDKLib;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.CrashHandler;
 import com.md.dzbp.utils.FileUtils;
+import com.raizlabs.android.dbflow.config.FlowManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,7 @@ public class ClientApp extends Application {
         initLogs();
         mAcache = ACache.get(this);
         logger = LoggerFactory.getLogger(getClass());
-
+        FlowManager.init(this);
         CrashHandler crashHandler = CrashHandler.getInstance();
         crashHandler.init(this);
 
@@ -68,7 +69,7 @@ public class ClientApp extends Application {
 
     private void initLogs() {
         LogUtils.getLogConfig()
-                .configAllowLog(true)
+                .configAllowLog(false)
                 .configTagPrefix("MyApp")
                 .configShowBorders(true)
                 .configLevel(LogLevel.TYPE_VERBOSE);
@@ -85,7 +86,7 @@ public class ClientApp extends Application {
             LogUtils.d("登录次数：" + numCount);
             logger.debug("ClientApp", "登录次数：" + numCount);
         }
-        if (numCount <= 30) {
+        if (numCount <= 50) {
             numCount++;
             mAcache.put("NumCount", numCount);
         } else {

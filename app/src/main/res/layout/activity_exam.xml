@@ -36,7 +36,6 @@
                     android:id="@+id/exam_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="9:30"
                     android:textColor="@color/white"
                     android:textSize="42sp" />
 
@@ -44,7 +43,6 @@
                     android:id="@+id/exam_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2017年8月14日 星期一"
                     android:textColor="@color/white"
                     android:textSize="20sp" />
 
@@ -59,27 +57,16 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/exam_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:text="3楼-A305教室"
                 android:textColor="@color/white"
                 android:textSize="30sp" />
         </RelativeLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/exam_white_back"
-            android:paddingBottom="15dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="200dp"
-            android:paddingTop="15dp"
-            android:text="九月高一年级综合测试"
-            android:textColor="@color/white"
-            android:textSize="30sp" />
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -89,35 +76,34 @@
             android:orientation="vertical"
             android:paddingLeft="260dp"
             android:paddingRight="260dp">
-
             <TextView
+                android:id="@+id/exam_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="第5考场"
+                android:textStyle="bold"
                 android:textColor="@color/white"
-                android:textSize="80sp"
-                android:textStyle="bold" />
+                android:textSize="60sp" />
 
             <TextView
+                android:id="@+id/exam_subject"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="100dp"
                 android:layout_marginRight="100dp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="45dp"
                 android:gravity="center"
-                android:text="高中数学"
                 android:textColor="@color/white"
-                android:textSize="40sp" />
+                android:textSize="50sp" />
 
             <TextView
+                android:id="@+id/exam_states"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="50dp"
                 android:gravity="center"
-                android:text="考号：20173435101000-2017343512090"
+                android:text="考试即将开始"
                 android:textColor="@color/white"
-                android:textSize="25sp" />
+                android:textSize="35sp" />
 
         </LinearLayout>
 
@@ -130,18 +116,20 @@
             android:paddingRight="100dp">
 
             <TextView
+                android:id="@+id/exam_examTime"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:text="考试时间：10:00 - 12:00"
+                android:text="考试时间："
                 android:textColor="@color/white"
                 android:textSize="20sp" />
 
             <TextView
+                android:id="@+id/exam_proctor"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="监考老师：刘晓红"
+                android:text="监考老师：无"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
 
@@ -173,11 +161,12 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/exam_examNum"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:gravity="center"
-            android:text="9.11--9.12七场考试安排"
+            android:text="当前暂无考试安排"
             android:textColor="@color/text_black"
             android:textSize="20sp" />
 
@@ -197,6 +186,7 @@
             android:background="#ECE2E1">
 
             <TextView
+                android:id="@+id/exam_discipline"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:lineSpacingExtra="5dp"

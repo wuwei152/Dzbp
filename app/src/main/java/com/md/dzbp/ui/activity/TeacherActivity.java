@@ -1,6 +1,7 @@
 package com.md.dzbp.ui.activity;
 
 import android.app.Dialog;
+import android.app.smdt.SmdtManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,6 +42,7 @@ import org.slf4j.LoggerFactory;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -102,9 +104,13 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
         netWorkRequest = new NetWorkRequest(this, this);
         logger = LoggerFactory.getLogger(getClass());
 
-        className = mAcache.getAsString("ClassName");
-        gradeName = mAcache.getAsString("GradeName");
-        address = mAcache.getAsString("Address");
+        try {
+            className = mAcache.getAsString("ClassName");
+            gradeName = mAcache.getAsString("GradeName");
+            address = mAcache.getAsString("Address");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -115,14 +121,25 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
 
         getCardNum();
 
-        getUIdata();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                getUIdata();
+            }
+        }, 10000);
+
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         LogUtils.d("onNewIntent");
-        getUIdata();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                getUIdata();
+            }
+        }, 10000);
     }
 
     @Override
@@ -148,11 +165,11 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
             cb.setAddress(address);
             cb.setClassName(className);
             cb.setGradeName(gradeName);
-            String current  = TimeUtils.getCurrentTime1();
+            String current = TimeUtils.getCurrentTime1();
             ArrayList<MainData.CourseBean> course = (ArrayList<MainData.CourseBean>) mAcache.getAsObject("Course");
 //            LogUtils.d(course);
             for (MainData.CourseBean courseBean : course) {
-                if (compareDate(courseBean.getStartTime(),current)&&compareDate(current,courseBean.getEndTime())){
+                if (compareDate(courseBean.getStartTime(), current) && compareDate(current, courseBean.getEndTime())) {
                     cb.setPeriodName(courseBean.getRemarks());
                     cb.setAccountName(courseBean.getAccountname());
                     cb.setSubjectName(courseBean.getSubjectname());
@@ -167,7 +184,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     @Override
     protected void onPause() {
         super.onPause();
-        LogUtils.d("解注册EventBus");
+//        LogUtils.d("解注册EventBus");
         if (EventBus.getDefault().isRegistered(this))//加上判断
             EventBus.getDefault().unregister(this);
     }
@@ -194,13 +211,14 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
         map.put("deviceId", Constant.getDeviceId(this));
         netWorkRequest.doGetRequest(0, Constant.getUrl(this, APIConfig.GET_COURSE), false, map);
         mDate.setText(TimeUtils.getStringDate());
+
     }
 
     /**
      * 读取卡号
      */
     private void getCardNum() {
-        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum,this);
+        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum, this);
         getCardNumUtils.getNum(new GetCardNumUtils.SetNum() {
             @Override
             public void setNum(String num) {
@@ -228,6 +246,16 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
                 });
                 if (courseBean != null) {
                     setUIData(courseBean);
+                    //上课信息不全。一分钟后重新请求
+                    if (TextUtils.isEmpty(courseBean.getSubjectName()) && TextUtils.isEmpty(courseBean.getAccountName())) {
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                getUIdata();
+                            }
+                        }, 60000);
+
+                    }
                 }
             }
         }
@@ -239,30 +267,34 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
      * @param courseBean
      */
     private void setUIData(CourseBean courseBean) {
-        if (!TextUtils.isEmpty(courseBean.getImage())) {
-            Glide.with(this).load(courseBean.getImage()).into(mImg);
-        } else {
-            Glide.with(this).load(R.drawable.teacher).into(mImg);
+        try {
+            if (!TextUtils.isEmpty(courseBean.getImage())) {
+                Glide.with(this).load(courseBean.getImage()).into(mImg);
+            } else {
+                Glide.with(this).load(R.drawable.teacher).into(mImg);
+            }
+            mClassName.setText(courseBean.getGradeName() + courseBean.getClassName());
+            if (!TextUtils.isEmpty(courseBean.getSubjectName())) {
+                mCourseName.setText("课程：" + courseBean.getSubjectName());
+                mCourseName.setVisibility(View.VISIBLE);
+            } else {
+                mCourseName.setVisibility(View.GONE);
+            }
+            if (!TextUtils.isEmpty(courseBean.getAccountName())) {
+                mTeacherName.setText("教师：" + courseBean.getAccountName());
+            } else {
+                mTeacherName.setText("班主任：" + courseBean.getManagerAccountName());
+            }
+            if (!TextUtils.isEmpty(courseBean.getPeriodName())) {
+                mPeriodName.setText("节次：" + courseBean.getPeriodName());
+                mPeriodName.setVisibility(View.VISIBLE);
+            } else {
+                mPeriodName.setVisibility(View.GONE);
+            }
+            mAddr.setText("教室：" + courseBean.getAddress());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        mClassName.setText(courseBean.getGradeName() + courseBean.getClassName());
-        if (!TextUtils.isEmpty(courseBean.getSubjectName())) {
-            mCourseName.setText("课程：" + courseBean.getSubjectName());
-            mCourseName.setVisibility(View.VISIBLE);
-        } else {
-            mCourseName.setVisibility(View.GONE);
-        }
-        if (!TextUtils.isEmpty(courseBean.getAccountName())) {
-            mTeacherName.setText("教师：" + courseBean.getAccountName());
-        } else {
-            mTeacherName.setText("班主任：" + courseBean.getManagerAccountName());
-        }
-        if (!TextUtils.isEmpty(courseBean.getPeriodName())) {
-            mPeriodName.setText("节次：" + courseBean.getPeriodName());
-            mPeriodName.setVisibility(View.VISIBLE);
-        } else {
-            mPeriodName.setVisibility(View.GONE);
-        }
-        mAddr.setText("教室：" + courseBean.getAddress());
     }
 
     @Override
@@ -295,10 +327,11 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
             @Override
             public void run() {
                 if (errorCode == 0) {
+                    logger.debug(TAG, "重新请求");
                     getUIdata();
                 }
             }
-        }, 5000);
+        }, 30000);
     }
 
     @Override
@@ -323,7 +356,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
         }
     }
 
-    public  boolean compareDate(String time1, String time2){
+    public boolean compareDate(String time1, String time2) {
         try {
             //如果想比较日期则写成"yyyy-MM-dd"就可以了
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");

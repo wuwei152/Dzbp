@@ -75,42 +75,52 @@
         <activity
             android:name=".ui.activity.NoticeActivity"
             android:launchMode="singleInstance"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ui.activity.ExamActivity"
             android:launchMode="singleInstance"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ui.activity.TeacherActivity"
             android:launchMode="singleInstance"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".ui.activity.StudentActivity"
             android:launchMode="singleInstance"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ui.activity.PatrolActivity"
             android:launchMode="singleInstance"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ui.activity.MeetingActivity"
             android:launchMode="singleInstance"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ui.activity.SettingActivity"
             android:launchMode="singleTop"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ui.activity.ShowBigImageActivity"
             android:launchMode="standard"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ui.activity.SignActivity"
             android:launchMode="singleInstance"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ui.activity.VideoShowActivity"
             android:launchMode="singleInstance"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:windowSoftInputMode="stateHidden" />
 
         <service

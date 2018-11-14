@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.TypeReference;
 import com.apkfuns.logutils.LogUtils;
 import com.md.dzbp.constants.Constant;
@@ -21,10 +22,13 @@ import com.md.dzbp.constants.ERRORTYPE;
 import com.md.dzbp.data.CameraInfo;
 import com.md.dzbp.data.MsgSendStatus;
 import com.md.dzbp.data.ScreenShotEvent;
+import com.md.dzbp.data.SignBean;
+import com.md.dzbp.data.SignEvent;
 import com.md.dzbp.data.VoiceSendMessage;
 import com.md.dzbp.ftp.FTP;
 import com.md.dzbp.model.DahuaListener;
 import com.md.dzbp.model.DahuaModel;
+import com.md.dzbp.service.UploadService;
 import com.md.dzbp.ui.activity.ExamActivity;
 import com.md.dzbp.ui.activity.MainActivity;
 import com.md.dzbp.ui.activity.MeetingActivity;
@@ -39,6 +43,7 @@ import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.FileUtils;
 import com.md.dzbp.utils.luban.Luban;
 import com.md.dzbp.utils.luban.OnCompressListener;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import org.greenrobot.eventbus.EventBus;
 import org.slf4j.Logger;
@@ -53,6 +58,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import cn.finalteam.toolsfinal.ManifestUtils;
 
@@ -104,6 +112,63 @@ public class MsgHandleUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 上传考勤数据
+     *
+     * @param xyh 协议号
+     */
+    public void SendSignData(int xyh) {
+        try {
+            List<SignBean> signList = SQLite.select().from(SignBean.class).queryList();
+            if (signList != null && signList.size() > 0) {
+                logger.debug(TAG, "开始上传考勤本地数据");
+                Intent intent = new Intent(context, UploadService.class);
+                intent.putExtra("upload", "");
+                context.startService(intent);
+                HashMap<String, List<SignBean>> map = (HashMap) groupList(signList);
+                for (String in : map.keySet()) {
+                    List<SignBean> list = map.get(in);
+                    String s = JSONArray.toJSONString(list);
+                    logger.debug(TAG,s);
+                    TCPMessage message = new TCPMessage(xyh);
+                    message.Write(Constant.getDeviceId(context), 36);
+                    int length2 = s.getBytes("UTF-8").length;
+                    message.Write(length2);
+                    message.Write(s, length2);
+                    client.getTransceiver().send(message);
+                }
+            } else {
+                logger.debug(TAG, "上传考勤无本地数据");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 将集合拆分为10条一组
+     *
+     * @param list
+     * @return
+     */
+    public Map groupList(List list) {
+
+        int listSize = list.size();
+        int toIndex = 10;
+        Map map = new HashMap();     //用map存起来新的分组后数据
+        int keyToken = 0;
+        for (int i = 0; i < list.size(); i += 10) {
+            if (i + 10 > listSize) {        //作用为toIndex最后没有100条数据则剩余几条newList中就装几条
+                toIndex = listSize - i;
+            }
+            List newList = list.subList(i, i + toIndex);
+            map.put("list" + keyToken, newList);
+            keyToken++;
+        }
+
+        return map;
     }
 
     /**
@@ -372,7 +437,7 @@ public class MsgHandleUtil {
      */
     public void TakeScreenshot(final int msgid505) {
 
-        ScreenShotEvent event = new ScreenShotEvent(true, msgid505,  deviceId);
+        ScreenShotEvent event = new ScreenShotEvent(true, msgid505, deviceId);
         EventBus.getDefault().post(event);
 //        try {
 //            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");//设置日期格式

@@ -239,7 +239,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         super.onResume();
         logger.debug(TAG, "下课界面");
         Constant.SCREENTYPE = 0;
-        LogUtils.d("注册EventBus");
+//        LogUtils.d("注册EventBus");
         if (!EventBus.getDefault().isRegistered(this)) {//加上判断
             EventBus.getDefault().register(this);
         }
@@ -615,7 +615,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
                     getNoticeList();
                 }
             }
-        }, 5000);
+        }, 15000);
     }
 
     @Override

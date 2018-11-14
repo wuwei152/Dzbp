@@ -74,10 +74,6 @@
             android:paddingLeft="260dp"
             android:paddingRight="260dp">
 
-            <SurfaceView
-                android:id="@+id/sign_surface"
-                android:layout_width="320dp"
-                android:layout_height="320dp" />
 
             <TextView
                 android:id="@+id/sign_mainTitle"
@@ -138,21 +134,14 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="540"
-        android:orientation="vertical"
-        android:padding="30dp">
-
-        <ImageView
-            android:layout_width="180dp"
-            android:layout_height="100dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/dianxin"
-            android:visibility="gone" />
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/sign_listTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="90dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="50dp"
             android:textColor="@color/text_black"
             android:textSize="32sp"
             android:textStyle="bold" />
@@ -161,16 +150,52 @@
             android:id="@+id/sign_listsub"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
             android:layout_marginTop="20dp"
+            android:text="班级签到"
             android:textColor="@color/text_black"
+            android:textSize="20sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="70dp"
+            android:background="@color/green" />
+
+        <TextView
+            android:id="@+id/sign_tip"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/dialog_back"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="正在考勤"
+            android:textColor="@color/green"
             android:textSize="20sp" />
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:layout_margin="10dp"
+            android:background="@drawable/video_back"
+            android:orientation="vertical">
+
+            <SurfaceView
+                android:id="@+id/sign_surface"
+                android:layout_width="match_parent"
+                android:layout_height="320dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"

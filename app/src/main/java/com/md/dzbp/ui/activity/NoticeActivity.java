@@ -206,7 +206,7 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
                     getUIdata();
                 }
             }
-        }, 5000);
+        }, 10000);
     }
 
     @Override

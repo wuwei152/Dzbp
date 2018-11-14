@@ -95,3 +95,30 @@
   -dontwarn com.facebook.**
   -keep class com.apkfuns.logutils.** { *;}
   -dontwarn com.apkfuns.logutils.**
+  -keep class com.github.Raizlabs.DBFlow.** { *;}
+  -dontwarn com.github.Raizlabs.DBFlow.**
+  -keepattributes *Annotation*
+  -keepclassmembers class ** {
+      @org.greenrobot.eventbus.Subscribe <methods>;
+  }
+  -keep enum org.greenrobot.eventbus.ThreadMode {
+        *;
+  }
+  # Only required if you use AsyncExecutor
+  -keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
+      <init>(java.lang.Throwable);
+  }
+  -keep class * extends com.raizlabs.android.dbflow.config.DatabaseHolder { *; }
+
+
+  #EventBus3.0
+  -keepattributes *Annotation*
+  -keepclassmembers class ** {
+      @org.greenrobot.eventbus.Subscribe <methods>;
+  }
+  -keep enum org.greenrobot.eventbus.ThreadMode { *; }
+  # Only required if you use AsyncExecutor
+  -keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
+      <init>(java.lang.Throwable);
+  }
+-keep class com.company.** { *;}

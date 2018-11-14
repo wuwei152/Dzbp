@@ -331,7 +331,7 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
                     getUIdata();
                 }
             }
-        }, 5000);
+        }, 10000);
     }
 
     @Override

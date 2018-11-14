@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-
 android {
     compileSdkVersion 26
     buildToolsVersion '26.0.2'
@@ -21,8 +20,8 @@ android {
         applicationId "com.md.dzbp"
         minSdkVersion 18
         targetSdkVersion 23
-        versionCode 6
-        versionName "1.5"
+        versionCode 10
+        versionName "1.9"
         //推送选择要添加的对应cpu类型的.so库。
         ndk {
             abiFilters 'armeabi'
@@ -100,5 +99,17 @@ dependencies {
     compile('com.github.tony19:logback-android-classic:1.1.1-6') {
         // workaround issue #73
         exclude group: 'com.google.android', module: 'android'
+    }
+    compile('com.github.Raizlabs.DBFlow:dbflow-core:4.2.4') {
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'com.android.support', module: 'support-v7'
+    }
+    compile('com.github.Raizlabs.DBFlow:dbflow:4.2.4') {
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'com.android.support', module: 'support-v7'
+    }
+    annotationProcessor('com.github.Raizlabs.DBFlow:dbflow-processor:4.2.4') {
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude group: 'com.android.support', module: 'support-v7'
     }
 }

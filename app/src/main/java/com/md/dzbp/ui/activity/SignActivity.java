@@ -25,6 +25,7 @@ import com.md.dzbp.constants.APIConfig;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.LoginEvent;
 import com.md.dzbp.data.ScreenShotEvent;
+import com.md.dzbp.data.SendSignEvent;
 import com.md.dzbp.data.SignEvent;
 import com.md.dzbp.data.SignInfoBean;
 import com.md.dzbp.model.NetWorkRequest;
@@ -81,6 +82,8 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
     TextView mMainSub;
     @BindView(R.id.sign_host)
     TextView mHost;
+    @BindView(R.id.sign_tip)
+    TextView mTip;
     @BindView(R.id.sign_Num)
     TextView mNum;
     @BindView(R.id.sign_listTitle)
@@ -197,6 +200,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
     @Override
     protected void onStop() {
         super.onStop();
+        EventBus.getDefault().post(new SendSignEvent());
         if (EventBus.getDefault().isRegistered(this))//加上判断
             EventBus.getDefault().unregister(this);
     }
@@ -252,6 +256,18 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
         mDate.setText(TimeUtils.getStringDate());
         getUIdata();
 
+
+        try {
+            String className = mAcache.getAsString("ClassName");
+            String gradeName = mAcache.getAsString("GradeName");
+            String address = mAcache.getAsString("Address");
+
+            mMainAddr.setText(address);
+            mMainSub.setText(gradeName + className);
+            mListTitle.setText(gradeName + className);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -365,6 +381,8 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
         }
     }
 
+
+
     /**
      * 设置界面数据
      */
@@ -376,11 +394,10 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
             mMainSub.setText(classInfo.getGradeName() + classInfo.getClassName());
             mListTitle.setText(classInfo.getGradeName() + classInfo.getClassName());
             ;
-            mListsub.setText(classInfo.getAddress());
         }
-        if (studentsList != null && studentsList.size() > 0) {
-            setGridData(studentsList);
-        }
+//        if (studentsList != null && studentsList.size() > 0) {
+//            setGridData(studentsList);
+//        }
     }
 
     /**
@@ -433,7 +450,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
                     getUIdata();
                 }
             }
-        }, 5000);
+        }, 10000);
     }
 
     @Override
@@ -443,23 +460,20 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
 
     @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
     public void onDataStatusEvent(SignEvent event) {
-
         try {
             if (event.getType() == 1 && event.isStatus()) {
                 //            showToast(event.getName() + "签到成功！");
-                if (studentsList != null && studentsList.size() > 0) {
-                    for (SignInfoBean.StudentBean m : studentsList) {
-                        if (m.getAccountid().equals(event.getId())) {
-                            m.setState(1);
-                            logger.debug("SignActivity", "匹配成功，签到成功！");
-                        }
-                    }
-                    setGridData(studentsList);
-                }
+                mTip.setText(event.getName());
+//                if (studentsList != null && studentsList.size() > 0) {
+//                    for (SignInfoBean.StudentBean m : studentsList) {
+//                        if (m.getAccountid().equals(event.getId())) {
+//                            m.setState(1);
+//                            logger.debug("SignActivity", "匹配成功，签到成功！");
+//                        }
+//                    }
+//                    setGridData(studentsList);
+//                }
             }
-//        else if (event.getType() == 1 && !event.isStatus()) {
-//            showToast("签到失败！");
-//        }
         } catch (Exception e) {
             e.printStackTrace();
         }

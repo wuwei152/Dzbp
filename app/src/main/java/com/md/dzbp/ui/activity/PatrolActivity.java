@@ -421,7 +421,7 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
                     getUIdata();
                 }
             }
-        }, 5000);
+        }, 10000);
     }
 
     @Override

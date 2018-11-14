@@ -9,28 +9,29 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.RemoteException;
-import android.support.annotation.Nullable;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSONObject;
 import com.apkfuns.logutils.LogUtils;
 import com.md.dzbp.ProcessService;
+import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.ScreenShotEvent;
+import com.md.dzbp.data.SendSignEvent;
+import com.md.dzbp.data.SignBean;
+import com.md.dzbp.data.SignBean_Table;
+import com.md.dzbp.data.SignEvent;
 import com.md.dzbp.data.TextSendMessage;
 import com.md.dzbp.data.VoiceSendMessage;
-import com.md.dzbp.constants.Constant;
-import com.md.dzbp.data.WorkTimePeriod;
-import com.md.dzbp.data.WorkTimePoint;
+import com.md.dzbp.model.TimeUtils;
 import com.md.dzbp.task.SwitchTask;
+import com.md.dzbp.utils.ACache;
+import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
 
 /**
  * Tcp服务
@@ -43,6 +44,7 @@ public class TcpService extends Service {
     private LocalBinder binder;
     private LocalConn conn;
     public SwitchTask mSwitchTask;
+    private ACache mACache;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -57,6 +59,7 @@ public class TcpService extends Service {
         if (conn == null) {
             conn = new LocalConn();
         }
+        mACache = ACache.get(this);
         mManager = ServerManager.getInstance(this);
         EventBus.getDefault().register(this);
         logger = LoggerFactory.getLogger(getClass());
@@ -75,6 +78,7 @@ public class TcpService extends Service {
 //        mSwitchTask.SetTaskList(WorkTimePoint.GetWorkTimePointList(list));
         mSwitchTask.TaskRun();
 //        mSwitchTask.CheckCurrentTask();
+
     }
 
     @Override
@@ -87,7 +91,19 @@ public class TcpService extends Service {
             int Act = intent.getIntExtra("Act", 0);
             String ext = intent.getStringExtra("ext");
             LogUtils.d("onStartCommand:----" + num + "/" + Act + "/" + ext);
+            if (Act == 7) {
+                SignBean signBean = SQLite.select().from(SignBean.class).where(SignBean_Table.CarNum.eq(num)).querySingle();
+                if (signBean != null) {//已存在改对象，如果时间间隔大于2小时则记录，否则不记录
+                    long[] distanceTimes = TimeUtils.getDistanceTimes(signBean.AttendanceTime, TimeUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
+                    if (distanceTimes[0] > 0 || distanceTimes[1] > 1) {
+                        new SignBean(num, TimeUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"),ext).save();
+                    }
+                } else {//不存在直接记录
+                    new SignBean(num, TimeUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"),ext).save();
+                }
+            }
             mManager.sendCardNum(num, Act, ext);
+//            LogUtils.d(SQLite.select().from(SignBean.class).queryList());
         } else if (intent != null && intent.hasExtra("test")) {
 //            mManager.test();
 //            mManager.messageHandle.TakeSnap();
@@ -188,5 +204,21 @@ public class TcpService extends Service {
                 mManager.messageHandle.msgHandleUtil.yingda(0xA505, false, event.getDeviceId(), event.getMsgid());
             }
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
+    public void onDataStatusEvent(SignEvent event) {
+        if (event.isStatus() && event.getType() == 1) {
+            SQLite.delete()
+                    .from(SignBean.class)
+                    .where(SignBean_Table.CarNum.eq(event.getCardNum()))
+                    .query();
+        }
+        LogUtils.d(SQLite.select().from(SignBean.class).queryList());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
+    public void onSendSignEvent(SendSignEvent event) {
+        mManager.messageHandle.msgHandleUtil.SendSignData(0xA611);
     }
 }

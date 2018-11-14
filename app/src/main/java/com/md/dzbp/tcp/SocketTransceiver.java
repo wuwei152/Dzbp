@@ -1,16 +1,18 @@
 package com.md.dzbp.tcp;
 
+import android.util.Log;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.List;
-
-import android.util.Log;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Socket收发器 通过Socket发送数据，并使用新线程监听Socket接收到的数据
@@ -24,6 +26,8 @@ public abstract class SocketTransceiver implements Runnable {
 	protected InputStream in;
 	protected OutputStream out;
 	private boolean runFlag;
+
+	private byte[] OldDatagram ;
 	private String TAG = "SocketTransceiver-->{}";
 
 	/**
@@ -97,12 +101,23 @@ public abstract class SocketTransceiver implements Runnable {
 		return false;
 	}
 
+	public byte[] toByteArray(InputStream input) throws IOException {
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		byte[] buffer = new byte[4096];
+		int n = 0;
+		while (-1 != (n = input.read(buffer))) {
+			output.write(buffer, 0, n);
+			logger.debug(TAG+"copy",n);
+		}
+		return output.toByteArray();
+	}
+
 	/**
 	 * 监听Socket接收的数据(新线程中运行)
 	 */
 	@Override
 	public void run() {
-		DatagramR r = new DatagramR();
+		//DatagramR r = new DatagramR();
 		try {
 			in = this.socket.getInputStream();
 			out = this.socket.getOutputStream();
@@ -113,21 +128,60 @@ public abstract class SocketTransceiver implements Runnable {
 		}
 		while (runFlag) {
 			try {
+				byte[] newDatagram;
+				byte[] buffer = new byte[4096];
+				int length = in.read(buffer);
 
-				// final String s = in.readUTF();
-				// this.onReceive(addr, s);
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				if (length > 0) {
+					byte[] newBuffer = Arrays.copyOf(buffer, length);
 
-				byte[] buff = new byte[20480];
-				in.read(buff);
-				List<TCPMessage> messageList = r.Resolve(buff);
-//				Log.i("socket", "共解析到" + messageList.size() + "条消息");
+					//logger.debug(TAG + "newLength", newBuffer.length);
+					//logger.debug(TAG + "newBufferLength", newBuffer.length);
 
-				this.onReceive(addr, messageList);
+					if (this.OldDatagram != null && this.OldDatagram.length > 0) {
+						newDatagram = new byte[this.OldDatagram.length + newBuffer.length];
+						//logger.debug(TAG + "allLength", newDatagram.length);
+
+						byte[] oldBuffer = Arrays.copyOf(this.OldDatagram, this.OldDatagram.length);
+						//LogUtils.d(oldBuffer);
+						//LogUtils.d(newBuffer);
+
+						//logger.debug(TAG + "oldBufferLength", oldBuffer.length);
+
+						System.arraycopy(oldBuffer, 0, newDatagram, 0, oldBuffer.length);
+						System.arraycopy(newBuffer, 0, newDatagram, oldBuffer.length, newBuffer.length);
+
+						//LogUtils.d(newDatagram);
+					} else {
+						newDatagram = new byte[newBuffer.length];
+						newDatagram = Arrays.copyOf(newBuffer, newBuffer.length);
+					}
+
+					//logger.debug(TAG + "endLength", newDatagram.length);
+
+					ResolveResult result = DatagramR.Resolve(newDatagram);
+					this.OldDatagram = result.OldDatagram;
+//					LogUtils.d(result.OldDatagram);
+
+					Log.i("socket", "共解析到" + result.NewMessagelist.size() + "条消息");
+
+					this.onReceive(addr, result.NewMessagelist);
+				}
+				else
+				{
+					//LogUtils.d("没有拿到数据");
+				}
 			} catch (IOException e) {
 				// 连接被断开(被动)
 				Log.e("Socket", e.getMessage());
 				logger.error(TAG,e.getMessage());
 				runFlag = false;
+				this.OldDatagram = null;
 			}
 		}
 
@@ -139,6 +193,7 @@ public abstract class SocketTransceiver implements Runnable {
 			in = null;
 			out = null;
 			socket = null;
+			OldDatagram = null;
 		} catch (IOException e) {
 			e.printStackTrace();
 			logger.error(TAG,e.getMessage());

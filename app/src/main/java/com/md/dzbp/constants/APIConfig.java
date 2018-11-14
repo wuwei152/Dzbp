@@ -120,4 +120,11 @@ public interface APIConfig {
      * ?deviceId=6dd62d53-249e-4845-8716-05926842568f
      */
     public static final String GET_SIGN = "zhxy/api/attendance/index";
+    /**
+     * 获取考试信息
+     * 请求方式：Get
+     * 参数：
+     * ?deviceId=6dd62d53-249e-4845-8716-05926842568f
+     */
+    public static final String GET_EXAM = "zhxy/api/exam/info";
 }

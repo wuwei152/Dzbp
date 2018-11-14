@@ -17,6 +17,9 @@ import com.md.dzbp.data.MainData;
 import com.md.dzbp.data.MainUpdateEvent;
 import com.md.dzbp.data.MessageBase;
 import com.md.dzbp.data.MsgSendStatus;
+import com.md.dzbp.data.SendSignEvent;
+import com.md.dzbp.data.SignBean;
+import com.md.dzbp.data.SignBean_Table;
 import com.md.dzbp.data.SignEvent;
 import com.md.dzbp.data.TextReceiveMessage;
 import com.md.dzbp.data.UpdateDate;
@@ -28,6 +31,7 @@ import com.md.dzbp.ftp.FTP;
 import com.md.dzbp.task.SwitchTask;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
+import com.raizlabs.android.dbflow.sql.language.Delete;
 
 import org.greenrobot.eventbus.EventBus;
 import org.slf4j.Logger;
@@ -78,6 +82,7 @@ public class MessageHandle {
                 break;
             case 0xA002://登录应答，发心跳
                 int result1 = tcpMessage.ReadInt();
+//                LogUtils.d(result1);
                 if (result1 == 0) {
                     logger.debug(TAG, "0xA002收到登录授权成功消息");
                     IsEnable = true;
@@ -102,20 +107,21 @@ public class MessageHandle {
                     smdtManager.smdtSetTimingSwitchMachine(guanji, kaiji, "1");
                     int length3 = tcpMessage.ReadInt();
                     String task = tcpMessage.ReadString(length3);
-                    LogUtils.d(task);
+//                    LogUtils.d(task);
                     ArrayList<WorkTimePeriod> list = JSON.parseObject(task.toString(), new TypeReference<ArrayList<WorkTimePeriod>>() {
                     });
-                    LogUtils.d(list);
+//                    LogUtils.d(list);
                     mACache.put("Task",list);
                     if (list != null) {
                         ArrayList<WorkTimePoint> list1 = WorkTimePoint.GetWorkTimePointList(list);
                         SwitchTask.getInstance(context).SetTaskList(list1);
                     }
-                    LogUtils.d("psw:" + psw);
+//                    LogUtils.d("psw:" + psw);
 
                     FtpParams params = new FtpParams(ftp_ip, ftp_port, ftp_name, ftp_psw, web_api);
                     mACache.put("FtpParams", params);
                     mACache.put("AdminPsw", psw);
+                    EventBus.getDefault().post(new SendSignEvent());
                 } else if (result1 == 1) {
                     logger.debug(TAG, "0xA002收到登录授权失败消息");
                     IsEnable = false;
@@ -353,7 +359,7 @@ public class MessageHandle {
                 if (opType == 0) {
                     ArrayList<WorkTimePeriod> list = JSON.parseObject(data604.toString(), new TypeReference<ArrayList<WorkTimePeriod>>() {
                     });
-                    LogUtils.d(list);
+//                    LogUtils.d(list);
                     if (list != null) {
                         ArrayList<WorkTimePoint> list1 = WorkTimePoint.GetWorkTimePointList(list);
                         SwitchTask.getInstance(context).AddTaskList(list1);
@@ -408,13 +414,15 @@ public class MessageHandle {
                 String id608 = tcpMessage.ReadString(length608);
                 int length6082 = tcpMessage.ReadInt();
                 String ext608 = tcpMessage.ReadString(length6082);
+                int length6083 = tcpMessage.ReadInt();
+                String cardNum = tcpMessage.ReadString(length6083);
                 if (status608 == 0) {
                     logger.debug(TAG, "签到：" + id608 + ext608);
-                    EventBus.getDefault().post(new SignEvent(1, true, id608, ext608));
+                    EventBus.getDefault().post(new SignEvent(1, true, id608, ext608,cardNum));
                 } else {
                     logger.debug(TAG, "签到失败");
 //                    handleFail(status608, 608);
-                    EventBus.getDefault().post(new SignEvent(1, false, "", ""));
+                    EventBus.getDefault().post(new SignEvent(1, false, "", ext608));
                 }
                 if (!TextUtils.isEmpty(ext608)) {
                     myToast.toast(context, ext608);
@@ -428,6 +436,18 @@ public class MessageHandle {
                 break;
             case 0xA610://摄像头截屏成功后回复
                 logger.debug(TAG, "0xA610收到摄像头截屏回复指令");
+                break;
+            case 0xA611://离线考勤上传成功后回复
+                Boolean issuccess = tcpMessage.ReadBool();
+                logger.debug(TAG, "0xA611收到离线考勤上传回复指令"+issuccess);
+                if (issuccess){
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Delete.table(SignBean.class);
+                        }
+                    },30000);
+                }
                 break;
             default:
                 break;

@@ -53,6 +53,7 @@ public class GetCardNumUtils {
                 //或者event.getKeyCode == ENTER 且 event.getAction == ACTION_DOWN时也触发
                 //注意，这是一定要判断event != null。因为在某些输入法上会返回null。
 //                actionId == EditorInfo.IME_ACTION_SEND|| actionId == EditorInfo.IME_ACTION_DONE||
+                LogUtils.d("111111");
                 if (event != null && KeyEvent.KEYCODE_ENTER == event.getKeyCode() && KeyEvent.ACTION_DOWN == event.getAction()) {
                     String num = et.getText().toString().trim();
                     if (!TextUtils.isEmpty(num) && !"\n".equals(num)) {
