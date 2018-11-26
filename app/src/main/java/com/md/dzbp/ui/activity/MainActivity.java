@@ -201,6 +201,10 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         SmdtManager smdt = SmdtManager.create(this);
         //隐藏状态栏
         smdt.smdtSetStatusBar(MainActivity.this, false);
+
+//        ArrayList<CameraInfo> mCameraInfos = new ArrayList<>();
+//        mCameraInfos.add(new CameraInfo("192.168.0.112", "37777", "admin", "yc123456"));//测试
+//        mAcache.put("CameraInfo", mCameraInfos);
     }
 
     @Override

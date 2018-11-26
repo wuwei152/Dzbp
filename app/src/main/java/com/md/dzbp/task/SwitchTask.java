@@ -139,8 +139,9 @@ public class SwitchTask extends Timer {
         }
 
 
-        if (TimeUtils.compareDate(currentTime1, mCurrentDate + ":01:00:00") && TimeUtils.compareDate(mCurrentDate + ":01:00:00", currentTime2)) {
-            logger.debug(TAG, "设备未关机，执行断连刷新课表任务！！！！！！！" + mCurrentDate + ":01:00:00");
+        if (TimeUtils.compareDate(currentTime1, mCurrentDate + ":01:00:00") && TimeUtils.compareDate(mCurrentDate + ":01:00:00", currentTime2)
+                ||TimeUtils.compareDate(currentTime1, mCurrentDate + ":05:00:00") && TimeUtils.compareDate(mCurrentDate + ":05:00:00", currentTime2)) {
+            logger.debug(TAG, "设备未关机，执行断连刷新课表任务！！！！！！！" + mCurrentDate);
 
             try {
                 ArrayList<WorkTimePeriod> list = (ArrayList<WorkTimePeriod>) mACache.getAsObject("Task");

@@ -21,7 +21,7 @@ public class WorkTimePoint implements Serializable {
 
     private String TaskTag;//任务标志
     private String Name;//任务名
-    private int Type;//任务类型               0　作息时间 1　会议 2 通知 3考试  4 考勤
+    private int Type;//任务类型               0　作息时间 1　会议 2 通知 3考试  4 考勤  100开关屏
     private String TriggerTime;//触发时间
     private int Taskstate;//是否已执行 0否  1 是
     private int StartTask;//是开始任务0   还是结束任务1

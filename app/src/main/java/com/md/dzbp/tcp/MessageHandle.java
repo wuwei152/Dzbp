@@ -10,24 +10,18 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.apkfuns.logutils.LogUtils;
 import com.md.dzbp.constants.Constant;
-import com.md.dzbp.constants.ERRORTYPE;
 import com.md.dzbp.data.FtpParams;
 import com.md.dzbp.data.ImageReceiveMessage;
-import com.md.dzbp.data.MainData;
 import com.md.dzbp.data.MainUpdateEvent;
 import com.md.dzbp.data.MessageBase;
-import com.md.dzbp.data.MsgSendStatus;
 import com.md.dzbp.data.SendSignEvent;
 import com.md.dzbp.data.SignBean;
-import com.md.dzbp.data.SignBean_Table;
 import com.md.dzbp.data.SignEvent;
 import com.md.dzbp.data.TextReceiveMessage;
 import com.md.dzbp.data.UpdateDate;
 import com.md.dzbp.data.VoiceReceiveMessage;
-import com.md.dzbp.data.VoiceSendMessage;
 import com.md.dzbp.data.WorkTimePeriod;
 import com.md.dzbp.data.WorkTimePoint;
-import com.md.dzbp.ftp.FTP;
 import com.md.dzbp.task.SwitchTask;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
@@ -37,8 +31,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -103,14 +95,16 @@ public class MessageHandle {
                     String guanji = tcpMessage.ReadString(length);
                     int length2 = tcpMessage.ReadInt();
                     String kaiji = tcpMessage.ReadString(length2);
-                    logger.debug(TAG, "0xA002设置开关机指令：关" + guanji + "/开" + kaiji);
-                    smdtManager.smdtSetTimingSwitchMachine(guanji, kaiji, "1");
+                    logger.debug(TAG, "0xA002设置开关机指令：关" + guanji + "/开" + kaiji);//更换成开关屏
+//                    smdtManager.smdtSetTimingSwitchMachine(guanji, kaiji, "1");
+
                     int length3 = tcpMessage.ReadInt();
                     String task = tcpMessage.ReadString(length3);
 //                    LogUtils.d(task);
                     ArrayList<WorkTimePeriod> list = JSON.parseObject(task.toString(), new TypeReference<ArrayList<WorkTimePeriod>>() {
                     });
-//                    LogUtils.d(list);
+//                    WorkTimePeriod period = new WorkTimePeriod("999999999","开关屏",100,"?:?:?:"+guanji+":00","?:?:?:"+kaiji+":00");
+                    LogUtils.d(list);
                     mACache.put("Task",list);
                     if (list != null) {
                         ArrayList<WorkTimePoint> list1 = WorkTimePoint.GetWorkTimePointList(list);
@@ -429,10 +423,15 @@ public class MessageHandle {
                 }
                 break;
             case 0xA609://摄像头截屏
-//                int status609 = tcpMessage.ReadInt();
-                logger.debug(TAG, "0xA609收到摄像头截屏指令");
+                int len609 = tcpMessage.ReadInt();
+                String id609 = tcpMessage.ReadString(len609);//接收人openID   接受后回传
+                logger.debug(TAG, "0xA609收到摄像头截屏指令"+id609);
                 msgHandleUtil.yingda(0xA609, true, deviceId);
-                msgHandleUtil.TakeVideoPic();
+                try {
+                    msgHandleUtil.TakeVideoPic(id609);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
             case 0xA610://摄像头截屏成功后回复
                 logger.debug(TAG, "0xA610收到摄像头截屏回复指令");
@@ -527,8 +526,8 @@ public class MessageHandle {
     /**
      * 获取snap
      */
-    public void TakeSnap() {
-        LogUtils.d("开始获取！");
-        msgHandleUtil.TakeVideoPic();
-    }
+//    public void TakeSnap() {
+//        LogUtils.d("开始获取！");
+//        msgHandleUtil.TakeVideoPic();
+//    }
 }

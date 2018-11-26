@@ -145,6 +145,10 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
         if (intent.hasExtra("userId")) {
             userId = intent.getStringExtra("userId");
         }
+        if (patrolBean != null) {//防止未加载到数据显示上一次的数据
+            patrolBean.setInspectionParameters(new ArrayList<PatrolBean.InspectionParametersBean>());
+            setUIData(patrolBean);
+        }
         getUIdata();
     }
 
@@ -240,7 +244,7 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
      * 获取卡号
      */
     private void getCardNum() {
-        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum,this);
+        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum, this);
         getCardNumUtils.getNum(new GetCardNumUtils.SetNum() {
             @Override
             public void setNum(String num) {
@@ -332,6 +336,9 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
      */
     private void setUIData(PatrolBean patrolBean) {
 
+        if (patrolBean == null) {
+            return;
+        }
         ClassInfoBean classInfo = patrolBean.getClassInfo();
         PatrolBean.TeacherBean teacher = patrolBean.getTeacher();
         ClassManagerBean classManager = patrolBean.getClassManager();
@@ -359,6 +366,7 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
                 @Override
                 protected void convert(ViewHolder viewHolder, final PatrolBean.InspectionParametersBean item, int position) {
                     viewHolder.setText(R.id.item_name, item.getParametername());
+
                     ((ToggleButton) viewHolder.getView(R.id.item_check)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -372,8 +380,9 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
                 }
             });
             mConfrim.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             mConfrim.setVisibility(View.INVISIBLE);
+
         }
 
         PatrolBean.AttendanceBean attendance = patrolBean.getAttendance();

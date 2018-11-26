@@ -293,7 +293,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
                         if (!filePath.exists()) {
                             filePath.mkdirs();
                         }
-                        File fileName = new File(filePath, System.currentTimeMillis() + (int) (Math.random() * 1000) + ".jpg");
+                        File fileName = new File(filePath, System.currentTimeMillis() + (int) (Math.random() * 1000) + ".jpeg");
                         fileName.createNewFile();
                         FileOutputStream fos = new FileOutputStream(fileName);
                         fos.write(data);
