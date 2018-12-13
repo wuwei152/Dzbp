@@ -76,6 +76,8 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     TextView mAddr;
     @BindView(R.id.teacher_imgRl)
     RelativeLayout mImgRl;
+    @BindView(R.id.teacher_qrcode)
+    ImageView mQrcode;
 
     private Dialog dialog;
     private NetWorkRequest netWorkRequest;
@@ -282,7 +284,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
             }
             if (!TextUtils.isEmpty(courseBean.getAccountName())) {
                 mTeacherName.setText("教师：" + courseBean.getAccountName());
-            } else {
+            } else if (!TextUtils.isEmpty(courseBean.getManagerAccountName())){
                 mTeacherName.setText("班主任：" + courseBean.getManagerAccountName());
             }
             if (!TextUtils.isEmpty(courseBean.getPeriodName())) {
@@ -292,6 +294,8 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
                 mPeriodName.setVisibility(View.GONE);
             }
             mAddr.setText("教室：" + courseBean.getAddress());
+            Glide.with(this).load(courseBean.getQrcode()).into(mQrcode);
+
         } catch (Exception e) {
             e.printStackTrace();
         }

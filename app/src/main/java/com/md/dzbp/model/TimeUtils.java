@@ -62,6 +62,11 @@ public class TimeUtils {
         String timeStr = df.format(new Date());
         return timeStr;
     }
+    public static String getCurrentDate2() {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
+        String timeStr = df.format(new Date());
+        return timeStr;
+    }
 
     public static String getCurrentTime(String pattern) {
         SimpleDateFormat df = new SimpleDateFormat(pattern);//设置日期格式

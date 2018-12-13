@@ -63,11 +63,6 @@ public class FTP {
             this.serverPort = params.getPort();
             this.userName = params.getUserName();
             this.password = params.getPsw();
-        } else {
-            this.hostName = Constant.FtpHostName;
-            this.serverPort = Constant.FtpPort;
-            this.userName = Constant.FtpUserName;
-            this.password = Constant.FtpPsw;
         }
         this.ftpClient = new FTPClient();
     }

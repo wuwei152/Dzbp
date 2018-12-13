@@ -20,6 +20,7 @@ import com.md.dzbp.R;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.tcp.TcpService;
 import com.md.dzbp.ui.activity.ExamActivity;
+import com.md.dzbp.ui.activity.InterestClassActivity;
 import com.md.dzbp.ui.activity.MainActivity;
 import com.md.dzbp.ui.activity.MeetingActivity;
 import com.md.dzbp.ui.activity.NoticeActivity;
@@ -37,7 +38,7 @@ import java.util.ArrayList;
  */
 public class MainDialog extends Dialog {
 
-    private TextView act1, act2, act3, act4, act5, act6, act7, act8, act9, bt1, bt2;
+    private TextView act1, act2, act3, act4, act5, act6, act7, act8, act9, act10, bt1, bt2;
     private Context context;
     private LinearLayout ll;
     private final SmdtManager smdt;
@@ -102,6 +103,7 @@ public class MainDialog extends Dialog {
         act7 = (TextView) findViewById(R.id.act7);
         act8 = (TextView) findViewById(R.id.act8);
         act9 = (TextView) findViewById(R.id.act9);
+        act10 = (TextView) findViewById(R.id.act10);
 
         bt1 = (TextView) findViewById(R.id.bt1);
         bt2 = (TextView) findViewById(R.id.bt2);
@@ -204,6 +206,16 @@ public class MainDialog extends Dialog {
             }
         });
         act9.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!YZ()) {
+                    return;
+                }
+                context.startActivity(new Intent(context, InterestClassActivity.class));
+                dismiss();
+            }
+        });
+        act10.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!YZ()) {

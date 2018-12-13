@@ -2,6 +2,7 @@ package com.md.dzbp.model;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.view.SurfaceView;
 
 import com.apkfuns.logutils.LogUtils;
@@ -28,6 +29,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * 摄像头设置
@@ -59,6 +62,7 @@ public class DahuaModel {
         this.mContext = mContext;
         this.listener = listener;
         init();
+        logout();
         LoginToSnap(cameraInfo.getIp(), cameraInfo.getPort(), cameraInfo.getUsername(), cameraInfo.getPsw());
     }
 
@@ -129,7 +133,7 @@ public class DahuaModel {
             return true;
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            logger.error(TAG, "登录出错"+e.getMessage());
+            logger.error(TAG, "登录出错" + e.getMessage());
             if (listener != null)
                 listener.resLis(0, false, null);
             return false;
@@ -152,7 +156,7 @@ public class DahuaModel {
         if (retLogout) {
             mLoginHandle = 0;
             logger.debug(TAG, "摄像头退出登录！");
-        }else {
+        } else {
             logger.debug(TAG, "摄像头退出失败！");
         }
 
@@ -205,6 +209,7 @@ public class DahuaModel {
                 snap(0);
             } else {
                 logger.debug(TAG, "登录失败");
+                listener.resLis(1, false, null);
             }
         }
     }
@@ -343,6 +348,8 @@ public class DahuaModel {
      * @param channel
      */
     public void snap(int channel) {
+
+
         //设置抓图回调
         TestfSnapRev stCb = new TestfSnapRev();
         INetSDK.SetSnapRevCallBack(stCb);
@@ -350,20 +357,34 @@ public class DahuaModel {
         ///发送抓图请求
         SNAP_PARAMS stSnapParam = new SNAP_PARAMS();
         stSnapParam.Channel = channel;
-        stSnapParam.Quality = 3;
+        stSnapParam.Quality = 1;
         stSnapParam.ImageSize = 1;
         stSnapParam.mode = 0;
         stSnapParam.InterSnap = 5;
         stSnapParam.CmdSerial = 100;
         if (INetSDK.SnapPictureEx(mLoginHandle, stSnapParam)) {
             logger.debug(TAG, "远程抓图成功");
+            try {
+                timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        logger.debug(TAG, "远程抓图失败重试");
+                        snap(0);
+                    }
+                }, 5000);
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.debug(TAG, e.getMessage());
+            }
         } else {
             logger.debug(TAG, "远程抓图失败");
             listener.resLis(1, false, null);
-//            logout();
             return;
         }
     }
+
+    Timer timer;
 
     /**
      * 抓图回调
@@ -371,6 +392,13 @@ public class DahuaModel {
     public class TestfSnapRev implements CB_fSnapRev {
         @Override
         public void invoke(long lLoginID, byte pBuf[], int RevLen, int EncodeType, int CmdSerial) {
+            logger.debug(TAG, "截图回调");
+            try {
+                timer.cancel();
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.debug(TAG, e.getMessage());
+            }
             String strFileName = "";
             if (10 == EncodeType) {
                 strFileName = createInnerAppFile("jpg");
@@ -379,8 +407,10 @@ public class DahuaModel {
             }
 
             logger.debug(TAG, "FileName:" + strFileName);
-            if (strFileName.equals("")){
+            if (TextUtils.isEmpty(strFileName)) {
                 logger.debug(TAG, "异常：FileName为空");
+                listener.resLis(1, false, null);
+//                logout();
                 return;
             }
 
@@ -412,6 +442,7 @@ public class DahuaModel {
                     e.printStackTrace();
                     logger.error(TAG, e.getMessage());
                 }
+//                logout();
             }
         }
     }

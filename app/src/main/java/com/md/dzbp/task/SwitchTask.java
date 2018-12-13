@@ -1,5 +1,6 @@
 package com.md.dzbp.task;
 
+import android.app.smdt.SmdtManager;
 import android.content.Context;
 import android.content.Intent;
 
@@ -9,6 +10,7 @@ import com.md.dzbp.data.WorkTimePoint;
 import com.md.dzbp.model.TimeUtils;
 import com.md.dzbp.tcp.ServerManager;
 import com.md.dzbp.ui.activity.ExamActivity;
+import com.md.dzbp.ui.activity.InterestClassActivity;
 import com.md.dzbp.ui.activity.MainActivity;
 import com.md.dzbp.ui.activity.MeetingActivity;
 import com.md.dzbp.ui.activity.NoticeActivity;
@@ -32,6 +34,11 @@ import java.util.TimerTask;
 /**
  * 任务队列
  * 单例模式
+ *
+ * 任务类型               0　作息时间 1　会议 2 通知 3考试  4 考勤  100开关屏  5走班制
+ *
+ *              其中 0/4/100 为低级别任务
+ *              1/2/3/5为高级别任务
  */
 
 public class SwitchTask extends Timer {
@@ -45,12 +52,14 @@ public class SwitchTask extends Timer {
     private Logger logger;
     private int CheckTag;
     private final ACache mACache;
+    private SmdtManager smdtManager;
 
     private SwitchTask(Context context) {
         this.context = context;
         logger = LoggerFactory.getLogger(context.getClass());
         mList = new ArrayList<>();
         mACache = ACache.get(context);
+        smdtManager = SmdtManager.create(context);
         try {
             ArrayList<WorkTimePeriod> list = (ArrayList<WorkTimePeriod>) mACache.getAsObject("Task");
             if (list != null) {
@@ -290,6 +299,46 @@ public class SwitchTask extends Timer {
                     logger.debug(TAG, "屏幕切换失败level:" + level + "/" + point.getTaskstate());
                 }
                 break;
+            case 5:
+                if (point.getStartTask() == 0 && point.getTaskstate() == 0) {
+                    //走班开始
+                    Intent intent = new Intent(context, InterestClassActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                    level = 1;
+                    point.setTaskstate(1);
+                    logger.debug(TAG, "屏幕跳转成功-走班开始" + currentTime);
+                } else if (point.getStartTask() == 1 && point.getTaskstate() == 0) {
+                    //走班结束
+                    level = 0;
+                    WorkTimePoint startTaskPoint = getTobeStartTaskPoint(currentTime, point);
+                    if (startTaskPoint != null) {
+                        StartTask(currentTime, startTaskPoint);
+                    } else {
+                        Intent intent = new Intent(context, MainActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context.startActivity(intent);
+                    }
+                    point.setTaskstate(1);
+                    logger.debug(TAG, "屏幕跳转成功-走班结束" + currentTime);
+                } else {
+                    logger.debug(TAG, "屏幕切换失败level:" + level + "/" + point.getTaskstate());
+                }
+                break;
+            case 100://开关屏操作
+                if (level == 0 && point.getStartTask() == 0 && point.getTaskstate() == 0) {
+                    //关屏开始
+                    smdtManager.smdtSetLcdBackLight(0);//关闭背光
+                    point.setTaskstate(1);
+                    logger.debug(TAG, "屏幕关屏" + currentTime);
+                } else if (level == 0 && point.getStartTask() == 1 && point.getTaskstate() == 0) {
+                    smdtManager.smdtSetLcdBackLight(1);//打开背光
+                    point.setTaskstate(1);
+                    logger.debug(TAG, "屏幕开屏" + currentTime);
+                } else {
+                    logger.debug(TAG, "屏幕开关失败level:" + level + "/" + point.getTaskstate());
+                }
+                break;
             default:
                 break;
         }
@@ -317,11 +366,12 @@ public class SwitchTask extends Timer {
             }
         }
         /**
-         * 寻找结束任务之前是否有已开始未结束任务
-         * 有就返回离当前结束任务最近的开始未结束任务
+         * 寻找结束任务之前是否有已开始未结束的高级别任务
+         *
+         * 有就返回离当前结束任务最近的开始未结束高级别任务
          */
         for (int i = endTask; i >= 0; i--) {
-            if ((mList.get(i).getType() == 1 || mList.get(i).getType() == 2|| mList.get(i).getType() == 3) && mList.get(i).getStartTask() == 0 && !mList.get(i).getTaskTag().equals(point.getTaskTag())) {
+            if ((mList.get(i).getType() == 1 || mList.get(i).getType() == 2|| mList.get(i).getType() == 3|| mList.get(i).getType() == 5) && mList.get(i).getStartTask() == 0 && !mList.get(i).getTaskTag().equals(point.getTaskTag())) {
                 if (!IsTaskEnd(currentTime, mList.get(i))) {
                     mList.get(i).setTaskstate(0);
                     return mList.get(i);
@@ -330,12 +380,12 @@ public class SwitchTask extends Timer {
         }
 
         /**
-         * 没有已开始未结束任务
-         * 寻找最近的作息时间任务
+         * 没有已开始未结束高级别任务
+         * 寻找离结束任务左侧最近的低级别任务
          */
         level = 0;
         for (int i = endTask; i >= 0; i--) {
-            if (mList.get(i).getType() == 0 || mList.get(i).getType() == 4) {
+            if (mList.get(i).getType() == 0 || mList.get(i).getType() == 4|| mList.get(i).getType() == 100) {
                 mList.get(i).setTaskstate(0);
                 return mList.get(i);
             }
@@ -369,7 +419,7 @@ public class SwitchTask extends Timer {
 
         if (point != null) {
             logger.debug(TAG, "最近已开始任务为：" + point.getName() + point.getTriggerTime());
-            if (point.getType() == 1 || point.getType() == 2 || point.getType() == 3) {
+            if (point.getType() == 1 || point.getType() == 2 || point.getType() == 3|| point.getType() == 5) {
                 if (point.getStartTask() == 0) {//是高级别开始任务--直接执行
                     toStartPoint = point;
                 } else if (point.getStartTask() == 1) {//是高级别结束任务--检查未结束任务
@@ -382,7 +432,7 @@ public class SwitchTask extends Timer {
                  * 有就返回离当前结束任务最近的开始未结束任务
                  */
                 for (int i = endTask; i >= 0; i--) {
-                    if ((mList.get(i).getType() == 1 || mList.get(i).getType() == 2|| mList.get(i).getType() == 3) && mList.get(i).getStartTask() == 0 && !mList.get(i).getTaskTag().equals(point.getTaskTag())) {
+                    if ((mList.get(i).getType() == 1 || mList.get(i).getType() == 2|| mList.get(i).getType() == 3|| mList.get(i).getType() == 5) && mList.get(i).getStartTask() == 0 && !mList.get(i).getTaskTag().equals(point.getTaskTag())) {
                         if (!IsTaskEnd(currentTime, mList.get(i))) {
                             mList.get(i).setTaskstate(0);
                             toStartPoint = mList.get(i);

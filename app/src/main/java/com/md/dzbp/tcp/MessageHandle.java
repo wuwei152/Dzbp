@@ -95,17 +95,29 @@ public class MessageHandle {
                     String guanji = tcpMessage.ReadString(length);
                     int length2 = tcpMessage.ReadInt();
                     String kaiji = tcpMessage.ReadString(length2);
+//                    mACache.put("GUAN",guanji);
+//                    mACache.put("KAI",kaiji);
                     logger.debug(TAG, "0xA002设置开关机指令：关" + guanji + "/开" + kaiji);//更换成开关屏
-//                    smdtManager.smdtSetTimingSwitchMachine(guanji, kaiji, "1");
+                    smdtManager.smdtSetTimingSwitchMachine(guanji, kaiji, "1");
+
 
                     int length3 = tcpMessage.ReadInt();
                     String task = tcpMessage.ReadString(length3);
 //                    LogUtils.d(task);
                     ArrayList<WorkTimePeriod> list = JSON.parseObject(task.toString(), new TypeReference<ArrayList<WorkTimePeriod>>() {
                     });
-//                    WorkTimePeriod period = new WorkTimePeriod("999999999","开关屏",100,"?:?:?:"+guanji+":00","?:?:?:"+kaiji+":00");
+//                    WorkTimePeriod period = new WorkTimePeriod("999999999","开关屏",100,"?:?:?:"+guanji+":00","?:?:?:24:00:00");
+//                    WorkTimePeriod period2 = new WorkTimePeriod("999998888","开关屏",100,"?:?:?:00:00:00","?:?:?:"+kaiji+":00");
+//                    list.add(period);
+//                    list.add(period2);
+
+//                    WorkTimePeriod period3 = new WorkTimePeriod("88888888", "走班制", 5, "2018:12:04:08:20:00", "2018:12:04:09:00:00");
+//                    WorkTimePeriod period4 = new WorkTimePeriod("66666666", "走班制", 5, "2018:12:03:14:30:00", "2018:12:03:15:00:00");
+//                    list.add(period3);
+//                    list.add(period4);
+
                     LogUtils.d(list);
-                    mACache.put("Task",list);
+                    mACache.put("Task", list);
                     if (list != null) {
                         ArrayList<WorkTimePoint> list1 = WorkTimePoint.GetWorkTimePointList(list);
                         SwitchTask.getInstance(context).SetTaskList(list1);
@@ -412,7 +424,7 @@ public class MessageHandle {
                 String cardNum = tcpMessage.ReadString(length6083);
                 if (status608 == 0) {
                     logger.debug(TAG, "签到：" + id608 + ext608);
-                    EventBus.getDefault().post(new SignEvent(1, true, id608, ext608,cardNum));
+                    EventBus.getDefault().post(new SignEvent(1, true, id608, ext608, cardNum));
                 } else {
                     logger.debug(TAG, "签到失败");
 //                    handleFail(status608, 608);
@@ -425,12 +437,13 @@ public class MessageHandle {
             case 0xA609://摄像头截屏
                 int len609 = tcpMessage.ReadInt();
                 String id609 = tcpMessage.ReadString(len609);//接收人openID   接受后回传
-                logger.debug(TAG, "0xA609收到摄像头截屏指令"+id609);
+                logger.debug(TAG, "0xA609收到摄像头截屏指令" + id609);
                 msgHandleUtil.yingda(0xA609, true, deviceId);
                 try {
                     msgHandleUtil.TakeVideoPic(id609);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    logger.debug(TAG,"截屏出错"+e.getMessage());
                 }
                 break;
             case 0xA610://摄像头截屏成功后回复
@@ -438,14 +451,14 @@ public class MessageHandle {
                 break;
             case 0xA611://离线考勤上传成功后回复
                 Boolean issuccess = tcpMessage.ReadBool();
-                logger.debug(TAG, "0xA611收到离线考勤上传回复指令"+issuccess);
-                if (issuccess){
+                logger.debug(TAG, "0xA611收到离线考勤上传回复指令" + issuccess);
+                if (issuccess) {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             Delete.table(SignBean.class);
                         }
-                    },30000);
+                    }, 30000);
                 }
                 break;
             default:

@@ -15,21 +15,17 @@
 
         <ImageView
             android:id="@+id/item_img"
-            android:layout_width="110dp"
-            android:layout_height="110dp"
-            android:scaleType="centerCrop"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
             android:gravity="center"
-            android:background="#11000000"
-            android:src="@drawable/jk"
-            android:textColor="@color/text_black"
-            android:textSize="20sp" />
+            android:scaleType="centerCrop" />
 
         <TextView
             android:id="@+id/item_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:textColor="@color/text_black"
+            android:textColor="@color/white"
             android:textSize="20sp" />
 
     </LinearLayout>

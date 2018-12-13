@@ -38,6 +38,7 @@ public class CourseBean implements Serializable {
     private String classId;
     private String schoolAreaId;
     private String subjectName;
+    private String qrcode;
 
     private String managerAccountId;
 
@@ -170,5 +171,13 @@ public class CourseBean implements Serializable {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getQrcode() {
+        return qrcode;
+    }
+
+    public void setQrcode(String qrcode) {
+        this.qrcode = qrcode;
     }
 }

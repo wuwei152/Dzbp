@@ -7,6 +7,7 @@ import com.apkfuns.logutils.LogLevel;
 import com.apkfuns.logutils.LogUtils;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.md.dzbp.model.NetSDKLib;
+import com.md.dzbp.model.TimeUtils;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.CrashHandler;
 import com.md.dzbp.utils.FileUtils;
@@ -30,6 +31,7 @@ public class ClientApp extends Application {
     private static ClientApp instance;
     private ACache mAcache;
     private Logger logger;
+    private String cureentDate;
 
     @Override
     public void onCreate() {
@@ -79,6 +81,7 @@ public class ClientApp extends Application {
      * 每登录固定次数后删除缓存
      */
     private void deleteCache() {
+        cureentDate = TimeUtils.getCurrentDate2();
         Object num = mAcache.getAsObject("NumCount");
         int numCount = 0;
         if (num != null) {
@@ -104,7 +107,7 @@ public class ClientApp extends Application {
                     File file5 = new File(FileUtils.getDiskCacheDir(ClientApp.this) + "BroadCast");
                     File file6 = new File(FileUtils.getDiskCacheDir(ClientApp.this) + "Screenshot");
                     File file7 = new File(FileUtils.getDiskCacheDir(ClientApp.this) + "sign");
-                    File file8 = new File(FileUtils.getDiskCacheDir(ClientApp.this) + "sign_compress");
+//                    File file8 = new File(FileUtils.getDiskCacheDir(ClientApp.this) + "sign_compress");//离线图片不能删除
                     files.add(file1);
                     files.add(file2);
                     files.add(file3);
@@ -112,14 +115,20 @@ public class ClientApp extends Application {
                     files.add(file5);
                     files.add(file6);
                     files.add(file7);
-                    files.add(file8);
+//                    files.add(file8);
                     for (int j = 0; j < files.size(); j++) {
                         if (files.get(j).exists()) {
                             File[] files2 = files.get(j).listFiles();
                             if (files2 != null && files2.length > 0) {
                                 for (int i = 0; i < files2.length; i++) {
                                     if (files2[i].exists()) {
-                                        if (!(j == 0 && i == files2.length - 1)){//保留最近的Log文件
+                                        if (j == 0){//保留最近的Log文件
+                                            String name = files2[i].getName();
+                                            name = name.substring(0, name.indexOf("l") - 1);
+                                            if (!cureentDate.equals(name)){
+                                                files2[i].delete();
+                                            }
+                                        }else {
                                             files2[i].delete();
                                         }
                                     }

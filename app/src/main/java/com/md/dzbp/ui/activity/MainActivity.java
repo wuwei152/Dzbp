@@ -519,8 +519,9 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         }
         ClassManagerBean classManager = mainData.getClassManager();
         if (classManager != null) {
-            Glide.with(MainActivity.this).load(classManager.getPhoto()).into(mClassMngIcon);
+            GlideImgManager.glideLoader(MainActivity.this, classManager.getPhoto(), R.drawable.pic_not_found, R.drawable.pic_not_found, mClassMngIcon, 1);
             mClassMngName.setText(classManager.getAccountName());
+            mAcache.put("ClassMng",classManager.getAccountName());
         }
         List<MainData.NoticeBean> notice = mainData.getNotice();
         if (notice != null) {

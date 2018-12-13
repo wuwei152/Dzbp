@@ -105,6 +105,14 @@ public class Meetingbean implements Serializable{
         private int signinStatus; //1已签到 0未签到
         private boolean host;
 
+        public MeetingUserListBean() {
+        }
+
+        public MeetingUserListBean(String accountId, String accountName) {
+            this.accountId = accountId;
+            this.accountName = accountName;
+        }
+
         public String getAccountId() {
             return accountId;
         }

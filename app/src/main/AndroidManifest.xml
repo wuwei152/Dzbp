@@ -103,6 +103,11 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:windowSoftInputMode="stateHidden" />
         <activity
+            android:name=".ui.activity.InterestClassActivity"
+            android:launchMode="singleInstance"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
             android:name=".ui.activity.SettingActivity"
             android:launchMode="singleTop"
             android:configChanges="orientation|keyboardHidden|screenSize"

@@ -163,20 +163,20 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
         mVideoList.setAdapter(new CommonAdapter<CameraInfo>(PatrolActivity.this, R.layout.item_video_list, mCameraInfos) {
             @Override
             protected void convert(final ViewHolder viewHolder, CameraInfo item, int position) {
-                new DahuaModel(PatrolActivity.this, item, new DahuaListener() {
-                    @Override
-                    public void resLis(final int code, final boolean isSuccess, final String file) {
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (isSuccess) {
-                                    GlideImgManager.glideLoader(PatrolActivity.this, file, R.drawable.pic_not_found, R.drawable.pic_not_found, (ImageView) viewHolder.getView(R.id.item_img));
-                                }
-                            }
-                        });
-                    }
-                });
+//                new DahuaModel(PatrolActivity.this, item, new DahuaListener() {
+//                    @Override
+//                    public void resLis(final int code, final boolean isSuccess, final String file) {
+//
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                if (isSuccess) {
+//                                    GlideImgManager.glideLoader(PatrolActivity.this, file, R.drawable.pic_not_found, R.drawable.pic_not_found, (ImageView) viewHolder.getView(R.id.item_img));
+//                                }
+//                            }
+//                        });
+//                    }
+//                });
                 viewHolder.setText(R.id.item_text, position + 1 + "路视频");
             }
         });
@@ -216,13 +216,13 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
     @Override
     protected void onStop() {
         super.onStop();
+        dahuaModel.releaseRes();
         LogUtils.d("onStop");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        dahuaModel.releaseRes();
         EventBus.getDefault().unregister(this);
     }
 
@@ -455,7 +455,7 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        LogUtils.d("surfaceDestroyed");
+//        LogUtils.d("surfaceDestroyed");
         if (mCameraInfos != null && mCameraInfos.size() > 0) {
             dahuaModel.stopPlay();
             dahuaModel.logout();

@@ -5,10 +5,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.md.dzbp.R;
+import com.md.dzbp.ui.activity.InterestClassActivity;
+import com.md.dzbp.utils.GlideImgManager;
 
 import java.util.ArrayList;
 
@@ -17,13 +20,13 @@ import java.util.ArrayList;
  */
 public class MsgDialog extends AlertDialog {
 
-    private TextView tv;
+    private ImageView img;
     private LinearLayout ll;
-    private ArrayList<String> mlist;
     private Context context;
+    private int res;
 
     public MsgDialog(Context context) {
-        super(context, R.style.MybrostcastDialog);
+        super(context, R.style.MyDialog2);
         this.context = context;
     }
 
@@ -44,8 +47,7 @@ public class MsgDialog extends AlertDialog {
      * 初始化界面控件
      */
     private void initView() {
-        mlist = new ArrayList<>();
-        tv = (TextView) findViewById(R.id.tv);
+        img = (ImageView) findViewById(R.id.img);
         ll = (LinearLayout) findViewById(R.id.ll);
 
         ll.setOnClickListener(new View.OnClickListener() {
@@ -57,9 +59,13 @@ public class MsgDialog extends AlertDialog {
     }
 
     private void initData() {
+
+        if (res!=0){
+            GlideImgManager.glideLoader(context, res, R.drawable.pic_not_found, R.drawable.pic_not_found, img, 1);
+        }
     }
 
-    public void setData(ArrayList list) {
-        this.mlist = list;
+    public void setData(int res) {
+        this.res = res;
     }
 }

@@ -133,20 +133,20 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
         mVideoList.setAdapter(new CommonAdapter<CameraInfo>(VideoShowActivity.this, R.layout.item_video_list, mCameraInfos) {
             @Override
             protected void convert(final ViewHolder viewHolder, CameraInfo item, int position) {
-                new DahuaModel(VideoShowActivity.this, item, new DahuaListener() {
-                    @Override
-                    public void resLis(final int code, final boolean isSuccess, final String file) {
-
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (isSuccess) {
-                                    GlideImgManager.glideLoader(VideoShowActivity.this, file, R.drawable.pic_not_found, R.drawable.pic_not_found, (ImageView) viewHolder.getView(R.id.item_img));
-                                }
-                            }
-                        });
-                    }
-                });
+//                new DahuaModel(VideoShowActivity.this, item, new DahuaListener() {
+//                    @Override
+//                    public void resLis(final int code, final boolean isSuccess, final String file) {
+//
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                if (isSuccess) {
+//                                    GlideImgManager.glideLoader(VideoShowActivity.this, file, R.drawable.pic_not_found, R.drawable.pic_not_found, (ImageView) viewHolder.getView(R.id.item_img));
+//                                }
+//                            }
+//                        });
+//                    }
+//                });
                 viewHolder.setText(R.id.item_text, position + 1 + "路视频");
             }
         });

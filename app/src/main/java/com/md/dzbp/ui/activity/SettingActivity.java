@@ -58,6 +58,8 @@ public class SettingActivity extends BaseActivity implements UIDataListener {
     TextView mConfirm;
     @BindView(R.id.set_ip)
     EditText mIp;
+    @BindView(R.id.set_psw)
+    EditText mPsw;
     private NetWorkRequest netWorkRequest;
     private Dialog dialog;
     private ArrayList<SchoolBean> schoolList;
@@ -129,9 +131,13 @@ public class SettingActivity extends BaseActivity implements UIDataListener {
                     showToast("请输入IP");
                     return;
                 }
+                if (TextUtils.isEmpty(mPsw.getText().toString())) {
+                    showToast("请输入密码");
+                    return;
+                }
 
                 ArrayList<CameraInfo> mCameraInfos = new ArrayList<>();
-                mCameraInfos.add(new CameraInfo(mIp.getText().toString().trim(), "37777", "admin", "yc123456"));//测试
+                mCameraInfos.add(new CameraInfo(mIp.getText().toString().trim(), "37777", "admin", mPsw.getText().toString().trim()));//测试
                 mAcache.put("CameraInfo", mCameraInfos);
                 LogUtils.d(mCameraInfos.get(0));
 

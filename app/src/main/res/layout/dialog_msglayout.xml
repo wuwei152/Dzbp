@@ -5,15 +5,11 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal">
 
-    <TextView
-        android:id="@+id/tv"
-        android:layout_width="500dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="150dp"
-        android:singleLine="true"
+    <ImageView
+        android:id="@+id/img"
+        android:layout_width="1200dp"
+        android:layout_height="900dp"
         android:background="@drawable/dialog_brcast_back"
-        android:gravity="center"
-        android:textColor="@color/text_black"
-        android:textSize="20sp" />
+        android:gravity="center" />
 
 </LinearLayout>

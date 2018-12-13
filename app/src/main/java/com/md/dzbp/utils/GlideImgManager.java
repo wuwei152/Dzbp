@@ -59,4 +59,11 @@ public class GlideImgManager {
             Glide.with(context).load(url).placeholder(emptyImg).error(erroImg).transform(new GlideRoundTransform(context,10)).into(iv);
         }
     }
+    public static void glideLoader(Context context, int url, int erroImg, int emptyImg, ImageView iv, int tag) {
+        if (0 == tag) {
+            Glide.with(context).load(url).placeholder(emptyImg).error(erroImg).transform(new GlideCircleTransform(context)).into(iv);
+        } else if (1 == tag) {
+            Glide.with(context).load(url).placeholder(emptyImg).error(erroImg).transform(new GlideRoundTransform(context,10)).into(iv);
+        }
+    }
 }

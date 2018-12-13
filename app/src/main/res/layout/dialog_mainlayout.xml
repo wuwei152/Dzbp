@@ -6,13 +6,13 @@
     android:gravity="right">
 
     <LinearLayout
-    android:id="@+id/ll"
-    android:layout_width="400dp"
-    android:layout_height="match_parent"
-    android:layout_centerInParent="true"
-    android:background="@drawable/dialog_mainback"
-    android:gravity="center_vertical"
-    android:orientation="vertical">
+        android:id="@+id/ll"
+        android:layout_width="400dp"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:background="@drawable/dialog_mainback"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -213,10 +213,26 @@
                 android:layout_gravity="center"
                 android:layout_margin="15dp"
                 android:gravity="center"
-                android:text="发送日志"
+                android:text="走班制"
                 android:textColor="@color/text_black"
-                android:textSize="18sp"
-                android:visibility="gone" />
+                android:textSize="18sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="15dp"
+                android:background="@color/line" />
+
+            <TextView
+                android:id="@+id/act10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="15dp"
+                android:gravity="center"
+                android:text="上传日志"
+                android:textColor="@color/text_black"
+                android:textSize="18sp" />
 
             <View
                 android:layout_width="match_parent"

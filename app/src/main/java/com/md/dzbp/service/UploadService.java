@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * 考勤相片上传
+ */
 public class UploadService extends Service {
 
     private String TAG = "UploadService-->{}";

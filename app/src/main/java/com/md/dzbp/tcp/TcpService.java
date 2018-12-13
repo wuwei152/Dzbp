@@ -108,7 +108,11 @@ public class TcpService extends Service {
 //            mManager.test();
 //            mManager.messageHandle.TakeSnap();
         } else if (intent != null && intent.hasExtra("Log")) {
-//            mManager.messageHandle.GetLog(0);
+            try {
+                mManager.messageHandle.msgHandleUtil.GetLog(0);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         return super.onStartCommand(intent, flags, startId);
