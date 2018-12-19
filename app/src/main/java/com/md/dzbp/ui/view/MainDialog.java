@@ -114,7 +114,7 @@ public class MainDialog extends Dialog {
 
         adminNum = Constant.getAdminNum();
 
-        GlideImgManager.glideLoader(context, mAcache.getAsString("qrcode"), R.drawable.pic_not_found, R.drawable.pic_not_found, erweima);
+//        GlideImgManager.glideLoader(context, mAcache.getAsString("qrcode"), R.drawable.pic_not_found, R.drawable.pic_not_found, erweima);
 
         imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 

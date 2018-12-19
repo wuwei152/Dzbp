@@ -3,6 +3,7 @@ package com.md.dzbp.task;
 import android.app.smdt.SmdtManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 
 import com.apkfuns.logutils.LogUtils;
 import com.md.dzbp.data.WorkTimePeriod;
@@ -34,11 +35,11 @@ import java.util.TimerTask;
 /**
  * 任务队列
  * 单例模式
- *
+ * <p>
  * 任务类型               0　作息时间 1　会议 2 通知 3考试  4 考勤  100开关屏  5走班制
- *
- *              其中 0/4/100 为低级别任务
- *              1/2/3/5为高级别任务
+ * <p>
+ * 其中 0/4/100 为低级别任务
+ * 1/2/3/5为高级别任务
  */
 
 public class SwitchTask extends Timer {
@@ -53,6 +54,7 @@ public class SwitchTask extends Timer {
     private int CheckTag;
     private final ACache mACache;
     private SmdtManager smdtManager;
+    private Timer timer_checkDelay;
 
     private SwitchTask(Context context) {
         this.context = context;
@@ -149,7 +151,7 @@ public class SwitchTask extends Timer {
 
 
         if (TimeUtils.compareDate(currentTime1, mCurrentDate + ":01:00:00") && TimeUtils.compareDate(mCurrentDate + ":01:00:00", currentTime2)
-                ||TimeUtils.compareDate(currentTime1, mCurrentDate + ":05:00:00") && TimeUtils.compareDate(mCurrentDate + ":05:00:00", currentTime2)) {
+                || TimeUtils.compareDate(currentTime1, mCurrentDate + ":05:00:00") && TimeUtils.compareDate(mCurrentDate + ":05:00:00", currentTime2)) {
             logger.debug(TAG, "设备未关机，执行断连刷新课表任务！！！！！！！" + mCurrentDate);
 
             try {
@@ -175,6 +177,29 @@ public class SwitchTask extends Timer {
         }
         CheckTag++;
 
+    }
+
+    /**
+     * 固定时间后强制检查
+     *
+     * @param seconds 多少秒后执行
+     */
+
+    public void CheckCurrentTaskdelay(int seconds) {
+        logger.debug(TAG, seconds+"秒后开始执行强切后检查实际页面任务");
+        if (timer_checkDelay != null) {
+            timer_checkDelay.cancel();
+        }
+        timer_checkDelay = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                logger.debug(TAG, "开始执行强切后检查实际页面任务");
+                switchTask.CheckCurrentTask();
+            }
+        };
+
+        timer_checkDelay.schedule(task, seconds * 1000);
     }
 
     /**
@@ -371,7 +396,7 @@ public class SwitchTask extends Timer {
          * 有就返回离当前结束任务最近的开始未结束高级别任务
          */
         for (int i = endTask; i >= 0; i--) {
-            if ((mList.get(i).getType() == 1 || mList.get(i).getType() == 2|| mList.get(i).getType() == 3|| mList.get(i).getType() == 5) && mList.get(i).getStartTask() == 0 && !mList.get(i).getTaskTag().equals(point.getTaskTag())) {
+            if ((mList.get(i).getType() == 1 || mList.get(i).getType() == 2 || mList.get(i).getType() == 3 || mList.get(i).getType() == 5) && mList.get(i).getStartTask() == 0 && !mList.get(i).getTaskTag().equals(point.getTaskTag())) {
                 if (!IsTaskEnd(currentTime, mList.get(i))) {
                     mList.get(i).setTaskstate(0);
                     return mList.get(i);
@@ -385,7 +410,7 @@ public class SwitchTask extends Timer {
          */
         level = 0;
         for (int i = endTask; i >= 0; i--) {
-            if (mList.get(i).getType() == 0 || mList.get(i).getType() == 4|| mList.get(i).getType() == 100) {
+            if (mList.get(i).getType() == 0 || mList.get(i).getType() == 4 || mList.get(i).getType() == 100) {
                 mList.get(i).setTaskstate(0);
                 return mList.get(i);
             }
@@ -419,7 +444,7 @@ public class SwitchTask extends Timer {
 
         if (point != null) {
             logger.debug(TAG, "最近已开始任务为：" + point.getName() + point.getTriggerTime());
-            if (point.getType() == 1 || point.getType() == 2 || point.getType() == 3|| point.getType() == 5) {
+            if (point.getType() == 1 || point.getType() == 2 || point.getType() == 3 || point.getType() == 5) {
                 if (point.getStartTask() == 0) {//是高级别开始任务--直接执行
                     toStartPoint = point;
                 } else if (point.getStartTask() == 1) {//是高级别结束任务--检查未结束任务
@@ -432,7 +457,7 @@ public class SwitchTask extends Timer {
                  * 有就返回离当前结束任务最近的开始未结束任务
                  */
                 for (int i = endTask; i >= 0; i--) {
-                    if ((mList.get(i).getType() == 1 || mList.get(i).getType() == 2|| mList.get(i).getType() == 3|| mList.get(i).getType() == 5) && mList.get(i).getStartTask() == 0 && !mList.get(i).getTaskTag().equals(point.getTaskTag())) {
+                    if ((mList.get(i).getType() == 1 || mList.get(i).getType() == 2 || mList.get(i).getType() == 3 || mList.get(i).getType() == 5) && mList.get(i).getStartTask() == 0 && !mList.get(i).getTaskTag().equals(point.getTaskTag())) {
                         if (!IsTaskEnd(currentTime, mList.get(i))) {
                             mList.get(i).setTaskstate(0);
                             toStartPoint = mList.get(i);
@@ -455,7 +480,7 @@ public class SwitchTask extends Timer {
             StartTask(currentTime, toStartPoint);
         } else {
             for (WorkTimePoint workTimePoint : mList) {
-                if (workTimePoint.getType()==3){
+                if (workTimePoint.getType() == 3) {
                     logger.debug(TAG, "检查结束，考试未开始状态，回到考试页面");
                     Intent intent = new Intent(context, ExamActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

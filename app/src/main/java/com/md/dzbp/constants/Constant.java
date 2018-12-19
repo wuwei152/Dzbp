@@ -26,8 +26,6 @@ public class Constant {
      * 武汉
      */
 //    public static String IP = "119.97.137.22";//武汉
-//    public static final String BASE_HOST = "http://www.cnzhxy.com/";//武汉
-
 //    public static String IP = "47.97.178.75";//武汉
 //    public static int PORT = 4000;
 //    public static final String BASE_HOST = "http://www.cnzhxy.com/";//武汉

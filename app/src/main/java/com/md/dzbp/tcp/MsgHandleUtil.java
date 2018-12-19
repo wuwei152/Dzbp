@@ -77,6 +77,7 @@ public class MsgHandleUtil {
     private DahuaModel dahuaModel;
     private final ArrayList<CameraInfo> mCameraInfos;
     private int retry;
+    private DahuaModel dahuaModel2;
 
     public MsgHandleUtil(Context context, TcpClient client) {
         this.context = context;
@@ -866,6 +867,7 @@ public class MsgHandleUtil {
                 break;
             case 5:
                 intent = new Intent(context, NoticeActivity.class);
+                intent.putExtra("id", userId);
                 break;
             case 6:
                 intent = new Intent(context, MeetingActivity.class);
@@ -875,6 +877,7 @@ public class MsgHandleUtil {
                 break;
             case 8:
                 intent = new Intent(context, VideoShowActivity.class);
+                intent.putExtra("userId", userId);
                 break;
             default:
                 break;
@@ -883,11 +886,9 @@ public class MsgHandleUtil {
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
-
             logger.debug(TAG, "屏幕跳转成功" + type);
         } else {
             logger.debug(TAG, "屏幕跳转失败" + type);
-//            gotoActivity(type, userId, ext);//8888情况
         }
     }
 
@@ -923,6 +924,7 @@ public class MsgHandleUtil {
                                         logger.debug(TAG, "上传snap成功！" + data + "/");
                                         for (String s : OpenList) {
                                             yingda(0xA610, true, deviceId, data, s);
+                                            logger.debug(TAG, "发送成功！" + data + "/"+s);
                                         }
                                         OpenList.clear();
                                     }
@@ -982,6 +984,107 @@ public class MsgHandleUtil {
                 yingda(0xA610, false, deviceId, s);
             }
             OpenList.clear();
+        }
+//            }
+//            else {
+//                logger.debug(TAG, "开始直接截屏");
+//                dahuaModel.snap(0);
+//            }
+    }
+
+    /**
+     * 获取摄像头截屏2
+     */
+
+    ArrayList<Integer> OpenList2 = new ArrayList<>();
+
+    public void TakeVideoPic2(int openId) {
+        logger.debug(TAG, "openId:" + openId);
+        retry = 0;
+        if (!OpenList2.contains(openId)){
+            OpenList2.add(openId);
+        }
+        if (dahuaModel2 == null) {
+            dahuaModel2 = new DahuaModel(context, new DahuaListener() {
+                @Override
+                public void resLis(int code, boolean isSuccess, String file) {
+                    LogUtils.d(file);
+                    if (isSuccess && !TextUtils.isEmpty(file)) {
+                        CompressImg(new File(file), FileUtils.getDiskCacheDir(context) + "Screenshot/", new OnCompressListener() {
+                            @Override
+                            public void onStart() {
+                                logger.debug(TAG, "开始压缩！");
+                            }
+
+                            @Override
+                            public void onSuccess(File file) {
+                                UploadFile(file.getAbsolutePath(), Constant.Ftp_Camera, new FileHandle() {
+                                    @Override
+                                    public void handleSuccess(int code, String data) {
+                                        logger.debug(TAG, "上传snap成功！" + data + "/");
+                                        for (Integer s : OpenList2) {
+                                            yingda(0xA515, true, deviceId, data, s);
+                                            logger.debug(TAG, "发送成功！" + data + "/"+s);
+                                        }
+                                        OpenList2.clear();
+                                    }
+
+                                    @Override
+                                    public void handleFail(int code, String data) {
+                                        logger.debug(TAG, "上传snap失败！" + data);
+                                        for (Integer s : OpenList2) {
+                                            yingda(0xA515, false, deviceId, s);
+                                        }
+                                        OpenList2.clear();
+                                    }
+
+                                    @Override
+                                    public void handleFinished(int code, String data) {
+                                        logger.debug(TAG, "上传进程完成！" + data);
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                logger.debug(TAG, "压缩失败！");
+                                for (Integer s : OpenList2) {
+                                    yingda(0xA515, false, deviceId, s);
+                                }
+                                OpenList2.clear();
+                            }
+                        });
+                    } else {
+                        if (retry == 0) {
+                            retry = 1;
+                            logger.debug(TAG, "摄像头截屏获取失败重试中。。。！");
+                            CameraInfo cameraInfo = mCameraInfos.get(0);
+                            dahuaModel2.logout();
+                            dahuaModel2.LoginToSnap(cameraInfo.getIp(), cameraInfo.getPort(), cameraInfo.getUsername(), cameraInfo.getPsw());
+                            return;
+                        }
+                        logger.debug(TAG, "摄像头截屏获取失败！");
+                        for (Integer s : OpenList2) {
+                            yingda(0xA515, false, deviceId, s);
+                        }
+                        OpenList2.clear();
+                    }
+//                    dahuaModel.logout();
+                }
+            });
+        }
+//            if (dahuaModel.mLoginHandle == 0) {
+        if (mCameraInfos != null && mCameraInfos.size() > 0) {
+            logger.debug(TAG, "开始登录截屏");
+            dahuaModel2.logout();
+            CameraInfo cameraInfo = mCameraInfos.get(0);
+            dahuaModel2.LoginToSnap(cameraInfo.getIp(), cameraInfo.getPort(), cameraInfo.getUsername(), cameraInfo.getPsw());
+        } else {
+            logger.debug(TAG, "未获取到摄像头信息");
+            for (Integer s : OpenList2) {
+                yingda(0xA515, false, deviceId, s);
+            }
+            OpenList2.clear();
         }
 //            }
 //            else {

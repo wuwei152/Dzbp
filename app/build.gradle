@@ -21,7 +21,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 23
         versionCode 11
-        versionName "2.0"
+        versionName "2.0.2"
         //推送选择要添加的对应cpu类型的.so库。
         ndk {
             abiFilters 'armeabi'

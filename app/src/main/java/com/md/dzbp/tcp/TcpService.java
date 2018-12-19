@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.apkfuns.logutils.LogUtils;
 import com.md.dzbp.ProcessService;
 import com.md.dzbp.constants.Constant;
+import com.md.dzbp.data.CheckDelayEvent;
 import com.md.dzbp.data.ScreenShotEvent;
 import com.md.dzbp.data.SendSignEvent;
 import com.md.dzbp.data.SignBean;
@@ -96,10 +97,10 @@ public class TcpService extends Service {
                 if (signBean != null) {//已存在改对象，如果时间间隔大于2小时则记录，否则不记录
                     long[] distanceTimes = TimeUtils.getDistanceTimes(signBean.AttendanceTime, TimeUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"));
                     if (distanceTimes[0] > 0 || distanceTimes[1] > 1) {
-                        new SignBean(num, TimeUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"),ext).save();
+                        new SignBean(num, TimeUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"), ext).save();
                     }
                 } else {//不存在直接记录
-                    new SignBean(num, TimeUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"),ext).save();
+                    new SignBean(num, TimeUtils.getCurrentTime("yyyy-MM-dd HH:mm:ss"), ext).save();
                 }
             }
             mManager.sendCardNum(num, Act, ext);
@@ -224,5 +225,19 @@ public class TcpService extends Service {
     @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
     public void onSendSignEvent(SendSignEvent event) {
         mManager.messageHandle.msgHandleUtil.SendSignData(0xA611);
+    }
+
+    /**
+     * 上课界面返回主页后延时回归正常页面
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
+    public void onCheckDelayEvent(CheckDelayEvent event) {
+        if (mSwitchTask != null && event != null) {
+            mSwitchTask.CheckCurrentTaskdelay(event.getSeconds());
+        }else {
+            logger.debug("mSwitchTask为空-->{}","空数据！！！！！！");
+        }
     }
 }

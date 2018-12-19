@@ -192,8 +192,12 @@ public class SettingActivity extends BaseActivity implements UIDataListener {
                 JSONObject object = JSONObject.parseObject(((JSONObject) data).toJSONString());
                 String deviceId = object.getString("deviceId");
                 String qrcode = object.getString("qrcode");
+
                 if (!TextUtils.isEmpty(deviceId)) {
                     mAcache.put("DeviceId", deviceId);
+                    if (TextUtils.isEmpty(qrcode)){
+                        qrcode = "  ";
+                    }
                     mAcache.put("qrcode", qrcode);
                     startActivity(new Intent(this, MainActivity.class));
                 }

@@ -288,6 +288,17 @@ public class MessageHandle {
                     logger.debug(TAG, e.getMessage());
                 }
                 break;
+            case 0xA515://摄像头截屏2---微信页面截屏
+                final int msgid515 = tcpMessage.ReadInt();//SN
+                logger.debug(TAG, "0xA515收到摄像头截屏指令" + msgid515);
+                try {
+                    msgHandleUtil.TakeVideoPic2(msgid515);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logger.debug(TAG,"截屏出错"+e.getMessage());
+                    msgHandleUtil.yingda(0xA515, false, deviceId, msgid515);
+                }
+                break;
             case 0xA550://刷卡屏幕跳转
                 int status550 = tcpMessage.ReadInt();
                 logger.debug("0xA550收到刷卡屏幕跳转指令", status550 + "");
@@ -312,6 +323,14 @@ public class MessageHandle {
                 logger.debug("0xA555收到通用屏幕跳转指令", type555 + "");
                 msgHandleUtil.gotoActivity(type555, "", "");
                 msgHandleUtil.yingda(0xA555, true, deviceId);
+                break;
+            case 0xA556://刷卡屏幕跳转
+                int type556 = tcpMessage.ReadInt();
+//                int length556 = tcpMessage.ReadInt();
+                String userId556 = tcpMessage.ReadString(36);
+                logger.debug("0xA556收到扫码屏幕跳转指令", type556 + "///"+userId556);
+                msgHandleUtil.gotoActivity(type556, userId556, "");
+                msgHandleUtil.yingda(0xA556, true, deviceId);
                 break;
             case 0xA600://收消息
                 int msgType = tcpMessage.ReadInt();
@@ -444,6 +463,7 @@ public class MessageHandle {
                 } catch (Exception e) {
                     e.printStackTrace();
                     logger.debug(TAG,"截屏出错"+e.getMessage());
+                    msgHandleUtil.yingda(0xA609, false, deviceId, id609);
                 }
                 break;
             case 0xA610://摄像头截屏成功后回复

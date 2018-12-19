@@ -207,61 +207,61 @@ public class InterestClassActivity extends BaseActivity implements TimeListener,
         mMainAddr.setText("教学地址："+address+"教室");
         mListAddr.setText(address+"教室");
 
-        if (address.equals("C304")) {//0204
-            mMainTitle.setText("深圳路小学社团活动课\n昂姆机器人");
-            mListTitle.setText("社团活动课--昂姆机器人");
-            mHost.setText("指导老师：向昌斌  唐锦锦 外 聘");
-            mListHost.setText("向昌斌  唐锦锦 外 聘");
-            mNum.setText("学习人数：" + "50人");
-        } else if (address.equals("A203")) {//301
-            mMainTitle.setText("深圳路小学社团活动课\n手  鼓");
-            mListTitle.setText("社团活动课--手  鼓");
-            mHost.setText("指导老师：向媛媛  外 聘");
-            mListHost.setText("向媛媛  外 聘");
-            mNum.setText("学习人数：" + "18人");
-        } else if (address.equals("A208")) {//306
-            mMainTitle.setText("深圳路小学社团活动课\n小小讲解员");
-            mListTitle.setText("社团活动课--小小讲解员");
-            mHost.setText("指导老师：曹 玢  李玉雪");
-            mListHost.setText("曹 玢  李玉雪");
-            mNum.setText("学习人数：" + "20人");
-        }else if (address.equals("A303")) {//401
-            mMainTitle.setText("深圳路小学社团活动课\n尤克里里");
-            mListTitle.setText("社团活动课--尤克里里");
-            mHost.setText("指导老师：杨晴贇  外 聘");
-            mListHost.setText("杨晴贇  外 聘");
-            mNum.setText("学习人数：" + "16人");
-        }else if (address.equals("A403")) {//501
-            mMainTitle.setText("深圳路小学社团活动课\n百灵鸟朗诵社");
-            mListTitle.setText("社团活动课--百灵鸟朗诵社");
-            mHost.setText("指导老师：余玉兰 吕程晨 王 舒");
-            mListHost.setText("余玉兰 吕程晨 王 舒");
-            mNum.setText("学习人数：" + "30人");
-        }else if (address.equals("A503")) {//603
-            mMainTitle.setText("深圳路小学社团活动课\n立体思维");
-            mListTitle.setText("社团活动课--立体思维");
-            mHost.setText("指导老师：陈雯雯   邱 珺");
-            mListHost.setText("陈雯雯   邱 珺");
-            mNum.setText("学习人数：" + "40人");
-        }else if (address.equals("A101")) {//604
-            mMainTitle.setText("深圳路小学社团活动课\n田   径");
-            mListTitle.setText("社团活动课--田   径");
-            mHost.setText("指导老师：温君臣");
-            mListHost.setText("温君臣");
-            mNum.setText("学习人数：" + "35人");
-        }else if (address.equals("测试机")){
-            mMainTitle.setText("XXX小学社团活动课\n百灵鸟朗诵社");
-            mListTitle.setText("社团活动课--百灵鸟朗诵社");
-            mHost.setText("指导老师：余玉兰 吕程晨 王 舒");
-            mListHost.setText("余玉兰 吕程晨 王 舒");
-            mNum.setText("学习人数：" + "30人");
-        }else {
-            mMainTitle.setText("深圳路小学社团活动课");
+//        if (address.equals("C304")) {//0204
+//            mMainTitle.setText("深圳路小学社团活动课\n昂姆机器人");
+//            mListTitle.setText("社团活动课--昂姆机器人");
+//            mHost.setText("指导老师：向昌斌  唐锦锦 外 聘");
+//            mListHost.setText("向昌斌  唐锦锦 外 聘");
+//            mNum.setText("学习人数：" + "50人");
+//        } else if (address.equals("A203")) {//301
+//            mMainTitle.setText("深圳路小学社团活动课\n手  鼓");
+//            mListTitle.setText("社团活动课--手  鼓");
+//            mHost.setText("指导老师：向媛媛  外 聘");
+//            mListHost.setText("向媛媛  外 聘");
+//            mNum.setText("学习人数：" + "18人");
+//        } else if (address.equals("A208")) {//306
+//            mMainTitle.setText("深圳路小学社团活动课\n小小讲解员");
+//            mListTitle.setText("社团活动课--小小讲解员");
+//            mHost.setText("指导老师：曹 玢  李玉雪");
+//            mListHost.setText("曹 玢  李玉雪");
+//            mNum.setText("学习人数：" + "20人");
+//        }else if (address.equals("A303")) {//401
+//            mMainTitle.setText("深圳路小学社团活动课\n尤克里里");
+//            mListTitle.setText("社团活动课--尤克里里");
+//            mHost.setText("指导老师：杨晴贇  外 聘");
+//            mListHost.setText("杨晴贇  外 聘");
+//            mNum.setText("学习人数：" + "16人");
+//        }else if (address.equals("A403")) {//501
+//            mMainTitle.setText("深圳路小学社团活动课\n百灵鸟朗诵社");
+//            mListTitle.setText("社团活动课--百灵鸟朗诵社");
+//            mHost.setText("指导老师：余玉兰 吕程晨 王 舒");
+//            mListHost.setText("余玉兰 吕程晨 王 舒");
+//            mNum.setText("学习人数：" + "30人");
+//        }else if (address.equals("A503")) {//603
+//            mMainTitle.setText("深圳路小学社团活动课\n立体思维");
+//            mListTitle.setText("社团活动课--立体思维");
+//            mHost.setText("指导老师：陈雯雯   邱 珺");
+//            mListHost.setText("陈雯雯   邱 珺");
+//            mNum.setText("学习人数：" + "40人");
+//        }else if (address.equals("A101")) {//604
+//            mMainTitle.setText("深圳路小学社团活动课\n田   径");
+//            mListTitle.setText("社团活动课--田   径");
+//            mHost.setText("指导老师：温君臣");
+//            mListHost.setText("温君臣");
+//            mNum.setText("学习人数：" + "35人");
+//        }else if (address.equals("测试机")){
+//            mMainTitle.setText("XXX小学社团活动课\n百灵鸟朗诵社");
+//            mListTitle.setText("社团活动课--百灵鸟朗诵社");
+//            mHost.setText("指导老师：余玉兰 吕程晨 王 舒");
+//            mListHost.setText("余玉兰 吕程晨 王 舒");
+//            mNum.setText("学习人数：" + "30人");
+//        }else {
+            mMainTitle.setText("校社团活动课\n立体思维");
             mListTitle.setText("社团活动课");
             mHost.setText("指导老师："+classMng);
             mListHost.setText(classMng);
             mNum.setText("学习人数：" + "36人");
-        }
+//        }
 
 
         setGridData(interestingUserList);

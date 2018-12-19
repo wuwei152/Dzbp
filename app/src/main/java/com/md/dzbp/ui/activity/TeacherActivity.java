@@ -1,7 +1,6 @@
 package com.md.dzbp.ui.activity;
 
 import android.app.Dialog;
-import android.app.smdt.SmdtManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,6 +19,7 @@ import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
 import com.md.dzbp.constants.APIConfig;
 import com.md.dzbp.constants.Constant;
+import com.md.dzbp.data.CheckDelayEvent;
 import com.md.dzbp.data.CourseBean;
 import com.md.dzbp.data.LoginEvent;
 import com.md.dzbp.data.MainData;
@@ -42,18 +42,20 @@ import org.slf4j.LoggerFactory;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * 上课页面
  */
 public class TeacherActivity extends BaseActivity implements TimeListener, UIDataListener {
 
+    @BindView(R.id.teacher_back)
+    TextView mBack;
     @BindView(R.id.teacher_time)
     TextView mTime;
     @BindView(R.id.teacher_date)
@@ -120,47 +122,20 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     protected void initData() {
         new TimeUtils(TeacherActivity.this, this);
 
-
         getCardNum();
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                getUIdata();
-            }
-        }, 10000);
-
+        setLocalData();
+        getUIdata();
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         LogUtils.d("onNewIntent");
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                getUIdata();
-            }
-        }, 10000);
+        setLocalData();
+        getUIdata();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        logger.debug(TAG, "上课界面");
-        Constant.SCREENTYPE = 1;
-        if (!EventBus.getDefault().isRegistered(this)) {//加上判断
-            EventBus.getDefault().register(this);
-        }
-        boolean cons = (boolean) mAcache.getAsObject("conStatus");
-        if (cons) {
-            mTemp.setText("连接状态：已连接");
-            mTemp.setTextColor(getResources().getColor(R.color.white));
-        } else {
-            mTemp.setText("连接状态：已断开");
-            mTemp.setTextColor(getResources().getColor(R.color.conf));
-        }
-
+    private void setLocalData() {
         //首先加载本地数据
         try {
             CourseBean cb = new CourseBean();
@@ -180,6 +155,24 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
             setUIData(cb);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        logger.debug(TAG, "上课界面");
+        Constant.SCREENTYPE = 1;
+        if (!EventBus.getDefault().isRegistered(this)) {//加上判断
+            EventBus.getDefault().register(this);
+        }
+        boolean cons = (boolean) mAcache.getAsObject("conStatus");
+        if (cons) {
+            mTemp.setText("连接状态：已连接");
+            mTemp.setTextColor(getResources().getColor(R.color.white));
+        } else {
+            mTemp.setText("连接状态：已断开");
+            mTemp.setTextColor(getResources().getColor(R.color.conf));
         }
     }
 
@@ -255,8 +248,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
                             public void run() {
                                 getUIdata();
                             }
-                        }, 60000);
-
+                        }, 30000);
                     }
                 }
             }
@@ -284,7 +276,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
             }
             if (!TextUtils.isEmpty(courseBean.getAccountName())) {
                 mTeacherName.setText("教师：" + courseBean.getAccountName());
-            } else if (!TextUtils.isEmpty(courseBean.getManagerAccountName())){
+            } else if (!TextUtils.isEmpty(courseBean.getManagerAccountName())) {
                 mTeacherName.setText("班主任：" + courseBean.getManagerAccountName());
             }
             if (!TextUtils.isEmpty(courseBean.getPeriodName())) {
@@ -378,4 +370,10 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
         return false;
     }
 
+    @OnClick(R.id.teacher_back)
+    public void onViewClicked() {
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
+        EventBus.getDefault().post(new CheckDelayEvent(300));
+    }
 }

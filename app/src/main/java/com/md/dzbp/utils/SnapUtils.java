@@ -240,7 +240,7 @@ public class SnapUtils {
     public void CompressImg(File file, String targetDir, OnCompressListener listener) {
         Luban.with(context)
                 .load(file)                                   // 传人要压缩的图片列表
-                .ignoreBy(50)                                  // 忽略不压缩图片的大小
+                .ignoreBy(30)                                  // 忽略不压缩图片的大小
                 .setTargetDir(targetDir)                        // 设置压缩后文件存储位置
                 .setCompressListener(listener).launch();    //启动压缩
     }

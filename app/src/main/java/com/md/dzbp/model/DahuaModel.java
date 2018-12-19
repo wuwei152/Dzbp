@@ -122,6 +122,7 @@ public class DahuaModel {
             mDeviceInfo = new NET_DEVICEINFO_Ex();
             logger.debug(TAG, "开始登录");
             mLoginHandle = INetSDK.LoginEx2(address, Integer.parseInt(port), username, password, EM_LOGIN_SPAC_CAP_TYPE.EM_LOGIN_SPEC_CAP_MOBILE, null, mDeviceInfo, err);
+            logger.debug(TAG,"登录值为："+mLoginHandle);
             if (0 == mLoginHandle) {
                 int mErrorCode = INetSDK.GetLastError();
                 logger.debug(TAG, "登录失败！" + mErrorCode + "/" + address);
@@ -205,10 +206,10 @@ public class DahuaModel {
         @Override
         protected void onPostExecute(Boolean result) {
             if (result) {
-                logger.debug(TAG, "登录成功");
+                logger.debug(TAG, "登录成功--回调");
                 snap(0);
             } else {
-                logger.debug(TAG, "登录失败");
+                logger.debug(TAG, "登录失败--回调");
                 listener.resLis(1, false, null);
             }
         }
