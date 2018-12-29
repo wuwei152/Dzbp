@@ -26,17 +26,17 @@ public class Constant {
      * 武汉
      */
 //    public static String IP = "119.97.137.22";//武汉
-//    public static String IP = "47.97.178.75";//武汉
-//    public static int PORT = 4000;
-//    public static final String BASE_HOST = "http://www.cnzhxy.com/";//武汉
+    public static String IP = "47.97.178.75";//武汉
+    public static int PORT = 4000;
+    public static final String BASE_HOST = "http://www.cnzhxy.com/";//武汉
 
     /**
      * 宜昌
      */
 //    public static String IP = "192.168.0.102";
-    public static String IP = "119.97.137.24";//宜昌
-    public static int PORT = 9896;
-    public static final String BASE_HOST = "http://yc.cnzhxy.com/";//宜昌
+//    public static String IP = "119.97.137.24";//宜昌
+//    public static int PORT = 9896;
+//    public static final String BASE_HOST = "http://yc.cnzhxy.com/";//宜昌
 
 
     /**

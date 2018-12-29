@@ -200,6 +200,7 @@ public class SettingActivity extends BaseActivity implements UIDataListener {
                     }
                     mAcache.put("qrcode", qrcode);
                     startActivity(new Intent(this, MainActivity.class));
+                    finish();
                 }
             }
         }

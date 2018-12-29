@@ -1,6 +1,9 @@
 package com.md.dzbp.tcp;
 
+import android.app.smdt.SmdtManager;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
@@ -20,6 +23,7 @@ public class ServerManager {
     private static final String TAG = "ServerManager-->{}";
     private static ServerManager instance = null;
     private final Logger logger;
+    private final SmdtManager smdtManager;
     private Context context;
     private static int retryTime = 20000;
     private Handler handler = new Handler(Looper.getMainLooper());
@@ -28,6 +32,7 @@ public class ServerManager {
     private final String Tag = "ServerManager-->{}";
     private String deviceId = "";
     private ACache mACache;
+    private int mRestart = 0;
 
 
     /* 1:懒汉式，静态工程方法，创建实例 */
@@ -44,11 +49,13 @@ public class ServerManager {
         mACache = ACache.get(context);
         logger = LoggerFactory.getLogger(context.getClass());
         deviceId = Constant.getDeviceId(context);
+        smdtManager = SmdtManager.create(context);
         client = new TcpClient() {
 
             @Override
             public void onConnect(SocketTransceiver transceiver) {
                 logger.debug(Tag, "Tcp连接成功");
+                mRestart = 0;
                 EventBus.getDefault().post(new LoginEvent(0, true, "", ""));
                 mACache.put("conStatus", true);
                 new Handler(context.getMainLooper()).postDelayed(new Runnable() {
@@ -79,7 +86,7 @@ public class ServerManager {
 
             @Override
             public void onConnectFailed() {
-                logger.debug(Tag, "Connect连接失败");
+                logger.error(Tag, "Connect连接失败" + mRestart);
                 EventBus.getDefault().post(new LoginEvent(0, false, "", ""));
                 mACache.put("conStatus", false);
                 if (handler == null) {
@@ -92,6 +99,11 @@ public class ServerManager {
                     }
                 }, retryTime);
                 messageHandle.StopXT();
+
+                mRestart++;
+                if (mRestart >= 200 && !isNetworkConnected()) {
+                    reboot();
+                }
             }
 
             @Override
@@ -133,6 +145,22 @@ public class ServerManager {
 //            }
 //        },6000);
 
+    }
+
+    public void reboot() {
+        smdtManager.smdtReboot("reboot");
+    }
+
+    public boolean isNetworkConnected() {
+        if (context != null) {
+            ConnectivityManager mConnectivityManager = (ConnectivityManager) context
+                    .getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
+            if (mNetworkInfo != null) {
+                return mNetworkInfo.isAvailable();
+            }
+        }
+        return false;
     }
 
     /**
@@ -177,7 +205,7 @@ public class ServerManager {
      * 发送卡号
      */
     public void sendCardNum(String num, int act, String ext) {
-        logger.debug("发送卡号" + num , "是否已登录" + messageHandle.IsEnable);
+        logger.debug("发送卡号" + num, "是否已登录" + messageHandle.IsEnable);
         if (messageHandle.IsEnable) {
             try {
                 TCPMessage message = new TCPMessage(0xA550);
@@ -196,9 +224,9 @@ public class ServerManager {
                 logger.debug("发送卡号失败", e.getMessage());
             }
         } else {
-            if (act==7){
+            if (act == 7) {
                 showToast("刷卡成功，已存储刷卡信息！");
-            }else {
+            } else {
                 showToast("网络暂时不通畅，请稍后再试！");
             }
             login();

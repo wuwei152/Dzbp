@@ -204,6 +204,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     private void getUIdata() {
         Map map = new HashMap();
         map.put("deviceId", Constant.getDeviceId(this));
+        map.put("timestamp", System.currentTimeMillis()+"");
         netWorkRequest.doGetRequest(0, Constant.getUrl(this, APIConfig.GET_COURSE), false, map);
         mDate.setText(TimeUtils.getStringDate());
 
@@ -242,14 +243,14 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
                 if (courseBean != null) {
                     setUIData(courseBean);
                     //上课信息不全。一分钟后重新请求
-                    if (TextUtils.isEmpty(courseBean.getSubjectName()) && TextUtils.isEmpty(courseBean.getAccountName())) {
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                getUIdata();
-                            }
-                        }, 30000);
-                    }
+//                    if (TextUtils.isEmpty(courseBean.getSubjectName()) && TextUtils.isEmpty(courseBean.getAccountName())) {
+//                        new Handler().postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                getUIdata();
+//                            }
+//                        }, 30000);
+//                    }
                 }
             }
         }
