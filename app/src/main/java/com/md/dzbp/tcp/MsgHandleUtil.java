@@ -78,6 +78,7 @@ public class MsgHandleUtil {
     private final ArrayList<CameraInfo> mCameraInfos;
     private int retry;
     private DahuaModel dahuaModel2;
+    private DahuaModel dahuaModel3;
 
     public MsgHandleUtil(Context context, TcpClient client) {
         this.context = context;
@@ -328,6 +329,11 @@ public class MsgHandleUtil {
                 File file = new File(fileDir);
                 try {
                     //单文件上传
+                    if (!file.exists()){
+                        logger.error(TAG, "文件不存在！");
+                        fileHandle.handleFail(1, "");
+                        return;
+                    }
                     new FTP(context).uploadSingleFile(file, ftpPath, new FTP.UploadProgressListener() {
                         @Override
                         public void onUploadProgress(String currentStep, long uploadSize, File file) {
@@ -345,7 +351,7 @@ public class MsgHandleUtil {
                             }
                         }
                     });
-                } catch (IOException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     logger.error(TAG, e.getMessage());
                     fileHandle.handleFail(1, "");
@@ -894,6 +900,8 @@ public class MsgHandleUtil {
 
     /**
      * 获取摄像头截屏
+     * <p>
+     * 发指令截屏
      */
 
     ArrayList<String> OpenList = new ArrayList<>();
@@ -901,7 +909,7 @@ public class MsgHandleUtil {
     public void TakeVideoPic(String openId) {
         logger.debug(TAG, "openId:" + openId);
         retry = 0;
-        if (!OpenList.contains(openId)){
+        if (!OpenList.contains(openId)) {
             OpenList.add(openId);
         }
         if (dahuaModel == null) {
@@ -918,13 +926,14 @@ public class MsgHandleUtil {
 
                             @Override
                             public void onSuccess(File file) {
+                                logger.debug(TAG, "压缩成功！"+file.getAbsolutePath());
                                 UploadFile(file.getAbsolutePath(), Constant.Ftp_Camera, new FileHandle() {
                                     @Override
                                     public void handleSuccess(int code, String data) {
                                         logger.debug(TAG, "上传snap成功！" + data + "/");
                                         for (String s : OpenList) {
                                             yingda(0xA610, true, deviceId, data, s);
-                                            logger.debug(TAG, "发送成功！" + data + "/"+s);
+                                            logger.debug(TAG, "发送成功！" + data + "/" + s);
                                         }
                                         OpenList.clear();
                                     }
@@ -994,6 +1003,8 @@ public class MsgHandleUtil {
 
     /**
      * 获取摄像头截屏2
+     * <p>
+     * 页面点击班级名称截屏
      */
 
     ArrayList<Integer> OpenList2 = new ArrayList<>();
@@ -1001,7 +1012,7 @@ public class MsgHandleUtil {
     public void TakeVideoPic2(int openId) {
         logger.debug(TAG, "openId:" + openId);
         retry = 0;
-        if (!OpenList2.contains(openId)){
+        if (!OpenList2.contains(openId)) {
             OpenList2.add(openId);
         }
         if (dahuaModel2 == null) {
@@ -1018,13 +1029,14 @@ public class MsgHandleUtil {
 
                             @Override
                             public void onSuccess(File file) {
+                                logger.debug(TAG, "压缩成功！"+file.getAbsolutePath());
                                 UploadFile(file.getAbsolutePath(), Constant.Ftp_Camera, new FileHandle() {
                                     @Override
                                     public void handleSuccess(int code, String data) {
                                         logger.debug(TAG, "上传snap成功！" + data + "/");
                                         for (Integer s : OpenList2) {
                                             yingda(0xA515, true, deviceId, data, s);
-                                            logger.debug(TAG, "发送成功！" + data + "/"+s);
+                                            logger.debug(TAG, "发送成功！" + data + "/" + s);
                                         }
                                         OpenList2.clear();
                                     }
@@ -1085,6 +1097,105 @@ public class MsgHandleUtil {
                 yingda(0xA515, false, deviceId, s);
             }
             OpenList2.clear();
+        }
+//            }
+//            else {
+//                logger.debug(TAG, "开始直接截屏");
+//                dahuaModel.snap(0);
+//            }
+    }
+
+    /**
+     * 获取摄像头截屏3
+     * <p>
+     * 考勤统计截屏
+     */
+
+    String mFileName = "";
+
+    public void TakeVideoPic3(String fileName) {
+        logger.debug(TAG, "开始:" + fileName);
+        retry = 0;
+        mFileName = fileName;
+        if (dahuaModel3 == null) {
+            dahuaModel3 = new DahuaModel(context, new DahuaListener() {
+                @Override
+                public void resLis(int code, boolean isSuccess, String file) {
+                    LogUtils.d(file);
+                    if (isSuccess && !TextUtils.isEmpty(file)) {
+                        logger.debug(TAG, "截屏成功:" + file);
+                        File file1 = new File(file);
+                        CompressImg(file1, FileUtils.getDiskCacheDir(context) + "Screenshot/", new OnCompressListener() {
+                            @Override
+                            public void onStart() {
+                                logger.debug(TAG, "开始压缩！");
+                            }
+
+                            @Override
+                            public void onSuccess(File file) {
+                                logger.debug(TAG, "压缩成功！"+file.getAbsolutePath());
+                                File file2 = new File(file.getParent(), mFileName);
+                                boolean rename = file.renameTo(file2);
+                                logger.debug(TAG, "文件更名是否成功:" + rename);
+                                logger.debug(TAG, "文件更名后为:" + file2.getAbsolutePath());
+                                logger.debug(TAG, "文件是否存在:" + file2.exists());
+
+                                UploadFile(file2.getAbsolutePath(), Constant.Ftp_Camera, new FileHandle() {
+                                    @Override
+                                    public void handleSuccess(int code, String data) {
+                                        yingda(0xA516, true, deviceId, data);
+                                        logger.debug(TAG, "发送成功！" + data + "/");
+                                        mFileName = "";
+                                    }
+
+                                    @Override
+                                    public void handleFail(int code, String data) {
+                                        logger.debug(TAG, "上传snap失败！" + data);
+                                        yingda(0xA516, false, deviceId, "");
+                                        mFileName = "";
+                                    }
+
+                                    @Override
+                                    public void handleFinished(int code, String data) {
+                                        logger.debug(TAG, "上传进程完成！" + data);
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                logger.debug(TAG, "压缩失败！");
+                                yingda(0xA515, false, deviceId, "");
+                                mFileName = "";
+                            }
+                        });
+                    } else {
+                        if (retry == 0) {
+                            retry = 1;
+                            logger.debug(TAG, "摄像头截屏获取失败重试中。。。！");
+                            CameraInfo cameraInfo = mCameraInfos.get(0);
+                            dahuaModel3.logout();
+                            dahuaModel3.LoginToSnap(cameraInfo.getIp(), cameraInfo.getPort(), cameraInfo.getUsername(), cameraInfo.getPsw());
+                            return;
+                        }
+                        logger.debug(TAG, "摄像头截屏获取失败！");
+                        yingda(0xA515, false, deviceId, "");
+                        mFileName = "";
+                    }
+//                    dahuaModel.logout();
+                }
+            });
+        }
+//            if (dahuaModel.mLoginHandle == 0) {
+        if (mCameraInfos != null && mCameraInfos.size() > 0) {
+            logger.debug(TAG, "开始登录截屏");
+            dahuaModel3.logout();
+            CameraInfo cameraInfo = mCameraInfos.get(0);
+            dahuaModel3.LoginToSnap(cameraInfo.getIp(), cameraInfo.getPort(), cameraInfo.getUsername(), cameraInfo.getPsw());
+        } else {
+            logger.debug(TAG, "未获取到摄像头信息");
+            yingda(0xA515, false, deviceId, "");
+            mFileName = "";
         }
 //            }
 //            else {

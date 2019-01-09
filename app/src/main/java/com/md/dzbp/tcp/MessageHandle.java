@@ -290,13 +290,25 @@ public class MessageHandle {
                 break;
             case 0xA515://摄像头截屏2---微信页面截屏
                 final int msgid515 = tcpMessage.ReadInt();//SN
-                logger.debug(TAG, "0xA515收到摄像头截屏指令" + msgid515);
+                logger.debug(TAG, "0xA515收到摄像头截屏2指令" + msgid515);
                 try {
                     msgHandleUtil.TakeVideoPic2(msgid515);
                 } catch (Exception e) {
                     e.printStackTrace();
                     logger.debug(TAG,"截屏出错"+e.getMessage());
                     msgHandleUtil.yingda(0xA515, false, deviceId, msgid515);
+                }
+                break;
+            case 0xA516://摄像头截屏3---发送考勤统计截屏
+                final int length516 = tcpMessage.ReadInt();
+                String fileName = tcpMessage.ReadString(length516);
+                logger.debug(TAG, "0xA516收到摄像头截屏3指令" + length516);
+                try {
+                    msgHandleUtil.TakeVideoPic3(fileName);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logger.debug(TAG,"截屏出错"+e.getMessage());
+                    msgHandleUtil.yingda(0xA516, false, deviceId, "");
                 }
                 break;
             case 0xA550://刷卡屏幕跳转

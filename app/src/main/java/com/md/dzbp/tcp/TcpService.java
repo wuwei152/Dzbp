@@ -107,7 +107,7 @@ public class TcpService extends Service {
 //            LogUtils.d(SQLite.select().from(SignBean.class).queryList());
         } else if (intent != null && intent.hasExtra("test")) {
 //            mManager.test();
-//            mManager.messageHandle.TakeSnap();
+//            mManager.messageHandle.msgHandleUtil.TakeVideoPic3("123.jpg");
         } else if (intent != null && intent.hasExtra("Log")) {
             try {
                 mManager.messageHandle.msgHandleUtil.GetLog(0);
