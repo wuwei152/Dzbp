@@ -21,38 +21,15 @@ public class Constant {
 //    public static String IP = "192.168.0.52";
 //    public static String IP = "192.168.0.102";
 
-
-    /**
-     * 武汉
-     */
-//    public static String IP = "119.97.137.22";//武汉
-    public static String IP = "47.97.178.75";//武汉
-    public static int PORT = 4000;
-    public static final String BASE_HOST = "http://www.cnzhxy.com/";//武汉
-
     /**
      * 宜昌
      */
 //    public static String IP = "192.168.0.102";
-//    public static String IP = "119.97.137.24";//宜昌
-//    public static int PORT = 9896;
 //    public static final String BASE_HOST = "http://yc.cnzhxy.com/";//宜昌
-
-
-    /**
-     * API地址
-     */
-//    public static final String BASE_HOST = "http://test.cnzhxy.com/";
-//    public static final String BASE_HOST = "http://192.168.0.237:9999/";
-
-//    public static int PORT = 9898;
-//    public static int PORT = 9894;
-//    public static int PORT = 9896;
-//
-
-
-    //设备参数
-//    public static String DeviceId = "e9d50961-3a47-460f-bfc9-1398e3b64c4e";
+//    public static String IP = "119.97.137.24";//宜昌
+    public static String IP = "119.96.217.111";//宜昌
+    public static int PORT = 4000;
+    public static final String BASE_HOST = "http://www.jiaxiaoyj.com/";//宜昌
 
     //存储路径
     public static String Ftp_Log = "/Log/";
@@ -65,9 +42,7 @@ public class Constant {
     public static String Ftp_Snapshot = "/Snapshot/";
     public static String Ftp_Camera = "/ScreenshotForCamera/";
 
-
     public static int SCREENTYPE = 0;
-
 
     /**
      * 获取存储服务器地址

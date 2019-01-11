@@ -302,7 +302,7 @@ public class MessageHandle {
             case 0xA516://摄像头截屏3---发送考勤统计截屏
                 final int length516 = tcpMessage.ReadInt();
                 String fileName = tcpMessage.ReadString(length516);
-                logger.debug(TAG, "0xA516收到摄像头截屏3指令" + length516);
+                logger.debug(TAG, "0xA516收到摄像头截屏3指令" + fileName);
                 try {
                     msgHandleUtil.TakeVideoPic3(fileName);
                 } catch (Exception e) {

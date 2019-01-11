@@ -26,6 +26,7 @@ android {
         ndk {
             abiFilters 'armeabi'
         }
+
     }
     buildTypes {
         release {
@@ -45,6 +46,22 @@ android {
             signingConfig signingConfigs.config
         }
     }
+
+    flavorDimensions "channel"
+    productFlavors {
+        wuhan {
+            dimension "channel"
+            versionCode 11
+            versionName "2.0.2"
+        }
+
+        yichang {
+            dimension "channel"
+            versionCode 11
+            versionName "2.0.2"
+        }
+    }
+
 }
 
 configurations.all {
