@@ -217,6 +217,7 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
     private void getUIdata() {
         Map map = new HashMap();
         map.put("deviceId", Constant.getDeviceId(this));
+        map.put("timestamp", System.currentTimeMillis()+"");
         netWorkRequest.doGetRequest(0, Constant.getUrl(this, APIConfig.GET_COURSE), true, map);
     }
 

@@ -51,8 +51,8 @@ android {
     productFlavors {
         wuhan {
             dimension "channel"
-            versionCode 11
-            versionName "2.0.2"
+            versionCode 12
+            versionName "2.0.3"
         }
 
         yichang {

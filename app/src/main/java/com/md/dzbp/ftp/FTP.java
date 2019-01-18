@@ -152,7 +152,7 @@ public class FTP {
                     new FileInputStream(localFile));
             ProgressInputStream progressInput = new ProgressInputStream(buffIn, listener, localFile);
             flag = ftpClient.storeFile(localFile.getName(), progressInput);
-            LogUtils.d(flag);
+            logger.debug(TAG, "上传是否成功标志："+flag);
             buffIn.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -357,22 +357,29 @@ public class FTP {
         int reply; // 服务器响应值
         // 连接至服务器
         ftpClient.connect(hostName, serverPort);
+        logger.debug(TAG,"------开始连接到ftp///"+hostName+":"+serverPort);
         // 获取响应值
         reply = ftpClient.getReplyCode();
         if (!FTPReply.isPositiveCompletion(reply)) {
             // 断开连接
             ftpClient.disconnect();
+            logger.debug(TAG,"------连接ftp失败------");
             throw new IOException("connect fail: " + reply);
+        }else {
+            logger.debug(TAG,"------连接ftp成功------");
         }
         // 登录到服务器
         ftpClient.login(userName, password);
+        logger.debug(TAG,"------开始登录ftp///"+userName+":"+password);
         // 获取响应值
         reply = ftpClient.getReplyCode();
         if (!FTPReply.isPositiveCompletion(reply)) {
             // 断开连接
             ftpClient.disconnect();
+            logger.debug(TAG,"------登录ftp失败------");
             throw new IOException("connect fail: " + reply);
         } else {
+            logger.debug(TAG,"------登录ftp成功------");
             // 获取登录信息
             FTPClientConfig config = new FTPClientConfig(ftpClient
                     .getSystemType().split(" ")[0]);
