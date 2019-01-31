@@ -99,6 +99,11 @@ public class Constant {
         numList.add("0242101132");
         numList.add("4269084850");
         numList.add("0196709188");
+
+
+        numList.add("3533746030");//公交卡
+
+
         return numList;
     }
 
