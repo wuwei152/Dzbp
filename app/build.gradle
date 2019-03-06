@@ -47,20 +47,20 @@ android {
         }
     }
 
-    flavorDimensions "channel"//分渠道打包
-    productFlavors {
-        wuhan {
-            dimension "channel"
-            versionCode 12
-            versionName "2.0.3"
-        }
-
-        yichang {
-            dimension "channel"
-            versionCode 11
-            versionName "2.0.2"
-        }
-    }
+//    flavorDimensions "channel"//分渠道打包
+//    productFlavors {
+//        wuhan {
+//            dimension "channel"
+//            versionCode 12
+//            versionName "2.0.3"
+//        }
+//
+//        yichang {
+//            dimension "channel"
+//            versionCode 11
+//            versionName "2.0.2"
+//        }
+//    }
 
 }
 

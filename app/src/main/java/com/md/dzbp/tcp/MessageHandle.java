@@ -22,6 +22,7 @@ import com.md.dzbp.data.UpdateDate;
 import com.md.dzbp.data.VoiceReceiveMessage;
 import com.md.dzbp.data.WorkTimePeriod;
 import com.md.dzbp.data.WorkTimePoint;
+import com.md.dzbp.model.TimeUtils;
 import com.md.dzbp.task.SwitchTask;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
@@ -397,6 +398,12 @@ public class MessageHandle {
                     ArrayList<WorkTimePeriod> list = JSON.parseObject(data604.toString(), new TypeReference<ArrayList<WorkTimePeriod>>() {
                     });
 //                    LogUtils.d(list);
+                    if (taskType == 1) {//会议提前40分钟
+                        if (list != null && list.size() > 0) {
+                            list.get(0).setTriggerTime_A(TimeUtils.getbeforeTime(list.get(0).getTriggerTime_A()));
+                            LogUtils.d(list);
+                        }
+                    }
                     if (list != null) {
                         ArrayList<WorkTimePoint> list1 = WorkTimePoint.GetWorkTimePointList(list);
                         SwitchTask.getInstance(context).AddTaskList(list1);

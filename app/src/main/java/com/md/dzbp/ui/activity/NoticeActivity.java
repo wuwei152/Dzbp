@@ -117,10 +117,12 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
      * 获取UI数据
      */
     private void getUIdata() {
-        Map map = new HashMap();
-        map.put("deviceId", Constant.getDeviceId(NoticeActivity.this));
-        map.put("noticeId", noticeId);
-        netWorkRequest.doGetRequest(0, Constant.getUrl(NoticeActivity.this, APIConfig.GET_NOTICE), true, map);
+        if (!TextUtils.isEmpty(noticeId)) {
+            Map map = new HashMap();
+            map.put("deviceId", Constant.getDeviceId(NoticeActivity.this));
+            map.put("noticeId", noticeId);
+            netWorkRequest.doGetRequest(0, Constant.getUrl(NoticeActivity.this, APIConfig.GET_NOTICE), true, map);
+        }
     }
 
 
@@ -128,7 +130,7 @@ public class NoticeActivity extends BaseActivity implements UIDataListener {
      * 获取卡号
      */
     private void getCardNum() {
-        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum,this);
+        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum, this);
         getCardNumUtils.getNum(new GetCardNumUtils.SetNum() {
             @Override
             public void setNum(String num) {

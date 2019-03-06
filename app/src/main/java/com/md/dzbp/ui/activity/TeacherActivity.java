@@ -204,7 +204,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     private void getUIdata() {
         Map map = new HashMap();
         map.put("deviceId", Constant.getDeviceId(this));
-        map.put("timestamp", System.currentTimeMillis()+"");
+        map.put("timestamp", System.currentTimeMillis() + "");
         netWorkRequest.doGetRequest(0, Constant.getUrl(this, APIConfig.GET_COURSE), false, map);
         mDate.setText(TimeUtils.getStringDate());
 
@@ -287,7 +287,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
                 mPeriodName.setVisibility(View.GONE);
             }
             mAddr.setText("教室：" + courseBean.getAddress());
-            Glide.with(this).load(courseBean.getQrcode()).into(mQrcode);
+//            Glide.with(this).load(courseBean.getQrcode()).into(mQrcode);
 
         } catch (Exception e) {
             e.printStackTrace();

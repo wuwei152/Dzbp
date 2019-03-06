@@ -3,7 +3,6 @@ package com.md.dzbp.constants;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.md.dzbp.data.FtpParams;
 import com.md.dzbp.utils.ACache;
 
 import java.util.ArrayList;

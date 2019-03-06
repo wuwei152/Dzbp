@@ -36,12 +36,12 @@ public class GlideImgManager {
         if (0 == tag) {
             Glide.with(context).load(url).placeholder(emptyImg).error(erroImg).transform(new GlideCircleTransform(context)).into(iv);
         } else if (1 == tag) {
-            Glide.with(context).load(url).placeholder(emptyImg).error(erroImg).transform(new GlideRoundTransform(context,10)).into(iv);
+            Glide.with(context).load(url).placeholder(emptyImg).error(erroImg).transform(new CenterCrop(context),new GlideRoundTransform(context,8)).into(iv);
         }
     }
 
-    public static void glideLoader(Context context, String url, int erroImg, int emptyImg, ImageView iv ,String i) {
-            Glide.with(context).load(url).placeholder(emptyImg).error(erroImg).transform(new CenterCrop(context),new GlideRoundTransform(context,10)).into(iv);
+    public static void glideLoader(Context context, String url, ImageView iv) {
+            Glide.with(context).load(url).transform(new CenterCrop(context),new GlideRoundTransform(context,10)).into(iv);
     }
     /**
      * load normal  for  circle or round img
@@ -56,14 +56,14 @@ public class GlideImgManager {
         if (0 == tag) {
             Glide.with(context).load(url).placeholder(emptyImg).error(erroImg).transform(new GlideCircleTransform(context)).into(iv);
         } else if (1 == tag) {
-            Glide.with(context).load(url).placeholder(emptyImg).error(erroImg).transform(new GlideRoundTransform(context,10)).into(iv);
+            Glide.with(context).load(url).placeholder(emptyImg).error(erroImg).transform(new CenterCrop(context),new GlideRoundTransform(context,8)).into(iv);
         }
     }
     public static void glideLoader(Context context, int url, int erroImg, int emptyImg, ImageView iv, int tag) {
         if (0 == tag) {
             Glide.with(context).load(url).placeholder(emptyImg).error(erroImg).transform(new GlideCircleTransform(context)).into(iv);
         } else if (1 == tag) {
-            Glide.with(context).load(url).placeholder(emptyImg).error(erroImg).transform(new GlideRoundTransform(context,10)).into(iv);
+            Glide.with(context).load(url).placeholder(emptyImg).error(erroImg).transform(new CenterCrop(context),new GlideRoundTransform(context,8)).into(iv);
         }
     }
 }

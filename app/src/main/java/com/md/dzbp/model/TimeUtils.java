@@ -239,4 +239,25 @@ public class TimeUtils {
         long[] times = {day, hour, min, sec};
         return times;
     }
+
+    /**
+     * 获取当前时间前40分钟
+     *
+     * @return
+     */
+    public static String getbeforeTime(String time) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd:HH:mm:ss");
+            Calendar beforeTime = Calendar.getInstance();
+            Date date = sdf.parse(time);
+            beforeTime.setTime(date);
+            beforeTime.add(Calendar.MINUTE, -40);// 3分钟之前的时间
+            Date beforeD = beforeTime.getTime();
+            String time1 = sdf.format(beforeD);
+            return time1;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
 }

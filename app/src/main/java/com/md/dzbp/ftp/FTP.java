@@ -3,7 +3,6 @@ package com.md.dzbp.ftp;
 import android.content.Context;
 
 import com.apkfuns.logutils.LogUtils;
-import com.md.dzbp.constants.Constant;
 import com.md.dzbp.constants.ERRORTYPE;
 import com.md.dzbp.data.FtpParams;
 import com.md.dzbp.utils.ACache;
@@ -148,6 +147,7 @@ public class FTP {
 
         // 带有进度的方式
         try {
+            logger.debug(TAG,"开始上传");
             BufferedInputStream buffIn = new BufferedInputStream(
                     new FileInputStream(localFile));
             ProgressInputStream progressInput = new ProgressInputStream(buffIn, listener, localFile);
@@ -156,7 +156,7 @@ public class FTP {
             buffIn.close();
         } catch (Exception e) {
             e.printStackTrace();
-            logger.debug(TAG, e.getMessage());
+            logger.debug(TAG, "上传出错"+e.getMessage());
         }
         return flag;
     }
@@ -179,6 +179,7 @@ public class FTP {
         } catch (IOException e1) {
             e1.printStackTrace();
             listener.onUploadProgress(ERRORTYPE.FTP_CONNECT_FAIL, 0, null);
+            logger.debug(TAG,"ftp链接出错------"+e1.getMessage());
             return;
         }
         try {
@@ -190,7 +191,7 @@ public class FTP {
             ftpClient.changeWorkingDirectory(remotePath);
             // 上传单个文件
         } catch (Exception e) {
-            logger.debug(TAG, e.getMessage());
+            logger.debug(TAG, "配置出错"+e.getMessage());
         }
     }
 
@@ -204,6 +205,7 @@ public class FTP {
             throws IOException {
         this.closeConnect();
         listener.onUploadProgress(ERRORTYPE.FTP_DISCONNECT_SUCCESS, 0, null);
+        logger.debug(TAG,"ftp关闭链接");
     }
 
     // -------------------------------------------------------文件下载方法------------------------------------------------
@@ -225,7 +227,7 @@ public class FTP {
             this.openConnect();
             listener.onDownLoadProgress(ERRORTYPE.FTP_CONNECT_SUCCESSS, 0, null);
         } catch (IOException e1) {
-            logger.debug("FTP打开", e1.getMessage());
+            logger.debug(TAG, "FTP链接失败"+e1.getMessage());
             listener.onDownLoadProgress(ERRORTYPE.FTP_CONNECT_FAIL, 0, null);
             return;
         }
@@ -234,6 +236,7 @@ public class FTP {
             FTPFile[] files = ftpClient.listFiles(serverPath);
             if (files.length == 0) {
                 listener.onDownLoadProgress(ERRORTYPE.FTP_FILE_NOTEXISTS, 0, null);
+                logger.debug(TAG,"FTP未找到文件");
                 return;
             }
 
@@ -247,6 +250,7 @@ public class FTP {
             localPath = localPath + fileName;
             // 接着判断下载的文件是否能断点下载
             long serverSize = files[0].getSize(); // 获取远程文件的长度
+            logger.debug(TAG,"获取远程文件大小"+serverSize);
             File localFile = new File(localPath);
             long localSize = 0;
             if (localFile.exists()) {
@@ -257,6 +261,7 @@ public class FTP {
 //                    file.delete();
 //                }
             }
+            logger.debug(TAG,"FTP开始下载！！！");
 //            logger.debug(TAG, "下载");
             // 进度
             long step = serverSize / 100;
@@ -281,19 +286,21 @@ public class FTP {
             out.flush();
             out.close();
             input.close();
-            LogUtils.d("下载完成");
+            logger.debug(TAG,"下载流程结束！！！");
             // 此方法是来确保流处理完毕，如果没有此方法，可能会造成现程序死掉
             if (ftpClient.completePendingCommand()) {
                 listener.onDownLoadProgress(ERRORTYPE.FTP_DOWN_SUCCESS, 0, new File(localPath));
+                logger.debug(TAG,"下载完成！！！");
             } else {
                 listener.onDownLoadProgress(ERRORTYPE.FTP_DOWN_FAIL, 0, null);
+                logger.debug(TAG,"下载失败！！！");
             }
 
             // 下载完成之后关闭连接
             this.closeConnect();
             listener.onDownLoadProgress(ERRORTYPE.FTP_DISCONNECT_SUCCESS, 0, null);
         } catch (Exception e) {
-            logger.debug("FTP33", e.getMessage());
+            logger.debug(TAG, "下载异常"+e.getMessage());
             listener.onDownLoadProgress(ERRORTYPE.FTP_DOWN_FAIL, 0, null);
         }
         return;
@@ -390,6 +397,7 @@ public class FTP {
             // 二进制文件支持
             ftpClient
                     .setFileType(org.apache.commons.net.ftp.FTP.BINARY_FILE_TYPE);
+            logger.debug(TAG,"------ftp配置成功------");
         }
     }
 
