@@ -20,4 +20,5 @@
     <color name="line">#B6C5CD</color>
     <color name="cons">#5B666A</color>
     <color name="conf">#FF00</color>
+    <color name="transparent">#00000000</color>
 </resources>

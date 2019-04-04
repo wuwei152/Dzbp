@@ -21,7 +21,7 @@ public class MyViewPagerAdapter extends PagerAdapter {
         notifyDataSetChanged();
     }
 
-    public void setOnItemClick(OnItemClickPosition onclick){
+    public void setOnItemClick(OnItemClickPosition onclick) {
         this.onclick = onclick;
     }
 
@@ -31,7 +31,9 @@ public class MyViewPagerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return Integer.MAX_VALUE;//返回图片的个数
+//        return Integer.MAX_VALUE;//返回图片的个数
+
+        return mList.size();
     }
 
     @Override
@@ -45,15 +47,19 @@ public class MyViewPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, final int position) {
-        View view = mList.get(position % mList.size());
+        View view = mList.get(position);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onclick.onclick(position % mList.size());
+                onclick.onclick(position);
             }
         });
+        ViewGroup parent = (ViewGroup) view.getParent();
+        if (parent != null) {
+            parent.removeAllViews();
+        }
         container.addView(view);
-        return mList.get(position % mList.size());
+        return mList.get(position);
     }
 
     @Override

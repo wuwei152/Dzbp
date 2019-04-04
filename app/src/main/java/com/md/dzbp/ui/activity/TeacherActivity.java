@@ -272,7 +272,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
 
                 if (bean != null && bean.getPeriod().equals(item.getPeriod())) {
                     viewHolder.getView(R.id.item_icon).setVisibility(View.VISIBLE);
-                    GlideImgManager.glideLoader(TeacherActivity.this, bean.getPhoto(), R.drawable.pic_not_found2, R.drawable.pic_not_found2, (ImageView) (viewHolder.getView(R.id.item_icon)), 0);
+                    GlideImgManager.glideLoader(TeacherActivity.this, bean.getPhoto(), R.drawable.icon_head_teacher, R.drawable.icon_head_teacher, (ImageView) (viewHolder.getView(R.id.item_icon)), 0);
                     viewHolder.setBackgroundRes(R.id.item_qiu, R.drawable.red_solid_circle_back);
                     viewHolder.setBackgroundRes(R.id.item_ll, R.color.green2);
 

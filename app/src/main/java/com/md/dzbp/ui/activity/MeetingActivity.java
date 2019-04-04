@@ -194,36 +194,27 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
      */
     private void setUIData(Meetingbean meetingbean) {
 
-//        address : A3栋101室
-//                * endTime : 2017-09-12 12:30:00
-//                * id : 9980cb09-e445-4e7c-b6ce-7bd1a0c03da4
-//                * meetingUserList : [{"accountId":"342fa921-572e-42f8-8541-6e53d5e92e4f","accountName":"张博","host":true},{"accountId":"7d5bece5-6df4-4d2c-9eff-be4c2cb8b2e9","accountName":"付奇","host":false}]
-//     * name : 这是测试会议
-//                * qrcodeUrl : https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=gQFI8DwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAyWWhvOE1weU9lUzMxeVVUVDFwY18AAgSwMLdZAwQIBwAA
-//     * startTime : 2017-09-12 12:00:00
-//                * summary : 东方闪电
-
-        meetingbean.setAddress("教学楼101室");
-        meetingbean.setEndTime("2019-04-22 11:30:00");
-        meetingbean.setName("2019届中考动员大会");
-        meetingbean.setQrcodeUrl("https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/w%3D268%3Bg%3D0/sign=7bcb659c9745d688a302b5a29cf91a23/2934349b033b5bb571dc8c5133d3d539b600bc12.jpg");
-        meetingbean.setStartTime("2019-04-22 09:30:00");
-        ArrayList<Meetingbean.MeetingUserListBean> list = new ArrayList<>();
-        list.add(new Meetingbean.MeetingUserListBean("1","李丽1",true,1));
-        list.add(new Meetingbean.MeetingUserListBean("2","李丽2"));
-        list.add(new Meetingbean.MeetingUserListBean("3","李丽3"));
-        list.add(new Meetingbean.MeetingUserListBean("4","李丽4"));
-        list.add(new Meetingbean.MeetingUserListBean("5","李丽5"));
-        list.add(new Meetingbean.MeetingUserListBean("6","李丽6"));
-        list.add(new Meetingbean.MeetingUserListBean("7","李丽7"));
-        list.add(new Meetingbean.MeetingUserListBean("8","李丽8"));
-        list.add(new Meetingbean.MeetingUserListBean("9","李丽9"));
-        list.add(new Meetingbean.MeetingUserListBean("10","李丽10"));
-        list.add(new Meetingbean.MeetingUserListBean("11","李丽11"));
-        list.add(new Meetingbean.MeetingUserListBean("12","李丽12"));
-        list.add(new Meetingbean.MeetingUserListBean("13","李丽13"));
-        list.add(new Meetingbean.MeetingUserListBean("14","李丽14"));
-        meetingbean.setMeetingUserList(list);
+//        meetingbean.setAddress("教学楼101室");
+//        meetingbean.setEndTime("2019-04-22 11:30:00");
+//        meetingbean.setName("2019届中考动员大会");
+//        meetingbean.setQrcodeUrl("https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/w%3D268%3Bg%3D0/sign=7bcb659c9745d688a302b5a29cf91a23/2934349b033b5bb571dc8c5133d3d539b600bc12.jpg");
+//        meetingbean.setStartTime("2019-04-22 09:30:00");
+//        ArrayList<Meetingbean.MeetingUserListBean> list = new ArrayList<>();
+//        list.add(new Meetingbean.MeetingUserListBean("1","李丽1",true,1));
+//        list.add(new Meetingbean.MeetingUserListBean("2","李丽2"));
+//        list.add(new Meetingbean.MeetingUserListBean("3","李丽3"));
+//        list.add(new Meetingbean.MeetingUserListBean("4","李丽4"));
+//        list.add(new Meetingbean.MeetingUserListBean("5","李丽5"));
+//        list.add(new Meetingbean.MeetingUserListBean("6","李丽6"));
+//        list.add(new Meetingbean.MeetingUserListBean("7","李丽7"));
+//        list.add(new Meetingbean.MeetingUserListBean("8","李丽8"));
+//        list.add(new Meetingbean.MeetingUserListBean("9","李丽9"));
+//        list.add(new Meetingbean.MeetingUserListBean("10","李丽10"));
+//        list.add(new Meetingbean.MeetingUserListBean("11","李丽11"));
+//        list.add(new Meetingbean.MeetingUserListBean("12","李丽12"));
+//        list.add(new Meetingbean.MeetingUserListBean("13","李丽13"));
+//        list.add(new Meetingbean.MeetingUserListBean("14","李丽14"));
+//        meetingbean.setMeetingUserList(list);
 
 
         meetingUserList = meetingbean.getMeetingUserList();

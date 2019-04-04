@@ -1,0 +1,17 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/top_bar_bg"
+    android:orientation="horizontal"
+    android:padding="5dp">
+
+
+    <SeekBar
+        android:id="@+id/stoke_width_seekbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="4dp"
+        android:max="100" />
+
+</LinearLayout>

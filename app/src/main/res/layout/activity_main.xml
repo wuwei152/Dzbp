@@ -36,7 +36,7 @@
                     android:layout_marginLeft="28dp"
                     android:layout_marginTop="30dp"
                     android:scaleType="centerCrop"
-                    fresco:placeholderImage="@drawable/pic_not_found2"
+                    fresco:placeholderImage="@drawable/icon_head_teacher2"
                     fresco:roundAsCircle="true"
                     fresco:roundingBorderColor="#B5DD8F"
                     fresco:roundingBorderWidth="3dp" />

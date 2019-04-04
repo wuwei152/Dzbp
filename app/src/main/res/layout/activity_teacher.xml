@@ -36,7 +36,7 @@
                     android:layout_marginLeft="84dp"
                     android:layout_marginTop="61dp"
                     android:scaleType="centerCrop"
-                    fresco:placeholderImage="@drawable/pic_not_found2"
+                    fresco:placeholderImage="@drawable/icon_head_teacher2"
                     fresco:roundAsCircle="true"
                     fresco:roundingBorderColor="#B5DD8F"
                     fresco:roundingBorderWidth="3dp" />
@@ -245,8 +245,8 @@
 
                 <ImageView
                     android:id="@+id/teacher_qrcode"
-                    android:layout_width="186dp"
-                    android:layout_height="186dp"
+                    android:layout_width="180dp"
+                    android:layout_height="180dp"
                     android:layout_gravity="center_horizontal"
                     android:scaleType="fitXY" />
 

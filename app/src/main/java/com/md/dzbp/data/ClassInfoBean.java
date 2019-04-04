@@ -24,12 +24,14 @@ public class ClassInfoBean implements Serializable{
     private String className;
     private String motto; //班训
     private String managerMessage; //班主任寄语
-    private String schoolLogo; //班主任寄语
-    private String schoolName; //班主任寄语
+    private String schoolLogo; //
+    private String schoolName; //
     private String aliasName; //班级别名
 
     public ClassInfoBean() {
     }
+
+
 
     public String getGradeName() {
         return gradeName;

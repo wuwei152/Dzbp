@@ -1,0 +1,30 @@
+<resources>
+
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    </style>
+
+
+    <style name="popwin_anim_style">
+        <item name="android:windowEnterAnimation">@anim/menushow</item>
+        <item name="android:windowExitAnimation">@anim/menuhide</item>
+    </style>
+
+    <style name="dialog_style" parent="Theme.AppCompat.Light.Dialog">
+
+        <!--是否悬浮在activity上-->
+        <item name="android:windowIsFloating">true</item>
+        <!--透明是否-->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowContentOverlay">@null</item>
+
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:windowShowWallpaper">false</item>
+        <item name="android:windowTitleSize">25dip</item>
+        <item name="android:windowSoftInputMode">stateAlwaysHidden|adjustResize</item>
+        <item name="windowActionBar">false</item>
+    </style>
+</resources>

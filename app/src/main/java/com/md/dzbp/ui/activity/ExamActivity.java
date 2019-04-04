@@ -206,14 +206,14 @@ public class ExamActivity extends BaseActivity implements TimeListener, UIDataLi
      */
     private void setUiData(ExamBean examBean) {
 
-        examBean = new ExamBean();
-        examBean.setExamination(new ExamBean.ExaminationBean("2019届---3月月考", "2019年3月26日", "2019年3月27日"));
-        ArrayList<ExamPlan> examPlans = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            ExamPlan plan = new ExamPlan("1231"+i,"2019-03-27","09:00:00","19:00:00","语文","李老师");
-            examPlans.add(plan);
-        }
-        examBean.setPlan(examPlans);
+//        examBean = new ExamBean();
+//        examBean.setExamination(new ExamBean.ExaminationBean("2019届---3月月考", "2019年3月26日", "2019年3月27日"));
+//        ArrayList<ExamPlan> examPlans = new ArrayList<>();
+//        for (int i = 0; i < 5; i++) {
+//            ExamPlan plan = new ExamPlan("1231"+i,"2019-03-27","09:00:00","19:00:00","语文","李老师");
+//            examPlans.add(plan);
+//        }
+//        examBean.setPlan(examPlans);
 
         if (examBean != null) {
             mAddress.setText(examBean.getAddress());

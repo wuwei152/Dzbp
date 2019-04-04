@@ -378,14 +378,14 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
         }
         if (teacher != null) {
 //            Glide.with(PatrolActivity.this).load(teacher.getPhoto()).into(mTeacherIcon);
-            GlideImgManager.glideLoader(PatrolActivity.this, teacher.getPhoto(), R.drawable.pic_not_found, R.drawable.pic_not_found, mTeacherIcon, 1);
+            GlideImgManager.glideLoader(PatrolActivity.this, teacher.getPhoto(), R.drawable.icon_head_teacher2, R.drawable.icon_head_teacher2, mTeacherIcon, 1);
             mTeacherName.setText("教师：" + teacher.getAccountName());
             mTeacherCourse.setText(teacher.getSubjectName().toString());
             mTeacherPeroid.setText(teacher.getPeriodName());
         }
 
         if (classManager != null) {
-            GlideImgManager.glideLoader(PatrolActivity.this, classManager.getPhoto(), R.drawable.pic_not_found, R.drawable.pic_not_found, mMngIcon, 0);
+            GlideImgManager.glideLoader(PatrolActivity.this, classManager.getPhoto(), R.drawable.icon_head_teacher, R.drawable.icon_head_teacher, mMngIcon, 0);
             mMngName.setText(classManager.getAccountName());
         }
         List<PatrolBean.InspectionParametersBean> inspectionParameters = patrolBean.getInspectionParameters();

@@ -441,13 +441,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
      */
     private void setGridData(List<SignInfoBean.StudentBean> students) {
 
-        students.addAll(students);
-        students.addAll(students);
-        students.addAll(students);
-        students.addAll(students);
-        students.addAll(students);
-        students.addAll(students);
-        students.addAll(students);
+//        students.addAll(students);
 
         double signed = 0;
         for (SignInfoBean.StudentBean student : students) {

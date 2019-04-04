@@ -11,20 +11,16 @@ import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.apkfuns.logutils.LogUtils;
-import com.bumptech.glide.Glide;
 import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
 import com.md.dzbp.constants.APIConfig;
 import com.md.dzbp.constants.Constant;
-import com.md.dzbp.data.ImgFile;
-import com.md.dzbp.data.LoginEvent;
 import com.md.dzbp.data.MainData;
 import com.md.dzbp.data.NoticeBean;
 import com.md.dzbp.model.NetWorkRequest;
@@ -41,8 +37,6 @@ import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -240,7 +234,6 @@ public class NoticeActivity extends BaseActivity implements UIDataListener, Time
      * 设置通知列表
      */
     private void setNoticeList(final List<MainData.NoticeBean> mNoticeBeanList) {
-
         mList.setAdapter(new CommonAdapter<MainData.NoticeBean>(NoticeActivity.this, R.layout.item_main_notice, mNoticeBeanList) {
             @Override
             protected void convert(ViewHolder viewHolder, MainData.NoticeBean item, int position) {

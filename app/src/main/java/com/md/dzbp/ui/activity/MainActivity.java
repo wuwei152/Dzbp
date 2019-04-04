@@ -312,7 +312,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
 
                 if (bean != null && bean.getPeriod().equals(item.getPeriod())) {
                     viewHolder.getView(R.id.item_icon).setVisibility(View.VISIBLE);
-                    GlideImgManager.glideLoader(MainActivity.this, bean.getPhoto(), R.drawable.pic_not_found2, R.drawable.pic_not_found2, (ImageView) (viewHolder.getView(R.id.item_icon)), 0);
+                    GlideImgManager.glideLoader(MainActivity.this, bean.getPhoto(), R.drawable.icon_head_teacher, R.drawable.icon_head_teacher, (ImageView) (viewHolder.getView(R.id.item_icon)), 0);
                     viewHolder.setBackgroundRes(R.id.item_qiu, R.drawable.red_solid_circle_back);
                     viewHolder.setBackgroundRes(R.id.item_ll, R.color.green2);
 
@@ -487,9 +487,9 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         ClassInfoBean classInfo = mainData.getClassInfo();
         if (classInfo != null) {
             mClassName.setText(classInfo.getGradeName() + "\n\n" + classInfo.getClassName());
-            mSchoolName.setText("武汉六中");
+            mSchoolName.setText(classInfo.getSchoolName());
 
-//            mAcache.put("SchoolName", "武汉六中");
+            mAcache.put("SchoolName", classInfo.getSchoolName());
 
             mAcache.put("ClassName", classInfo.getClassName());
             mAcache.put("GradeName", classInfo.getGradeName());
@@ -575,12 +575,12 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
      * @param notice
      */
     private void setNoticeList(final List<MainData.NoticeBean> notice) {
-        MainData.NoticeBean bean = new MainData.NoticeBean("第二届优秀学生表彰大会如期举行", "2019-03-05 09:23:22");
-        MainData.NoticeBean bean2 = new MainData.NoticeBean("第三届优秀学生表彰大会如期举行", "2019-03-05 09:23:22");
-        MainData.NoticeBean bean3 = new MainData.NoticeBean("第四届优秀学生表彰大会如期举行第四届优秀学生表彰大会如期举", "2019-03-05 09:23:22");
-        notice.add(bean);
-        notice.add(bean2);
-        notice.add(bean3);
+//        MainData.NoticeBean bean = new MainData.NoticeBean("第二届优秀学生表彰大会如期举行", "2019-03-05 09:23:22");
+//        MainData.NoticeBean bean2 = new MainData.NoticeBean("第三届优秀学生表彰大会如期举行", "2019-03-05 09:23:22");
+//        MainData.NoticeBean bean3 = new MainData.NoticeBean("第四届优秀学生表彰大会如期举行第四届优秀学生表彰大会如期举", "2019-03-05 09:23:22");
+//        notice.add(bean);
+//        notice.add(bean2);
+//        notice.add(bean3);
         if (notice != null && notice.size() > 0) {
 //            final MainData.NoticeBean noticeBean = notice.get(0);
 //            mNoticeTitle.setText(noticeBean.getTitle());
@@ -595,27 +595,35 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
 //                }
 //            });
 
-            ArrayList<View> mViewlist = new ArrayList<>();
-            for (MainData.NoticeBean noticeBean1 : notice) {
-                View view = LayoutInflater.from(this).inflate(R.layout.item_main_notice_list, null);
-                TextView title = view.findViewById(R.id.item_noticeTitle);
-                TextView time = view.findViewById(R.id.item_noticeTime);
-                title.setText(noticeBean1.getTitle());
-                time.setText(noticeBean1.getPublishtime());
-                mViewlist.add(view);
-            }
-            MyViewPagerAdapter myViewPagerAdapter = new MyViewPagerAdapter(mViewlist);
-            mViewPager.setAdapter(myViewPagerAdapter);
-            mViewPager.setInterval(5000);
-            mViewPager.startAutoScroll();
-            myViewPagerAdapter.setOnItemClick(new MyViewPagerAdapter.OnItemClickPosition() {
-                @Override
-                public void onclick(int position) {
-                    Intent intent = new Intent(MainActivity.this, NoticeActivity.class);
-                    intent.putExtra("id", notice.get(position).getNoticeId());
-                    startActivity(intent);
+            try {
+                ArrayList<View> mViewlist = new ArrayList<>();
+                for (MainData.NoticeBean noticeBean1 : notice) {
+                    View view = getLayoutInflater().inflate(R.layout.item_main_notice_list, null);
+                    TextView title = view.findViewById(R.id.item_noticeTitle);
+                    TextView time = view.findViewById(R.id.item_noticeTime);
+                    title.setText(noticeBean1.getTitle());
+                    time.setText(noticeBean1.getPublishtime());
+                    mViewlist.add(view);
                 }
-            });
+                MyViewPagerAdapter myViewPagerAdapter = new MyViewPagerAdapter(mViewlist);
+                mViewPager.setAdapter(myViewPagerAdapter);
+                mViewPager.setInterval(5000);
+
+                if (notice.size() > 1) {
+                    mViewPager.startAutoScroll();
+                }
+                myViewPagerAdapter.setOnItemClick(new MyViewPagerAdapter.OnItemClickPosition() {
+                    @Override
+                    public void onclick(int position) {
+                        Intent intent = new Intent(MainActivity.this, NoticeActivity.class);
+                        intent.putExtra("id", notice.get(position).getNoticeId());
+                        startActivity(intent);
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.error(TAG, e);
+            }
         }
     }
 
