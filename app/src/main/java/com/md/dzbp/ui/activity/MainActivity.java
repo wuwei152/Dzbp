@@ -3,34 +3,29 @@ package com.md.dzbp.ui.activity;
 import android.app.Dialog;
 import android.app.smdt.SmdtManager;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.text.SpannableString;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RatingBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.apkfuns.logutils.LogUtils;
-import com.bumptech.glide.Glide;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
+import com.md.dzbp.adapter.MyViewPagerAdapter;
 import com.md.dzbp.adapter.StuListAdapter;
 import com.md.dzbp.constants.APIConfig;
 import com.md.dzbp.constants.Constant;
@@ -41,7 +36,6 @@ import com.md.dzbp.data.LoginEvent;
 import com.md.dzbp.data.MainData;
 import com.md.dzbp.data.MainUpdateEvent;
 import com.md.dzbp.data.MessageBase;
-import com.md.dzbp.data.ScreenShotEvent;
 import com.md.dzbp.data.UpdateDate;
 import com.md.dzbp.model.NetWorkRequest;
 import com.md.dzbp.model.TimeListener;
@@ -49,22 +43,17 @@ import com.md.dzbp.model.TimeUtils;
 import com.md.dzbp.model.UIDataListener;
 import com.md.dzbp.tcp.RemoteService;
 import com.md.dzbp.tcp.TcpService;
-import com.md.dzbp.ui.view.ListViewForScrollView;
-import com.md.dzbp.ui.view.LoopViewPagerLayout.BannerInfo;
-import com.md.dzbp.ui.view.LoopViewPagerLayout.IndicatorLocation;
-import com.md.dzbp.ui.view.LoopViewPagerLayout.LoopStyle;
-import com.md.dzbp.ui.view.LoopViewPagerLayout.LoopViewPagerLayout;
-import com.md.dzbp.ui.view.LoopViewPagerLayout.OnBannerItemClickListener;
-import com.md.dzbp.ui.view.LoopViewPagerLayout.OnDefaultImageViewLoader;
-import com.md.dzbp.ui.view.MainDialog;
+import com.md.dzbp.ui.view.AutoScrollViewPager;
 import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.MyRecyclerView;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.GetCardNumUtils;
+import com.md.dzbp.utils.GlideImageLoader;
 import com.md.dzbp.utils.GlideImgManager;
-import com.md.dzbp.utils.MainGestureDetector;
-import com.md.dzbp.utils.SnapUtils;
+import com.youth.banner.Banner;
+import com.youth.banner.BannerConfig;
+import com.youth.banner.Transformer;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -84,30 +73,33 @@ import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity implements TimeListener, UIDataListener {
 
-    @BindView(R.id.main_time)
-    TextView mTime;
-    @BindView(R.id.main_date)
-    TextView mDate;
-    @BindView(R.id.main_temp)
-    TextView mTemp;
-    @BindView(R.id.main_loction)
+    @BindView(R.id.title_classAddr)
     TextView mLoction;
+    @BindView(R.id.title_cardNum)
+    EditText mCardNum;
+    @BindView(R.id.title_sclIcon)
+    ImageView mSclIcon;
+    @BindView(R.id.title_schoolName)
+    TextView mSchoolName;
+    @BindView(R.id.title_className)
+    TextView mClassName;
+    @BindView(R.id.title_classAlias)
+    TextView mAlias;
+    @BindView(R.id.title_time)
+    TextView mTime;
+    @BindView(R.id.title_week)
+    TextView mWeek;
+    @BindView(R.id.title_date)
+    TextView mDate;
+
     @BindView(R.id.main_listview)
     ListView mListview;
     @BindView(R.id.main_Loop)
-    LoopViewPagerLayout mLoop;
-    @BindView(R.id.main_loopName)
-    TextView mLoopName;
-    @BindView(R.id.main_scroll)
-    ScrollView mScroll;
-    @BindView(R.id.main_cardNum)
-    EditText mCardNum;
+    Banner banner;
     @BindView(R.id.main_stuList)
     MyRecyclerView mStuListRecycler;
-    @BindView(R.id.main_className)
-    TextView mClassName;
     @BindView(R.id.main_classMng_icon)
-    ImageView mClassMngIcon;
+    SimpleDraweeView mClassMngIcon;
     @BindView(R.id.main_classMng_name)
     TextView mClassMngName;
     @BindView(R.id.main_classMng_course)
@@ -117,45 +109,27 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     ListView mHonorListView;
     @BindView(R.id.main_recycler_Empty)
     TextView mRecyclerEmpty;
-    @BindView(R.id.main_noticeListView)
-    ListViewForScrollView mNoticeListView;
-    //通知滚动
-    private final Handler noticeScroll_handler = new Handler();
     @BindView(R.id.main_conStatus)
-    TextView mConStatus;
+    ImageView mConStatus;
     @BindView(R.id.main_yingdao)
     TextView mYingdao;
     @BindView(R.id.main_shidao)
     TextView mShidao;
     @BindView(R.id.main_weidao)
     TextView mWeidao;
-    @BindView(R.id.main_classAlias)
-    TextView mAlias;
     @BindView(R.id.main_moto)
     TextView mMoto;
-    @BindView(R.id.main_sclIcon)
-    ImageView mSclIcon;
-    private Runnable ScrollRunnable = new Runnable() {
-        @Override
-        public void run() {
-            int off = mNoticeListView.getMeasuredHeight() - mScroll.getHeight();//判断高度
-            if (off > 0) {
-                mScroll.scrollBy(0, 2);
-                if (mScroll.getScrollY() == off) {
-                    noticeScroll_handler.removeCallbacks(ScrollRunnable);
-                    noticeScroll_handler.postDelayed(ScrollRunnable, 6000);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mScroll.fullScroll(View.FOCUS_UP);
-                        }
-                    }, 3000);
-                } else {
-                    noticeScroll_handler.postDelayed(this, 150);
-                }
-            }
-        }
-    };
+
+    @BindView(R.id.main_noticeTitle)
+    TextView mNoticeTitle;
+    @BindView(R.id.main_noticeTime)
+    TextView mNoticeTime;
+    @BindView(R.id.main_week2)
+    TextView mWeek2;
+    @BindView(R.id.main_nextCourse)
+    TextView mNextCourse;
+    @BindView(R.id.main_viewPager)
+    AutoScrollViewPager mViewPager;
     private ACache mAcache;
     private StuListAdapter stuListAdapter;
     private NetWorkRequest netWorkRequest;
@@ -166,6 +140,9 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     private Logger logger;
     private String TAG = "MainActivity-->{}";
     private ArrayList<CameraInfo> mCameraInfos;
+    private String currentTime;
+    private MainData.CourseBean bean;
+    private ArrayList<MainData.CourseBean> course;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,8 +163,6 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
 
         dialog = MyProgressDialog.createLoadingDialog(MainActivity.this, "", this);
         netWorkRequest = new NetWorkRequest(this, this);
-
-        noticeScroll_handler.postDelayed(ScrollRunnable, 3000);
 
         linearLayoutManager = new LinearLayoutManager(MainActivity.this);
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -212,24 +187,6 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         new TimeUtils(MainActivity.this, this);
 
         getCardNum();
-
-        mNoticeListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(MainActivity.this, NoticeActivity.class);
-                intent.putExtra("id", mainData.getNotice().get(i).getNoticeId());
-                startActivity(intent);
-            }
-        });
-
-//        mCameraInfos = new ArrayList<>();
-//        mCameraInfos.add(new CameraInfo("192.168.8.80", "37777", "admin", "12345"));//二中
-//        mCameraInfos.add(new CameraInfo("192.168.8.81", "37777", "admin", "12345"));//二中
-//        mCameraInfos.add(new CameraInfo("172.16.13.222", "37777", "admin", "12345"));//六中
-//        mCameraInfos.add(new CameraInfo("192.168.0.89", "37777", "admin", "12345"));//测试
-//        mCameraInfos.add(new CameraInfo("192.168.0.80", "37777", "admin", "12345"));//测试
-//        mCameraInfos.add(new CameraInfo("192.168.0.112", "37777", "admin", "yc123456"));//测试
-//        mAcache.put("CameraInfo", mCameraInfos);
     }
 
     @Override
@@ -253,11 +210,9 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
             cons = (boolean) consobj;
         }
         if (cons) {
-            mConStatus.setText("连接状态：已连接");
-            mConStatus.setTextColor(getResources().getColor(R.color.cons));
+            mConStatus.setImageResource(R.drawable.lianwang);
         } else {
-            mConStatus.setText("连接状态：已断开");
-            mConStatus.setTextColor(getResources().getColor(R.color.conf));
+            mConStatus.setImageResource(R.drawable.lianwang_no);
         }
         //首先加载缓存
         MainData mainData = (MainData) mAcache.getAsObject("MainData");
@@ -279,6 +234,8 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         netWorkRequest.doGetRequest(0, Constant.getUrl(MainActivity.this, APIConfig.GET_Main), false, map);
         netWorkRequest.doGetRequest(2, Constant.getUrl(MainActivity.this, APIConfig.GET_LOAD_MSG), false, map);
         mDate.setText(TimeUtils.getStringDate());
+        mWeek.setText(TimeUtils.getStringWeek());
+        mWeek2.setText(TimeUtils.getStringWeek());
     }
 
     @Override
@@ -307,14 +264,71 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     /**
      * 设置课表
      */
-    private void setCourseList(List<MainData.CourseBean> mList) {
-        mListview.setAdapter(new CommonAdapter<MainData.CourseBean>(MainActivity.this, R.layout.item_main_list, mList) {
+    private void setCourseList() {
+        //寻找下一节课任务
+        bean = null;
+        if (course != null && course.size() > 0) {
+            currentTime = TimeUtils.getCurrentTime("HH:mm:ss");
+            for (MainData.CourseBean courseBean : course) {
+                if (TimeUtils.compareTime(courseBean.getStartTime(), currentTime)) {
+                    bean = courseBean;
+                    break;
+                }
+            }
+            if (bean == null && course.size() > 0) {
+                bean = course.get(course.size() - 1);
+            }
+        }
+
+        if (bean != null) {
+            mNextCourse.setText("下一节课：  " + bean.getSubjectname());
+        } else {
+            mNextCourse.setText("下一节课：暂无");
+        }
+        mListview.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        mListview.setAdapter(new CommonAdapter<MainData.CourseBean>(MainActivity.this, R.layout.item_main_list, course) {
             @Override
             protected void convert(ViewHolder viewHolder, MainData.CourseBean item, int position) {
                 viewHolder.setText(R.id.item_l1, item.getRemarks() + "");
-                viewHolder.setText(R.id.item_l2, item.getSubjectname());
-                viewHolder.setText(R.id.item_l3, item.getPeriod());
+                viewHolder.setText(R.id.item_l3, item.getSubjectname());
+                viewHolder.setText(R.id.item_l2, item.getPeriod());
                 viewHolder.setText(R.id.item_l4, item.getAccountname());
+                if (position == 0) {
+                    viewHolder.getView(R.id.item_top).setVisibility(View.INVISIBLE);
+                } else {
+                    viewHolder.getView(R.id.item_top).setVisibility(View.VISIBLE);
+                }
+                if (position == course.size() - 1) {
+                    viewHolder.getView(R.id.item_bot).setVisibility(View.INVISIBLE);
+                } else {
+                    viewHolder.getView(R.id.item_bot).setVisibility(View.VISIBLE);
+                }
+
+                if (TimeUtils.compareTime(item.getStartTime(), currentTime)) {
+                    viewHolder.setBackgroundRes(R.id.item_qiu, R.drawable.gray_solid_circle_back);
+                } else {
+                    viewHolder.setBackgroundRes(R.id.item_qiu, R.drawable.green_solid_circle_back);
+                }
+
+                if (bean != null && bean.getPeriod().equals(item.getPeriod())) {
+                    viewHolder.getView(R.id.item_icon).setVisibility(View.VISIBLE);
+                    GlideImgManager.glideLoader(MainActivity.this, bean.getPhoto(), R.drawable.pic_not_found2, R.drawable.pic_not_found2, (ImageView) (viewHolder.getView(R.id.item_icon)), 0);
+                    viewHolder.setBackgroundRes(R.id.item_qiu, R.drawable.red_solid_circle_back);
+                    viewHolder.setBackgroundRes(R.id.item_ll, R.color.green2);
+
+                    ((TextView) (viewHolder.getView(R.id.item_l1))).setTextColor(getResources().getColor(R.color.white));
+                    ((TextView) (viewHolder.getView(R.id.item_l2))).setTextColor(getResources().getColor(R.color.white));
+                    ((TextView) (viewHolder.getView(R.id.item_l3))).setTextColor(getResources().getColor(R.color.white));
+                    ((TextView) (viewHolder.getView(R.id.item_l4))).setTextColor(getResources().getColor(R.color.white));
+
+                } else {
+                    viewHolder.setBackgroundRes(R.id.item_ll, R.color.white);
+                    viewHolder.getView(R.id.item_icon).setVisibility(View.INVISIBLE);
+                    ((TextView) (viewHolder.getView(R.id.item_l1))).setTextColor(getResources().getColor(R.color.text_gray));
+                    ((TextView) (viewHolder.getView(R.id.item_l2))).setTextColor(getResources().getColor(R.color.text_black));
+                    ((TextView) (viewHolder.getView(R.id.item_l3))).setTextColor(getResources().getColor(R.color.text_black));
+                    ((TextView) (viewHolder.getView(R.id.item_l4))).setTextColor(getResources().getColor(R.color.text_black));
+                }
             }
         });
     }
@@ -323,7 +337,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
      * 设置荣誉评定
      */
     private void setHonorList(List<MainData.MoralScoreBean> mList) {
-
+        mHonorListView.setOverScrollMode(View.OVER_SCROLL_NEVER);
         mHonorListView.setAdapter(new CommonAdapter<MainData.MoralScoreBean>(MainActivity.this, R.layout.item_main_star, mList) {
             @Override
             protected void convert(ViewHolder viewHolder, MainData.MoralScoreBean item, int position) {
@@ -354,14 +368,9 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         });
     }
 
-    @OnClick({R.id.main_left, R.id.main_right, R.id.main_test})
+    @OnClick({R.id.main_left, R.id.main_right})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.main_test:
-//                Intent intent = new Intent(MainActivity.this, TcpService.class);
-//                intent.putExtra("test", 0);
-//                startService(intent);
-                break;
             case R.id.main_left:
                 if (mChatList != null && mChatList.size() > 0) {
                     int recyclePosition = linearLayoutManager.findFirstVisibleItemPosition();
@@ -389,47 +398,40 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
      * 设置页首轮播图
      */
     private void setPager(final List<MainData.PhotosBean> photos) {
-        mLoop.stopLoop();
-        mLoop.setLoop_ms(5000);//轮播的速度(毫秒)
-        mLoop.setLoop_duration(500);//滑动的速率(毫秒)
-        mLoop.setLoop_style(LoopStyle.Empty);//轮播的样式-默认empty
-        mLoop.setIndicatorLocation(IndicatorLocation.Center);//指示器位置-中Center
-        mLoop.initializeData(MainActivity.this);//初始化数据
-        ArrayList<BannerInfo> bannerInfos = new ArrayList<>();
-        for (MainData.PhotosBean photo : photos) {
-            bannerInfos.add(new BannerInfo<String>(photo.getUrl(), ""));
+        try {
+            ArrayList<String> images = new ArrayList<>();
+            for (MainData.PhotosBean photo : photos) {
+                images.add(photo.getUrl());
+            }
+            //设置banner样式
+            banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR);
+            //设置图片加载器
+            banner.setImageLoader(new GlideImageLoader());
+            //设置图片集合
+            banner.setImages(images);
+            //设置banner动画效果
+            banner.setBannerAnimation(Transformer.RotateUp);
+            //设置标题集合（当banner样式有显示title时）
+//        banner.setBannerTitles(titles);
+            //设置自动轮播，默认为true
+            banner.isAutoPlay(true);
+            //设置轮播时间
+            banner.setDelayTime(6000);
+            //设置指示器位置（当banner模式中有指示器时）
+            banner.setIndicatorGravity(BannerConfig.LEFT);
+            //banner设置方法全部调用完毕时最后调用
+            banner.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(TAG, e.getMessage());
         }
-        mLoop.setOnLoadImageViewListener(new OnDefaultImageViewLoader() {
-            @Override
-            public void onLoadImageView(int position, ImageView imageView, Object parameter) {
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//                Glide.with(MainActivity.this).load(parameter).into(imageView);
-                GlideImgManager.glideLoader(MainActivity.this, parameter.toString(), R.drawable.pic_not_found, R.drawable.pic_not_found, imageView, "");
-                position = position == 0 ? photos.size() - 1 : position - 1;
-                mLoopName.setText(photos.get(position).getDescription());
-//                LogUtils.d(position + "");
-            }
-        });//设置图片加载&自定义图片监听
-        mLoop.setOnBannerItemClickListener(new OnBannerItemClickListener() {
-            @Override
-            public void onBannerClick(int index, ArrayList<BannerInfo> banner) {
-                LogUtils.d(index + "");
-            }
-        });//设置监听
-        mLoop.setLoopData(bannerInfos);//设置数据
-        mLoop.startLoop();
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         LogUtils.d("main--onDestroy");
-        if (mLoop != null) {
-            mLoop.stopLoop();
-        }
-        if (noticeScroll_handler != null && ScrollRunnable != null) {
-            noticeScroll_handler.removeCallbacks(ScrollRunnable);
-        }
         if (EventBus.getDefault().isRegistered(this))//加上判断
             EventBus.getDefault().unregister(this);
     }
@@ -484,44 +486,46 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     private void setUIData(MainData mainData) {
         ClassInfoBean classInfo = mainData.getClassInfo();
         if (classInfo != null) {
-            mClassName.setText(classInfo.getGradeName() + classInfo.getClassName());
+            mClassName.setText(classInfo.getGradeName() + "\n\n" + classInfo.getClassName());
+            mSchoolName.setText("武汉六中");
+
+//            mAcache.put("SchoolName", "武汉六中");
+
             mAcache.put("ClassName", classInfo.getClassName());
-            mAcache.put("GradeName",classInfo.getGradeName());
+            mAcache.put("GradeName", classInfo.getGradeName());
             if (!TextUtils.isEmpty(classInfo.getAliasName()) && !classInfo.getAliasName().equals("null")) {
                 mAlias.setText("(" + classInfo.getAliasName() + ")");
+                mAcache.put("Alias", classInfo.getAliasName());
             }
 
-            mLoction.setText(classInfo.getAddress());
-            mAcache.put("Address",classInfo.getAddress());
+            mLoction.setText("教室编号:" + classInfo.getAddress());
+            mAcache.put("Address", classInfo.getAddress());
             if (!TextUtils.isEmpty(classInfo.getManagerMessage())) {
-                mClassMngCourse.setText(classInfo.getManagerMessage());
+                mClassMngCourse.setText("                  " + classInfo.getManagerMessage());
             } else {
                 mClassMngCourse.setText("无");
             }
             if (!TextUtils.isEmpty(classInfo.getMotto())) {
-                SpannableString spannableString = new SpannableString("班训：    " + classInfo.getMotto());
-                ForegroundColorSpan colorSpan = new ForegroundColorSpan(Color.parseColor("#000000"));
-                RelativeSizeSpan sizeSpan = new RelativeSizeSpan(1.2f);
-                StyleSpan styleSpan_B = new StyleSpan(Typeface.BOLD);
-                spannableString.setSpan(colorSpan, 0, 3, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                spannableString.setSpan(sizeSpan, 0, 3, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                spannableString.setSpan(styleSpan_B, 0, 3, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                mMoto.setText(spannableString);
+                mMoto.setText("班训：" + classInfo.getMotto());
             } else {
                 mMoto.setVisibility(View.GONE);
             }
 
+            //校徽
             if (!TextUtils.isEmpty(classInfo.getSchoolLogo()) && !classInfo.getSchoolLogo().equals("null")) {
                 GlideImgManager.glideLoader(MainActivity.this, classInfo.getSchoolLogo(), R.drawable.pic_not_found, R.drawable.pic_not_found, mSclIcon, 1);
+                mAcache.put("Logo", classInfo.getSchoolLogo());
             } else {
                 mSclIcon.setVisibility(View.GONE);
             }
         }
         ClassManagerBean classManager = mainData.getClassManager();
         if (classManager != null) {
-            GlideImgManager.glideLoader(MainActivity.this, classManager.getPhoto(), R.drawable.pic_not_found, R.drawable.pic_not_found, mClassMngIcon, 1);
+//            GlideImgManager.glideLoader(MainActivity.this, classManager.getPhoto(), R.drawable.pic_not_found2, R.drawable.pic_not_found2, mClassMngIcon, 0);
+            mClassMngIcon.setImageURI(Uri.parse(classManager.getPhoto()));
+
             mClassMngName.setText(classManager.getAccountName());
-            mAcache.put("ClassMng",classManager.getAccountName());
+            mAcache.put("ClassMng", classManager.getAccountName());
         }
         List<MainData.NoticeBean> notice = mainData.getNotice();
         if (notice != null) {
@@ -529,26 +533,24 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         }
 
         if (mainData.getPhotos() != null && mainData.getPhotos().size() > 0) {
+            mAcache.put("Photos", mainData.getPhotos());
             setPager(mainData.getPhotos());
         }
 
         if (mainData.getCourse() != null) {
-            setCourseList(mainData.getCourse());
-
-
             //保存课程数据，提供上课页面信息
-            ArrayList<MainData.CourseBean> course = (ArrayList<MainData.CourseBean>) mainData.getCourse();
+            course = (ArrayList<MainData.CourseBean>) mainData.getCourse();
             for (MainData.CourseBean courseBean : course) {
                 String period = courseBean.getPeriod();
-                if (!TextUtils.isEmpty(period)){
-                    String start = period.substring(0,period.indexOf("-"))+":00";
-                    String end = period.substring(period.indexOf("-")+1,period.length())+":00";
+                if (!TextUtils.isEmpty(period)) {
+                    String start = period.substring(0, period.indexOf("-")) + ":00";
+                    String end = period.substring(period.indexOf("-") + 1, period.length()) + ":00";
                     courseBean.setStartTime(start);
                     courseBean.setEndTime(end);
                 }
             }
-            mAcache.put("Course",course);
-
+            mAcache.put("Course", course);
+            setCourseList();
 
         }
         mChatList = mainData.getChat();
@@ -561,9 +563,9 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         }
         MainData.AttendanceBean attendance = mainData.getAttendance();
         if (attendance != null) {
-            mYingdao.setText(attendance.getYindao() + "人");
-            mShidao.setText(attendance.getShidao() + "人");
-            mWeidao.setText(attendance.getWeidao() + "人");
+            mYingdao.setText(attendance.getYindao() + "");
+            mShidao.setText(attendance.getShidao() + "");
+            mWeidao.setText(attendance.getWeidao() + "");
         }
     }
 
@@ -573,15 +575,48 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
      * @param notice
      */
     private void setNoticeList(final List<MainData.NoticeBean> notice) {
-        mNoticeListView.setAdapter(new CommonAdapter<MainData.NoticeBean>(MainActivity.this, R.layout.item_main_notice, notice) {
-            @Override
-            protected void convert(ViewHolder viewHolder, MainData.NoticeBean item, int position) {
-                viewHolder.setText(R.id.item_name, item.getTitle());
-                viewHolder.setText(R.id.item_person, item.getPublisher());
-                viewHolder.setText(R.id.item_time, item.getPublishtime());
+        MainData.NoticeBean bean = new MainData.NoticeBean("第二届优秀学生表彰大会如期举行", "2019-03-05 09:23:22");
+        MainData.NoticeBean bean2 = new MainData.NoticeBean("第三届优秀学生表彰大会如期举行", "2019-03-05 09:23:22");
+        MainData.NoticeBean bean3 = new MainData.NoticeBean("第四届优秀学生表彰大会如期举行第四届优秀学生表彰大会如期举", "2019-03-05 09:23:22");
+        notice.add(bean);
+        notice.add(bean2);
+        notice.add(bean3);
+        if (notice != null && notice.size() > 0) {
+//            final MainData.NoticeBean noticeBean = notice.get(0);
+//            mNoticeTitle.setText(noticeBean.getTitle());
+//            mNoticeTime.setText(noticeBean.getPublishtime());
+//
+//            mNoticeTitle.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Intent intent = new Intent(MainActivity.this, NoticeActivity.class);
+//                    intent.putExtra("id", noticeBean.getNoticeId());
+//                    startActivity(intent);
+//                }
+//            });
 
+            ArrayList<View> mViewlist = new ArrayList<>();
+            for (MainData.NoticeBean noticeBean1 : notice) {
+                View view = LayoutInflater.from(this).inflate(R.layout.item_main_notice_list, null);
+                TextView title = view.findViewById(R.id.item_noticeTitle);
+                TextView time = view.findViewById(R.id.item_noticeTime);
+                title.setText(noticeBean1.getTitle());
+                time.setText(noticeBean1.getPublishtime());
+                mViewlist.add(view);
             }
-        });
+            MyViewPagerAdapter myViewPagerAdapter = new MyViewPagerAdapter(mViewlist);
+            mViewPager.setAdapter(myViewPagerAdapter);
+            mViewPager.setInterval(5000);
+            mViewPager.startAutoScroll();
+            myViewPagerAdapter.setOnItemClick(new MyViewPagerAdapter.OnItemClickPosition() {
+                @Override
+                public void onclick(int position) {
+                    Intent intent = new Intent(MainActivity.this, NoticeActivity.class);
+                    intent.putExtra("id", notice.get(position).getNoticeId());
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
     @Override
@@ -620,7 +655,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
                     getNoticeList();
                 }
             }
-        }, 15000);
+        }, 30000);
     }
 
     @Override
@@ -673,11 +708,9 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     public void onUpdateSynEvent2(LoginEvent event) {
         LogUtils.d("MainActivity接收到连接状态信息" + event.getType() + event.isStatus());
         if (event.isStatus()) {
-            mConStatus.setText("连接状态：已连接");
-            mConStatus.setTextColor(getResources().getColor(R.color.cons));
+            mConStatus.setImageResource(R.drawable.lianwang);
         } else {
-            mConStatus.setText("连接状态：已断开");
-            mConStatus.setTextColor(getResources().getColor(R.color.conf));
+            mConStatus.setImageResource(R.drawable.lianwang_no);
         }
     }
 

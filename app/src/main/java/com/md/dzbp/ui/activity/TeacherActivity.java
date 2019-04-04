@@ -2,19 +2,26 @@ package com.md.dzbp.ui.activity;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
+import android.text.format.DateFormat;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.apkfuns.logutils.LogUtils;
 import com.bumptech.glide.Glide;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
 import com.md.dzbp.constants.APIConfig;
@@ -32,6 +39,13 @@ import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.GetCardNumUtils;
+import com.md.dzbp.utils.GlideImageLoader;
+import com.md.dzbp.utils.GlideImgManager;
+import com.youth.banner.Banner;
+import com.youth.banner.BannerConfig;
+import com.youth.banner.Transformer;
+import com.zhy.adapter.abslistview.CommonAdapter;
+import com.zhy.adapter.abslistview.ViewHolder;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -45,6 +59,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -54,32 +70,51 @@ import butterknife.OnClick;
  */
 public class TeacherActivity extends BaseActivity implements TimeListener, UIDataListener {
 
-    @BindView(R.id.teacher_back)
-    TextView mBack;
-    @BindView(R.id.teacher_time)
-    TextView mTime;
-    @BindView(R.id.teacher_date)
-    TextView mDate;
-    @BindView(R.id.teacher_temp)
-    TextView mTemp;
-    @BindView(R.id.teacher_cardNum)
+
+    @BindView(R.id.title_classAddr)
+    TextView mAddr;
+    @BindView(R.id.title_cardNum)
     EditText mCardNum;
-    @BindView(R.id.teacher_img)
-    ImageView mImg;
-    @BindView(R.id.teacher_className)
+    @BindView(R.id.title_sclIcon)
+    ImageView mSclIcon;
+    @BindView(R.id.title_schoolName)
+    TextView mSchoolName;
+    @BindView(R.id.title_className)
     TextView mClassName;
+    @BindView(R.id.title_classAlias)
+    TextView mAlias;
+    @BindView(R.id.title_time)
+    TextView mTime;
+    @BindView(R.id.title_week)
+    TextView mWeek;
+    @BindView(R.id.title_date)
+    TextView mDate;
+
+
     @BindView(R.id.teacher_courseName)
     TextView mCourseName;
     @BindView(R.id.teacher_teacherName)
     TextView mTeacherName;
-    @BindView(R.id.teacher_periodName)
-    TextView mPeriodName;
-    @BindView(R.id.teacher_addr)
-    TextView mAddr;
-    @BindView(R.id.teacher_imgRl)
-    RelativeLayout mImgRl;
     @BindView(R.id.teacher_qrcode)
     ImageView mQrcode;
+    @BindView(R.id.teacher_icon)
+    SimpleDraweeView mTeacherIcon;
+    @BindView(R.id.teacher_Loop)
+    Banner banner;
+    @BindView(R.id.teacher_week2)
+    TextView mWeek2;
+    @BindView(R.id.teacher_listview)
+    ListView mListview;
+    @BindView(R.id.teacher_nextCourse)
+    TextView mNextCourse;
+    @BindView(R.id.main_conStatus)
+    ImageView mConStatus;
+    @BindView(R.id.teacher_start)
+    TextView mStart;
+    @BindView(R.id.teacher_end)
+    TextView mEnd;
+    @BindView(R.id.teacher_seekbar)
+    SeekBar mSeekbar;
 
     private Dialog dialog;
     private NetWorkRequest netWorkRequest;
@@ -89,6 +124,15 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     private String className;
     private String address;
     private String gradeName;
+    private String schoolName;
+    private ArrayList<MainData.CourseBean> course;
+    private MainData.CourseBean bean;
+    private String current;
+    private String logo;
+    private String alias;
+    private String startTime;
+    private String endTime;
+    private Timer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,10 +156,27 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
             className = mAcache.getAsString("ClassName");
             gradeName = mAcache.getAsString("GradeName");
             address = mAcache.getAsString("Address");
+            schoolName = mAcache.getAsString("SchoolName");
+            logo = mAcache.getAsString("Logo");
+            alias = mAcache.getAsString("Alias");
+
+            mSchoolName.setText(schoolName);
+            GlideImgManager.glideLoader(TeacherActivity.this, logo, R.drawable.pic_not_found, R.drawable.pic_not_found, mSclIcon, 1);
+            if (!TextUtils.isEmpty(alias) && !alias.equals("null")) {
+                mAlias.setText("(" + alias + ")");
+            }
         } catch (Exception e) {
+            logger.error(TAG, e);
             e.printStackTrace();
         }
 
+        //禁止手动滑动
+        mSeekbar.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
     }
 
     @Override
@@ -142,20 +203,130 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
             cb.setAddress(address);
             cb.setClassName(className);
             cb.setGradeName(gradeName);
-            String current = TimeUtils.getCurrentTime1();
-            ArrayList<MainData.CourseBean> course = (ArrayList<MainData.CourseBean>) mAcache.getAsObject("Course");
+            current = TimeUtils.getCurrentTime1();
+            course = (ArrayList<MainData.CourseBean>) mAcache.getAsObject("Course");
 //            LogUtils.d(course);
-            for (MainData.CourseBean courseBean : course) {
-                if (compareDate(courseBean.getStartTime(), current) && compareDate(current, courseBean.getEndTime())) {
-                    cb.setPeriodName(courseBean.getRemarks());
-                    cb.setAccountName(courseBean.getAccountname());
-                    cb.setSubjectName(courseBean.getSubjectname());
+            bean = null;
+            if (course != null && course.size() > 0) {
+                for (MainData.CourseBean courseBean : course) {
+                    if (compareDate(courseBean.getStartTime(), current) && compareDate(current, courseBean.getEndTime())) {
+                        bean = courseBean;
+                        cb.setPeriodName(courseBean.getRemarks());
+                        cb.setAccountName(courseBean.getAccountname());
+                        cb.setSubjectName(courseBean.getSubjectname());
+                    }
                 }
             }
             setUIData(cb);
+            setCourseList();
+            setPager();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void setCourseList() {
+        //寻找当前课任务
+        if (bean != null) {
+            try {
+                mNextCourse.setText(bean.getSubjectname() + " 上课中...");
+                startTime = bean.getStartTime();
+                endTime = bean.getEndTime();
+                mStart.setText(startTime);
+                mEnd.setText(endTime);
+
+                if (!TextUtils.isEmpty(bean.getPhoto())) {
+                    mTeacherIcon.setImageURI(Uri.parse(bean.getPhoto()));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.debug(TAG, e);
+            }
+        } else {
+            mNextCourse.setText("上课中...");
+        }
+//        mListview.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        mListview.setAdapter(new CommonAdapter<MainData.CourseBean>(TeacherActivity.this, R.layout.item_main_list, course) {
+            @Override
+            protected void convert(ViewHolder viewHolder, MainData.CourseBean item, int position) {
+                viewHolder.setText(R.id.item_l1, item.getRemarks() + "");
+                viewHolder.setText(R.id.item_l3, item.getSubjectname());
+                viewHolder.setText(R.id.item_l2, item.getPeriod());
+                viewHolder.setText(R.id.item_l4, item.getAccountname());
+                if (position == 0) {
+                    viewHolder.getView(R.id.item_top).setVisibility(View.INVISIBLE);
+                } else {
+                    viewHolder.getView(R.id.item_top).setVisibility(View.VISIBLE);
+                }
+                if (position == course.size() - 1) {
+                    viewHolder.getView(R.id.item_bot).setVisibility(View.INVISIBLE);
+                } else {
+                    viewHolder.getView(R.id.item_bot).setVisibility(View.VISIBLE);
+                }
+
+                if (TimeUtils.compareTime(item.getStartTime(), current)) {
+                    viewHolder.setBackgroundRes(R.id.item_qiu, R.drawable.gray_solid_circle_back);
+                } else {
+                    viewHolder.setBackgroundRes(R.id.item_qiu, R.drawable.green_solid_circle_back);
+                }
+
+                if (bean != null && bean.getPeriod().equals(item.getPeriod())) {
+                    viewHolder.getView(R.id.item_icon).setVisibility(View.VISIBLE);
+                    GlideImgManager.glideLoader(TeacherActivity.this, bean.getPhoto(), R.drawable.pic_not_found2, R.drawable.pic_not_found2, (ImageView) (viewHolder.getView(R.id.item_icon)), 0);
+                    viewHolder.setBackgroundRes(R.id.item_qiu, R.drawable.red_solid_circle_back);
+                    viewHolder.setBackgroundRes(R.id.item_ll, R.color.green2);
+
+                    ((TextView) (viewHolder.getView(R.id.item_l1))).setTextColor(getResources().getColor(R.color.white));
+                    ((TextView) (viewHolder.getView(R.id.item_l2))).setTextColor(getResources().getColor(R.color.white));
+                    ((TextView) (viewHolder.getView(R.id.item_l3))).setTextColor(getResources().getColor(R.color.white));
+                    ((TextView) (viewHolder.getView(R.id.item_l4))).setTextColor(getResources().getColor(R.color.white));
+
+                } else {
+                    viewHolder.setBackgroundRes(R.id.item_ll, R.color.white);
+                    viewHolder.getView(R.id.item_icon).setVisibility(View.INVISIBLE);
+                    ((TextView) (viewHolder.getView(R.id.item_l1))).setTextColor(getResources().getColor(R.color.text_gray));
+                    ((TextView) (viewHolder.getView(R.id.item_l2))).setTextColor(getResources().getColor(R.color.text_black));
+                    ((TextView) (viewHolder.getView(R.id.item_l3))).setTextColor(getResources().getColor(R.color.text_black));
+                    ((TextView) (viewHolder.getView(R.id.item_l4))).setTextColor(getResources().getColor(R.color.text_black));
+                }
+            }
+        });
+    }
+
+    /**
+     * 设置页首轮播图
+     */
+    private void setPager() {
+        try {
+            ArrayList<MainData.PhotosBean> photos = (ArrayList<MainData.PhotosBean>) mAcache.getAsObject("Photos");
+
+            ArrayList<String> images = new ArrayList<>();
+            for (MainData.PhotosBean photo : photos) {
+                images.add(photo.getUrl());
+            }
+            //设置banner样式
+            banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR);
+            //设置图片加载器
+            banner.setImageLoader(new GlideImageLoader());
+            //设置图片集合
+            banner.setImages(images);
+            //设置banner动画效果
+            banner.setBannerAnimation(Transformer.BackgroundToForeground);
+            //设置标题集合（当banner样式有显示title时）
+//        banner.setBannerTitles(titles);
+            //设置自动轮播，默认为true
+            banner.isAutoPlay(true);
+            //设置轮播时间
+            banner.setDelayTime(6000);
+            //设置指示器位置（当banner模式中有指示器时）
+            banner.setIndicatorGravity(BannerConfig.LEFT);
+            //banner设置方法全部调用完毕时最后调用
+            banner.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(TAG, e);
+        }
+
     }
 
     @Override
@@ -168,11 +339,21 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
         }
         boolean cons = (boolean) mAcache.getAsObject("conStatus");
         if (cons) {
-            mTemp.setText("连接状态：已连接");
-            mTemp.setTextColor(getResources().getColor(R.color.white));
+            mConStatus.setImageResource(R.drawable.lianwang);
         } else {
-            mTemp.setText("连接状态：已断开");
-            mTemp.setTextColor(getResources().getColor(R.color.conf));
+            mConStatus.setImageResource(R.drawable.lianwang_no);
+        }
+        //更新课程进度信息
+        if (timer == null) {
+            timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    int i = (int) (TimeUtils.getpercentageTime(startTime, endTime) * 100);
+                    logger.debug(TAG, "课程进度：" + i);
+                    mSeekbar.setProgress(i);
+                }
+            }, 5000, 60000);
         }
     }
 
@@ -182,6 +363,11 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
 //        LogUtils.d("解注册EventBus");
         if (EventBus.getDefault().isRegistered(this))//加上判断
             EventBus.getDefault().unregister(this);
+
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
     }
 
     @Override
@@ -207,6 +393,8 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
         map.put("timestamp", System.currentTimeMillis() + "");
         netWorkRequest.doGetRequest(0, Constant.getUrl(this, APIConfig.GET_COURSE), false, map);
         mDate.setText(TimeUtils.getStringDate());
+        mWeek.setText(TimeUtils.getStringWeek());
+        mWeek2.setText(TimeUtils.getStringWeek());
 
     }
 
@@ -242,15 +430,6 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
                 });
                 if (courseBean != null) {
                     setUIData(courseBean);
-                    //上课信息不全。一分钟后重新请求
-//                    if (TextUtils.isEmpty(courseBean.getSubjectName()) && TextUtils.isEmpty(courseBean.getAccountName())) {
-//                        new Handler().postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                getUIdata();
-//                            }
-//                        }, 30000);
-//                    }
                 }
             }
         }
@@ -263,31 +442,20 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
      */
     private void setUIData(CourseBean courseBean) {
         try {
-            if (!TextUtils.isEmpty(courseBean.getImage())) {
-                Glide.with(this).load(courseBean.getImage()).into(mImg);
-            } else {
-                Glide.with(this).load(R.drawable.teacher).into(mImg);
-            }
-            mClassName.setText(courseBean.getGradeName() + courseBean.getClassName());
+            mClassName.setText(courseBean.getGradeName() + "\n\n"+ courseBean.getClassName());
             if (!TextUtils.isEmpty(courseBean.getSubjectName())) {
-                mCourseName.setText("课程：" + courseBean.getSubjectName());
+                mCourseName.setText(courseBean.getSubjectName());
                 mCourseName.setVisibility(View.VISIBLE);
             } else {
                 mCourseName.setVisibility(View.GONE);
             }
             if (!TextUtils.isEmpty(courseBean.getAccountName())) {
-                mTeacherName.setText("教师：" + courseBean.getAccountName());
+                mTeacherName.setText(courseBean.getAccountName());
             } else if (!TextUtils.isEmpty(courseBean.getManagerAccountName())) {
-                mTeacherName.setText("班主任：" + courseBean.getManagerAccountName());
+                mTeacherName.setText(courseBean.getManagerAccountName());
             }
-            if (!TextUtils.isEmpty(courseBean.getPeriodName())) {
-                mPeriodName.setText("节次：" + courseBean.getPeriodName());
-                mPeriodName.setVisibility(View.VISIBLE);
-            } else {
-                mPeriodName.setVisibility(View.GONE);
-            }
-            mAddr.setText("教室：" + courseBean.getAddress());
-//            Glide.with(this).load(courseBean.getQrcode()).into(mQrcode);
+            mAddr.setText("教室编号:" + courseBean.getAddress());
+            Glide.with(this).load(courseBean.getQrcode()).into(mQrcode);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -345,11 +513,9 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
     public void onUpdateSynEvent2(LoginEvent event) {
         logger.debug(TAG, "TeacherActivity接收到连接状态信息" + event.getType() + event.isStatus());
         if (event.isStatus()) {
-            mTemp.setText("连接状态：已连接");
-            mTemp.setTextColor(getResources().getColor(R.color.white));
+            mConStatus.setImageResource(R.drawable.lianwang);
         } else {
-            mTemp.setText("连接状态：已断开");
-            mTemp.setTextColor(getResources().getColor(R.color.conf));
+            mConStatus.setImageResource(R.drawable.lianwang_no);
         }
     }
 
@@ -361,10 +527,10 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
             Date a = sdf.parse(time1);
             Date b = sdf.parse(time2);
             //Date类的一个方法，如果a早于b返回true，否则返回false
-            if (a.before(b))
-                return true;
-            else
+            if (b.before(a))
                 return false;
+            else
+                return true;
         } catch (ParseException e) {
             e.printStackTrace();
         }

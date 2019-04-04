@@ -106,7 +106,7 @@ public class StuListAdapter extends RecyclerView.Adapter<StuListAdapter.ViewHold
         }catch (Exception e){
             logger.error(e.getMessage());
         }
-        setFlickerAnimation(500, viewHolder.mNum);
+//        setFlickerAnimation(500, viewHolder.mNum);
         //如果设置了回调，则设置点击事件
         if (mOnItemClickLitener != null) {
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {

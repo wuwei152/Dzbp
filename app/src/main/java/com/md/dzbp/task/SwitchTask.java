@@ -3,7 +3,6 @@ package com.md.dzbp.task;
 import android.app.smdt.SmdtManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
 
 import com.apkfuns.logutils.LogUtils;
 import com.md.dzbp.data.WorkTimePeriod;
@@ -186,7 +185,7 @@ public class SwitchTask extends Timer {
      */
 
     public void CheckCurrentTaskdelay(int seconds) {
-        logger.debug(TAG, seconds+"秒后开始执行强切后检查实际页面任务");
+        logger.debug(TAG, seconds + "秒后开始执行强切后检查实际页面任务");
         if (timer_checkDelay != null) {
             timer_checkDelay.cancel();
         }
@@ -309,6 +308,18 @@ public class SwitchTask extends Timer {
                 if (level == 0 && point.getStartTask() == 0 && point.getTaskstate() == 0) {
                     //打卡开始
                     Intent intent = new Intent(context, SignActivity.class);
+                    //获取结束打卡的时间，做倒计时
+                    for (WorkTimePoint p : mList) {
+                        if (point.getTaskTag().equals(p.getTaskTag()) && p.getStartTask() == 1) {
+                            String endTime = "";
+                            String triggerTime = p.getTriggerTime();
+                            if (triggerTime.length()>12){
+                                endTime = triggerTime.substring(11);
+                            }
+                            intent.putExtra("End", endTime);
+                            LogUtils.d("End" + p.getTriggerTime());
+                        }
+                    }
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                     point.setTaskstate(1);

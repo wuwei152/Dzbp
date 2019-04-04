@@ -39,8 +39,6 @@ import com.md.dzbp.ui.activity.VideoShowActivity;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.FileUtils;
-import com.md.dzbp.utils.luban.Luban;
-import com.md.dzbp.utils.luban.OnCompressListener;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import org.greenrobot.eventbus.EventBus;
@@ -58,6 +56,8 @@ import java.util.List;
 import java.util.Map;
 
 import cn.finalteam.toolsfinal.ManifestUtils;
+import top.zibin.luban.Luban;
+import top.zibin.luban.OnCompressListener;
 
 /**
  * 处理TCP消息工具类

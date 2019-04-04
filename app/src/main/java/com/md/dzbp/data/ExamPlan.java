@@ -16,6 +16,15 @@ public class ExamPlan implements Serializable{
     public ExamPlan() {
     }
 
+    public ExamPlan(String id, String edate, String starttime, String endtime, String subjectname, String teachername) {
+        this.id = id;
+        this.edate = edate;
+        this.starttime = starttime;
+        this.endtime = endtime;
+        this.subjectname = subjectname;
+        this.teachername = teachername;
+    }
+
     public String getId() {
         return id;
     }

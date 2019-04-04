@@ -8,6 +8,7 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -30,6 +31,7 @@ import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.GetCardNumUtils;
+import com.md.dzbp.utils.GlideImgManager;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -49,18 +51,28 @@ import butterknife.BindView;
 
 public class ExamActivity extends BaseActivity implements TimeListener, UIDataListener {
 
-    @BindView(R.id.exam_cardNum)
+
+    @BindView(R.id.title_classAddr)
+    TextView mAddress;
+    @BindView(R.id.title_cardNum)
     EditText mCardNum;
-    @BindView(R.id.exam_time)
+    @BindView(R.id.title_sclIcon)
+    ImageView mSclIcon;
+    @BindView(R.id.title_schoolName)
+    TextView mSchoolName;
+    @BindView(R.id.title_className)
+    TextView mClassName;
+    @BindView(R.id.title_classAlias)
+    TextView mAlias;
+    @BindView(R.id.title_time)
     TextView mTime;
-    @BindView(R.id.exam_date)
+    @BindView(R.id.title_week)
+    TextView mWeek;
+    @BindView(R.id.title_date)
     TextView mDate;
-    @BindView(R.id.exam_temp)
-    TextView mTemp;
+
     @BindView(R.id.exam_list)
     ListView mListview;
-    @BindView(R.id.exam_address)
-    TextView mAddress;
     @BindView(R.id.exam_name)
     TextView mName;
     @BindView(R.id.exam_subject)
@@ -71,8 +83,6 @@ public class ExamActivity extends BaseActivity implements TimeListener, UIDataLi
     TextView mExamTime;
     @BindView(R.id.exam_proctor)
     TextView mProctor;
-    @BindView(R.id.exam_examNum)
-    TextView mExamNum;
     @BindView(R.id.exam_discipline)
     TextView mDiscipline;
     private ACache mAcache;
@@ -101,11 +111,30 @@ public class ExamActivity extends BaseActivity implements TimeListener, UIDataLi
         logger = LoggerFactory.getLogger(ExamActivity.class);
         dialog = MyProgressDialog.createLoadingDialog(ExamActivity.this, "", this);
         netWorkRequest = new NetWorkRequest(this, this);
+
         try {
-            address = mAcache.getAsString("Address");
-            mAddress.setText(address);
+            String className = mAcache.getAsString("ClassName");
+            String gradeName = mAcache.getAsString("GradeName");
+            String address = mAcache.getAsString("Address");
+            String schoolName = mAcache.getAsString("SchoolName");
+            String logo = mAcache.getAsString("Logo");
+            String alias = mAcache.getAsString("Alias");
+
+            mDate.setText(TimeUtils.getStringDate());
+            mWeek.setText(TimeUtils.getStringWeek());
+            //获取时间日期
+            new TimeUtils(ExamActivity.this, this);
+
+            mClassName.setText(gradeName + "\n\n"+ className);
+            mAddress.setText("教室编号:" + address);
+            mSchoolName.setText(schoolName);
+            GlideImgManager.glideLoader(ExamActivity.this, logo, R.drawable.pic_not_found, R.drawable.pic_not_found, mSclIcon, 1);
+            if (!TextUtils.isEmpty(alias) && !alias.equals("null")) {
+                mAlias.setText("(" + alias + ")");
+            }
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error(TAG, e);
         }
         getUIData();
     }
@@ -162,9 +191,6 @@ public class ExamActivity extends BaseActivity implements TimeListener, UIDataLi
             }
         });
 
-        new TimeUtils(ExamActivity.this, this);
-        mDate.setText(TimeUtils.getStringDate());
-
         try {
             examBean = (ExamBean) mAcache.getAsObject("Exam");
             setUiData(examBean);
@@ -180,12 +206,21 @@ public class ExamActivity extends BaseActivity implements TimeListener, UIDataLi
      */
     private void setUiData(ExamBean examBean) {
 
+        examBean = new ExamBean();
+        examBean.setExamination(new ExamBean.ExaminationBean("2019届---3月月考", "2019年3月26日", "2019年3月27日"));
+        ArrayList<ExamPlan> examPlans = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            ExamPlan plan = new ExamPlan("1231"+i,"2019-03-27","09:00:00","19:00:00","语文","李老师");
+            examPlans.add(plan);
+        }
+        examBean.setPlan(examPlans);
+
         if (examBean != null) {
             mAddress.setText(examBean.getAddress());
             ExamBean.ExaminationBean examination = examBean.getExamination();
             if (examination != null) {
                 mName.setText(examination.getName());
-                if (!TextUtils.isEmpty(examination.getRemark())){
+                if (!TextUtils.isEmpty(examination.getRemark())) {
                     CharSequence charSequence = Html.fromHtml(examination.getRemark());
                     mDiscipline.setText(charSequence);
                     mDiscipline.setMovementMethod(LinkMovementMethod.getInstance());
@@ -194,13 +229,12 @@ public class ExamActivity extends BaseActivity implements TimeListener, UIDataLi
             String current = TimeUtils.getCurrentTime2();
             ArrayList<ExamPlan> plan = (ArrayList<ExamPlan>) examBean.getPlan();
             if (plan != null) {
-                mExamNum.setText("当前共有" + plan.size() + "场考试安排");
                 mListview.setAdapter(new CommonAdapter<ExamPlan>(ExamActivity.this, R.layout.item_exam, plan) {
                     @Override
                     protected void convert(ViewHolder viewHolder, ExamPlan item, int position) {
                         viewHolder.setText(R.id.examitem_date, item.getEdate());
                         viewHolder.setText(R.id.examitem_time, item.getStarttime() + "--" + item.getEndtime());
-                        viewHolder.setText(R.id.examitem_course, "科目：" + item.getSubjectname());
+                        viewHolder.setText(R.id.examitem_course, item.getSubjectname());
                         viewHolder.setText(R.id.examitem_teacher, "监考老师：" + item.getTeachername());
                     }
                 });
@@ -218,7 +252,7 @@ public class ExamActivity extends BaseActivity implements TimeListener, UIDataLi
                 if (plans != null) {//当前正在进行的计划
                     mStates.setText("考试正在进行");
                     mSubject.setText(plans.getSubjectname());
-                    mExamTime.setText("考试时间：" + plans.getStarttime() + "--" + plans.getEndtime());
+                    mExamTime.setText(plans.getEdate() + "     " + plans.getStarttime() + "--" + plans.getEndtime());
                     mProctor.setText("监考老师：" + plans.getTeachername());
                 } else {//没有当前正在进行的计划，查找即将开始的计划
                     for (ExamPlan examPlan : plan) {
@@ -231,14 +265,14 @@ public class ExamActivity extends BaseActivity implements TimeListener, UIDataLi
                     if (plans != null) {
                         mStates.setText("考试即将开始");
                         mSubject.setText(plans.getSubjectname());
-                        mExamTime.setText("考试时间：" + plans.getStarttime() + "--" + plans.getEndtime());
+                        mExamTime.setText(plans.getEdate() + "     " + plans.getStarttime() + "--" + plans.getEndtime());
                         mProctor.setText("监考老师：" + plans.getTeachername());
                     }
                     if (plans == null && plan.size() > 0) {//没有即将开始的计划，计划已全部执行完，显示最后的计划
                         plans = plan.get(plan.size() - 1);
                         mStates.setText("考试已结束");
                         mSubject.setText(plans.getSubjectname());
-                        mExamTime.setText("考试时间：" + plans.getStarttime() + "--" + plans.getEndtime());
+                        mExamTime.setText(plans.getEdate() + "     " + plans.getStarttime() + "--" + plans.getEndtime());
                         mProctor.setText("监考老师：" + plans.getTeachername());
                     } else if (plans == null && plan.size() == 0) {
                         mStates.setText("当前暂无考试安排");
@@ -247,11 +281,9 @@ public class ExamActivity extends BaseActivity implements TimeListener, UIDataLi
 
 
             } else {
-                mExamNum.setText("当前暂无考试安排");
                 mStates.setText("当前暂无考试安排");
             }
         } else {
-            mExamNum.setText("当前暂无考试安排");
             mStates.setText("当前暂无考试安排");
         }
     }
@@ -324,8 +356,8 @@ public class ExamActivity extends BaseActivity implements TimeListener, UIDataLi
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                    logger.debug(TAG, "重新请求");
-                    getUIData();
+                logger.debug(TAG, "重新请求");
+                getUIData();
             }
         }, 30000);
     }

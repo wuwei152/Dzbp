@@ -20,8 +20,9 @@ android {
         applicationId "com.md.dzbp"
         minSdkVersion 18
         targetSdkVersion 23
-        versionCode 11
-        versionName "2.0.2"
+        versionCode 12
+        versionName "2.0.4"
+        multiDexEnabled true
         //推送选择要添加的对应cpu类型的.so库。
         ndk {
             abiFilters 'armeabi'
@@ -46,22 +47,6 @@ android {
             signingConfig signingConfigs.config
         }
     }
-
-//    flavorDimensions "channel"//分渠道打包
-//    productFlavors {
-//        wuhan {
-//            dimension "channel"
-//            versionCode 12
-//            versionName "2.0.3"
-//        }
-//
-//        yichang {
-//            dimension "channel"
-//            versionCode 11
-//            versionName "2.0.2"
-//        }
-//    }
-
 }
 
 configurations.all {
@@ -129,4 +114,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-v4'
         exclude group: 'com.android.support', module: 'support-v7'
     }
+    compile project(path: ':imageeditlibrary')
+    compile'com.android.support:multidex:1.0.0'
+    compile 'com.youth.banner:banner:1.4.10'
+    implementation 'top.zibin:Luban:1.1.8'
 }

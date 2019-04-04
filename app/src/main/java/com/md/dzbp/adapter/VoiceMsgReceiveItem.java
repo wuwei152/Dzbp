@@ -19,6 +19,7 @@ import com.md.dzbp.ftp.FTP;
 import com.md.dzbp.model.TimeUtils;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.utils.FileUtils;
+import com.md.dzbp.utils.GlideImgManager;
 import com.zhy.adapter.abslistview.ViewHolder;
 import com.zhy.adapter.abslistview.base.ItemViewDelegate;
 
@@ -53,7 +54,7 @@ public class VoiceMsgReceiveItem implements ItemViewDelegate<MessageBase> {
     @Override
     public void convert(final ViewHolder holder, MessageBase message, int position) {
         final VoiceReceiveMessage chatMessage = (VoiceReceiveMessage) message;
-        Glide.with(context).load(chatMessage.getHeadIcon()).into((ImageView) holder.getView(R.id.iv_userhead));
+        GlideImgManager.glideLoader(context, chatMessage.getHeadIcon(), R.drawable.head_icon, R.drawable.head_icon, ((ImageView) holder.getView(R.id.iv_userhead)), 0);
         holder.setText(R.id.timestamp, TimeUtils.toDateString(chatMessage.getCreateTime()));
 //        holder.setText(R.id.tv_length, chatMessage.getLength()+"  \"");
         holder.setText(R.id.tv_userid, chatMessage.getUserName());

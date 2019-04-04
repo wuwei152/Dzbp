@@ -38,6 +38,7 @@ import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.GetCardNumUtils;
+import com.md.dzbp.utils.GlideImgManager;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -59,18 +60,26 @@ import butterknife.OnClick;
  */
 public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Callback, TimeListener, UIDataListener {
 
-    @BindView(R.id.videoshow_time)
-    TextView mTime;
-    @BindView(R.id.videoshow_date)
-    TextView mDate;
-    @BindView(R.id.videoshow_temp)
-    TextView mTemp;
-    @BindView(R.id.videoshow_img)
-    ImageView mImg;
-    @BindView(R.id.videoshow_cardNum)
+
+    @BindView(R.id.title_classAddr)
+    TextView mAddr;
+    @BindView(R.id.title_cardNum)
     EditText mCardNum;
-    @BindView(R.id.videoshow_className)
+    @BindView(R.id.title_sclIcon)
+    ImageView mSclIcon;
+    @BindView(R.id.title_schoolName)
+    TextView mSchoolName;
+    @BindView(R.id.title_className)
     TextView mClassName;
+    @BindView(R.id.title_classAlias)
+    TextView mAlias;
+    @BindView(R.id.title_time)
+    TextView mTime;
+    @BindView(R.id.title_week)
+    TextView mWeek;
+    @BindView(R.id.title_date)
+    TextView mDate;
+
     @BindView(R.id.videoshow_courseName)
     TextView mCourseName;
     @BindView(R.id.videoshow_teacherName)
@@ -78,9 +87,7 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
     @BindView(R.id.videoshow_periodName)
     TextView mPeriodName;
     @BindView(R.id.videoshow_addr)
-    TextView mAddr;
-    @BindView(R.id.videoshow_imgRl)
-    RelativeLayout mImgRl;
+    TextView mAddr2;
     @BindView(R.id.videoshow_mSurface)
     SurfaceView mSurface;
     @BindView(R.id.videoshow_videoList)
@@ -108,58 +115,66 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
 
     @Override
     protected void initUI() {
-        LogUtils.d("videoshow--onCreate");
         mAcache = ACache.get(this);
         mCameraInfos = (ArrayList<CameraInfo>) mAcache.getAsObject("CameraInfo");
 
         dialog = MyProgressDialog.createLoadingDialog(VideoShowActivity.this, "", this);
         netWorkRequest = new NetWorkRequest(this, this);
         logger = LoggerFactory.getLogger(getClass());
-        mSurface.getHolder().addCallback(this);
+
+        try {
+            String className = mAcache.getAsString("ClassName");
+            String gradeName = mAcache.getAsString("GradeName");
+            String address = mAcache.getAsString("Address");
+            String schoolName = mAcache.getAsString("SchoolName");
+            String logo = mAcache.getAsString("Logo");
+            String alias = mAcache.getAsString("Alias");
+
+            mDate.setText(TimeUtils.getStringDate());
+            mWeek.setText(TimeUtils.getStringWeek());
+            //获取时间日期
+            new TimeUtils(VideoShowActivity.this, this);
+
+            mClassName.setText(gradeName + "\n\n" + className);
+            mAddr.setText("教室编号:" + address);
+            mAddr2.setText("教室:" + address);
+            mSchoolName.setText(schoolName);
+            GlideImgManager.glideLoader(VideoShowActivity.this, logo, R.drawable.pic_not_found, R.drawable.pic_not_found, mSclIcon, 1);
+            if (!TextUtils.isEmpty(alias) && !alias.equals("null")) {
+                mAlias.setText("(" + alias + ")");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(TAG, e);
+        }
     }
 
     @Override
     protected void initData() {
-        dahuaModel = new DahuaModel(VideoShowActivity.this, mSurface);
-        new TimeUtils(VideoShowActivity.this, this);
-
-        mDate.setText(TimeUtils.getStringDate());
         getCardNum();
 
         getUIdata();
 
-        mVideoList.setAdapter(new CommonAdapter<CameraInfo>(VideoShowActivity.this, R.layout.item_video_list, mCameraInfos) {
-            @Override
-            protected void convert(final ViewHolder viewHolder, CameraInfo item, int position) {
-//                new DahuaModel(VideoShowActivity.this, item, new DahuaListener() {
-//                    @Override
-//                    public void resLis(final int code, final boolean isSuccess, final String file) {
-//
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                if (isSuccess) {
-//                                    GlideImgManager.glideLoader(VideoShowActivity.this, file, R.drawable.pic_not_found, R.drawable.pic_not_found, (ImageView) viewHolder.getView(R.id.item_img));
-//                                }
-//                            }
-//                        });
-//                    }
-//                });
-                viewHolder.setText(R.id.item_text, position + 1 + "路视频");
-            }
-        });
-        mVideoList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                CameraInfo cameraInfo = mCameraInfos.get(position);
-                dahuaModel.stopPlay();
-                dahuaModel.logout();
-                if (mSurface.isAttachedToWindow()) {
-                    dahuaModel.LoginToPlay(cameraInfo.getIp(), cameraInfo.getPort(), cameraInfo.getUsername(), cameraInfo.getPsw());
+        if (mCameraInfos != null) {
+            mVideoList.setAdapter(new CommonAdapter<CameraInfo>(VideoShowActivity.this, R.layout.item_video_list, mCameraInfos) {
+                @Override
+                protected void convert(final ViewHolder viewHolder, CameraInfo item, int position) {
+                    viewHolder.setText(R.id.item_text, position + 1 + "路视频");
                 }
-            }
-        });
+            });
+            mVideoList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    CameraInfo cameraInfo = mCameraInfos.get(position);
+                    dahuaModel.stopPlay();
+                    dahuaModel.logout();
+                    if (mSurface.isAttachedToWindow()) {
+                        dahuaModel.LoginToPlay(cameraInfo.getIp(), cameraInfo.getPort(), cameraInfo.getUsername(), cameraInfo.getPsw());
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -178,14 +193,10 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
         if (!EventBus.getDefault().isRegistered(this)) {//加上判断
             EventBus.getDefault().register(this);
         }
-        boolean cons = (boolean) mAcache.getAsObject("conStatus");
-        if (cons) {
-            mTemp.setText("连接状态：已连接");
-            mTemp.setTextColor(getResources().getColor(R.color.white));
-        } else {
-            mTemp.setText("连接状态：已断开");
-            mTemp.setTextColor(getResources().getColor(R.color.conf));
-        }
+        mSurface.setZOrderOnTop(true);
+        mSurface.setZOrderMediaOverlay(true);
+        mSurface.getHolder().addCallback(this);
+        dahuaModel = new DahuaModel(VideoShowActivity.this, mSurface);
     }
 
     @Override
@@ -217,7 +228,7 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
     private void getUIdata() {
         Map map = new HashMap();
         map.put("deviceId", Constant.getDeviceId(this));
-        map.put("timestamp", System.currentTimeMillis()+"");
+        map.put("timestamp", System.currentTimeMillis() + "");
         netWorkRequest.doGetRequest(0, Constant.getUrl(this, APIConfig.GET_COURSE), true, map);
     }
 
@@ -226,7 +237,7 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
      */
     private void getCardNum() {
 
-        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum,this);
+        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum, this);
         getCardNumUtils.getNum(new GetCardNumUtils.SetNum() {
             @Override
             public void setNum(String num) {
@@ -267,20 +278,13 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
     private void setUIData(CourseBean courseBean) {
 
         if (mCameraInfos != null && mCameraInfos.size() > 0) {
-            mImg.setVisibility(View.GONE);
             mSurface.setVisibility(View.VISIBLE);
         } else {
-            mImg.setVisibility(View.VISIBLE);
             mSurface.setVisibility(View.GONE);
-            if (!TextUtils.isEmpty(courseBean.getImage())) {
-                Glide.with(this).load(courseBean.getImage()).into(mImg);
-            } else {
-                Glide.with(this).load(R.drawable.teacher).into(mImg);
-            }
         }
-        mClassName.setText(courseBean.getGradeName() + courseBean.getClassName());
+        mClassName.setText(courseBean.getGradeName() + "\n\n" + courseBean.getClassName());
         if (!TextUtils.isEmpty(courseBean.getSubjectName())) {
-            mCourseName.setText("课程：" + courseBean.getSubjectName());
+            mCourseName.setText(courseBean.getSubjectName());
         } else {
             mCourseName.setVisibility(View.GONE);
         }
@@ -290,7 +294,7 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
             mTeacherName.setText("班主任：" + courseBean.getManagerAccountName());
         }
         if (!TextUtils.isEmpty(courseBean.getPeriodName())) {
-            mPeriodName.setText("节次：" + courseBean.getPeriodName());
+            mPeriodName.setText(courseBean.getPeriodName());
         } else {
             mPeriodName.setVisibility(View.GONE);
         }
@@ -330,29 +334,12 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
                     getUIdata();
                 }
             }
-        }, 10000);
+        }, 30000);
     }
 
     @Override
     public void cancelRequest() {
         netWorkRequest.CancelPost();
-    }
-
-    /**
-     * 接收到连接信息
-     *
-     * @param event
-     */
-    @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
-    public void onUpdateSynEvent2(LoginEvent event) {
-        logger.debug(TAG, "videoshowActivity接收到连接状态信息" + event.getType() + event.isStatus());
-        if (event.isStatus()) {
-            mTemp.setText("连接状态：已连接");
-            mTemp.setTextColor(getResources().getColor(R.color.white));
-        } else {
-            mTemp.setText("连接状态：已断开");
-            mTemp.setTextColor(getResources().getColor(R.color.conf));
-        }
     }
 
     @Override

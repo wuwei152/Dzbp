@@ -14,8 +14,6 @@ import com.md.dzbp.constants.ERRORTYPE;
 import com.md.dzbp.data.ScreenShotEvent;
 import com.md.dzbp.ftp.FTP;
 import com.md.dzbp.tcp.FileHandle;
-import com.md.dzbp.utils.luban.Luban;
-import com.md.dzbp.utils.luban.OnCompressListener;
 
 import org.greenrobot.eventbus.EventBus;
 import org.slf4j.Logger;
@@ -24,6 +22,9 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import top.zibin.luban.Luban;
+import top.zibin.luban.OnCompressListener;
 
 /**
  * 用于屏幕截图的工具类

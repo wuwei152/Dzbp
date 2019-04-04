@@ -98,7 +98,16 @@ public class SignInfoBean implements Serializable {
 
         private String accountid;
         private String accountname;
+        private String photo;
         private int state;
+
+        public String getPhoto() {
+            return photo;
+        }
+
+        public void setPhoto(String photo) {
+            this.photo = photo;
+        }
 
         public String getAccountid() {
             return accountid;

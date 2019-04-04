@@ -297,6 +297,7 @@ public class FTP {
             }
 
             // 下载完成之后关闭连接
+            logger.debug(TAG,"关闭连接！！！");
             this.closeConnect();
             listener.onDownLoadProgress(ERRORTYPE.FTP_DISCONNECT_SUCCESS, 0, null);
         } catch (Exception e) {

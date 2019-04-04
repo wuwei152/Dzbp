@@ -23,7 +23,16 @@ public class NoticeBean implements Serializable {
     private String title;
     private String schoolName;
     private String content;
+    private String publisherPhoto;
     private boolean urgent;
+
+    public String getPublisherPhoto() {
+        return publisherPhoto;
+    }
+
+    public void setPublisherPhoto(String publisherPhoto) {
+        this.publisherPhoto = publisherPhoto;
+    }
 
     public String getPublishTime() {
         return publishTime;

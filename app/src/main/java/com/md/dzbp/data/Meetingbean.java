@@ -102,6 +102,7 @@ public class Meetingbean implements Serializable{
 
         private String accountId;
         private String accountName;
+        private String photo;
         private int signinStatus; //1已签到 0未签到
         private boolean host;
 
@@ -111,6 +112,20 @@ public class Meetingbean implements Serializable{
         public MeetingUserListBean(String accountId, String accountName) {
             this.accountId = accountId;
             this.accountName = accountName;
+        }
+        public MeetingUserListBean(String accountId, String accountName,boolean host,int signinStatus) {
+            this.accountId = accountId;
+            this.accountName = accountName;
+            this.host = host;
+            this.signinStatus = signinStatus;
+        }
+
+        public String getPhoto() {
+            return photo;
+        }
+
+        public void setPhoto(String photo) {
+            this.photo = photo;
         }
 
         public String getAccountId() {

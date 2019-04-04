@@ -2,31 +2,38 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_horizontal"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/item_LL"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:padding="15dp">
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
 
         <ImageView
             android:id="@+id/item_img"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
+            android:layout_width="145dp"
+            android:layout_height="145dp"
             android:gravity="center"
             android:scaleType="centerCrop" />
 
-        <TextView
-            android:id="@+id/item_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:textColor="@color/white"
-            android:textSize="20sp" />
+        <View
+            android:id="@+id/item_img_cw"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_centerInParent="true"
+            android:background="#88000000" />
+    </RelativeLayout>
 
-    </LinearLayout>
+    <TextView
+        android:id="@+id/item_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:text="立体思维"
+        android:textColor="@color/text_gray"
+        android:textSize="20sp" />
 </LinearLayout>

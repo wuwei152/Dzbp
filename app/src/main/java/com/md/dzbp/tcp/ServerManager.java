@@ -2,12 +2,15 @@ package com.md.dzbp.tcp;
 
 import android.app.smdt.SmdtManager;
 import android.content.Context;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
 
+import com.md.dzbp.R;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.LoginEvent;
 import com.md.dzbp.utils.ACache;
@@ -226,6 +229,7 @@ public class ServerManager {
         } else {
             if (act == 7) {
                 showToast("刷卡成功，已存储刷卡信息！");
+                play(1);
             } else {
                 showToast("网络暂时不通畅，请稍后再试！");
             }
@@ -240,6 +244,24 @@ public class ServerManager {
         if (client != null && client.isConnected()) {
             client.disconnect();
         }
+    }
+
+    private void play(int k) {
+        logger.debug(TAG, "播放刷卡提示音");
+        SoundPool soundPool;
+        soundPool = new SoundPool(21, AudioManager.STREAM_SYSTEM, 10);
+        if (k == 1) {
+            soundPool.load(context, R.raw.card_sucsess, 1);
+        } else {
+            soundPool.load(context, R.raw.card_fails, 1);
+        }
+        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public void onLoadComplete(SoundPool soundPool, int i, int i1) {
+                logger.debug(TAG, "开始播放！");
+                soundPool.play(1, 1, 1, 0, 0, 1.2f);
+            }
+        });
     }
 
     private void showToast(String str) {

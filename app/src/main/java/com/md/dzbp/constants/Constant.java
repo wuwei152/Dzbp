@@ -30,6 +30,10 @@ public class Constant {
     public static int PORT = 4000;
     public static final String BASE_HOST = "http://www.jiaxiaoyj.com/";//宜昌
 
+
+//    119.96.217.111
+//    Psw = "Hxy_2017", UserName = "ftp-zhxy", Port = 21
+
     //存储路径
     public static String Ftp_Log = "/Log/";
     public static String Ftp_Voice = "/Voice";
@@ -101,6 +105,7 @@ public class Constant {
 
 
         numList.add("3533746030");//公交卡
+        numList.add("0435760425");//
 
 
         return numList;

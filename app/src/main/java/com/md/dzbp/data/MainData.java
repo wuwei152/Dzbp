@@ -1,6 +1,7 @@
 package com.md.dzbp.data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,7 +23,7 @@ public class MainData implements Serializable {
     private List<NoticeBean> notice;
     private List<ChatBean> chat;
     private List<CourseBean> course;
-    private List<PhotosBean> photos;
+    private ArrayList<PhotosBean> photos;
     private List<MoralScoreBean> moralScore;
 
     public ClassInfoBean getClassInfo() {
@@ -65,11 +66,11 @@ public class MainData implements Serializable {
         this.course = course;
     }
 
-    public List<PhotosBean> getPhotos() {
+    public ArrayList<PhotosBean> getPhotos() {
         return photos;
     }
 
-    public void setPhotos(List<PhotosBean> photos) {
+    public void setPhotos(ArrayList<PhotosBean> photos) {
         this.photos = photos;
     }
 
@@ -89,7 +90,7 @@ public class MainData implements Serializable {
         this.attendance = attendance;
     }
 
-    public static class NoticeBean  implements Serializable{
+    public static class NoticeBean implements Serializable {
         /**
          * content : <p>丰富的速度</p>
          * createaccountid : 342fa921-572e-42f8-8541-6e53d5e92e4f
@@ -101,6 +102,23 @@ public class MainData implements Serializable {
         private String publishtime;
         private String title;
         private String publisher;
+        private String publisherPhoto;
+
+        public NoticeBean() {
+        }
+
+        public NoticeBean(String title, String publishtime) {
+            this.publishtime = publishtime;
+            this.title = title;
+        }
+
+        public String getPublisherPhoto() {
+            return publisherPhoto;
+        }
+
+        public void setPublisherPhoto(String publisherPhoto) {
+            this.publisherPhoto = publisherPhoto;
+        }
 
         public String getNoticeId() {
             return noticeId;
@@ -135,7 +153,7 @@ public class MainData implements Serializable {
         }
     }
 
-    public static class ChatBean  implements Serializable{
+    public static class ChatBean implements Serializable {
         /**
          * accountid : 4a61925c-48f2-416a-872d-d49f1e4aed6b
          * accountname : 吴伟111
@@ -181,7 +199,7 @@ public class MainData implements Serializable {
         }
     }
 
-    public static class CourseBean  implements Serializable{
+    public static class CourseBean implements Serializable {
         /**
          * accountname : 万亮
          * period : 8:10-8:50
@@ -197,6 +215,15 @@ public class MainData implements Serializable {
         private String remarks;
         private String startTime;
         private String endTime;
+        private String photo;
+
+        public String getPhoto() {
+            return photo;
+        }
+
+        public void setPhoto(String photo) {
+            this.photo = photo;
+        }
 
         public String getRemarks() {
             return remarks;
@@ -255,7 +282,7 @@ public class MainData implements Serializable {
         }
     }
 
-    public static class AttendanceBean  implements Serializable{
+    public static class AttendanceBean implements Serializable {
 
         /**
          * yindao : 3
@@ -291,7 +318,8 @@ public class MainData implements Serializable {
             this.weidao = weidao;
         }
     }
-    public static class PhotosBean  implements Serializable{
+
+    public static class PhotosBean implements Serializable {
 
         /**
          * description : 的范德萨发梵蒂冈地方个梵蒂冈梵蒂冈梵蒂冈梵蒂冈放大嘎达删除相册V型从V型从
@@ -302,6 +330,15 @@ public class MainData implements Serializable {
         private String description;
         private String name;
         private String url;
+        private boolean checked;
+
+        public boolean isChecked() {
+            return checked;
+        }
+
+        public void setChecked(boolean checked) {
+            this.checked = checked;
+        }
 
         public String getDescription() {
             return description;
@@ -327,7 +364,8 @@ public class MainData implements Serializable {
             this.url = url;
         }
     }
-    public static class MoralScoreBean  implements Serializable{
+
+    public static class MoralScoreBean implements Serializable {
 
         /**
          * id : ded95542-4da5-4611-b3cc-88dce55aa4d6

@@ -9,6 +9,7 @@ import com.md.dzbp.data.MessageBase;
 import com.md.dzbp.data.TextReceiveMessage;
 import com.md.dzbp.data.TextSendMessage;
 import com.md.dzbp.model.TimeUtils;
+import com.md.dzbp.utils.GlideImgManager;
 import com.zhy.adapter.abslistview.ViewHolder;
 import com.zhy.adapter.abslistview.base.ItemViewDelegate;
 
@@ -36,7 +37,7 @@ public class TxtMsgSendItem implements ItemViewDelegate<MessageBase> {
     public void convert(ViewHolder holder, MessageBase message, int position) {
         TextSendMessage chatMessage = (TextSendMessage) message;
         holder.setText(R.id.tv_chatcontent, chatMessage.getContent());
-        Glide.with(context).load(chatMessage.getHeadIcon()).into((ImageView) holder.getView(R.id.iv_userhead));
+        GlideImgManager.glideLoader(context, chatMessage.getHeadIcon(), R.drawable.head_icon, R.drawable.head_icon, ((ImageView) holder.getView(R.id.iv_userhead)), 0);
         holder.setText(R.id.timestamp, TimeUtils.toDateString(chatMessage.getCreateTime()));
         holder.setText(R.id.tv_userid, chatMessage.getUserName());
         if (chatMessage.getCreateTime()==0){

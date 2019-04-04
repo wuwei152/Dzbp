@@ -117,7 +117,7 @@ public class MessageHandle {
 //                    list.add(period3);
 //                    list.add(period4);
 
-                    LogUtils.d(list);
+//                    LogUtils.d(list);
                     mACache.put("Task", list);
                     if (list != null) {
                         ArrayList<WorkTimePoint> list1 = WorkTimePoint.GetWorkTimePointList(list);
@@ -460,6 +460,7 @@ public class MessageHandle {
                 String ext608 = tcpMessage.ReadString(length6082);
                 int length6083 = tcpMessage.ReadInt();
                 String cardNum = tcpMessage.ReadString(length6083);
+                LogUtils.d(status608);
                 if (status608 == 0) {
                     logger.debug(TAG, "签到：" + id608 + ext608);
                     EventBus.getDefault().post(new SignEvent(1, true, id608, ext608, cardNum));
@@ -504,7 +505,6 @@ public class MessageHandle {
                 break;
         }
     }
-
 
     /**
      * 心跳

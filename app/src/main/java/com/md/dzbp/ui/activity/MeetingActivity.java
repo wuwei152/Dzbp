@@ -34,6 +34,7 @@ import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.GetCardNumUtils;
+import com.md.dzbp.utils.GlideImgManager;
 import com.md.dzbp.utils.MainGestureDetector;
 import com.md.dzbp.utils.SnapUtils;
 import com.zhy.adapter.abslistview.CommonAdapter;
@@ -45,6 +46,9 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,42 +60,35 @@ import butterknife.BindView;
  */
 public class MeetingActivity extends BaseActivity implements TimeListener, UIDataListener {
 
-    @BindView(R.id.meet_cardNum)
+    @BindView(R.id.title_classAddr)
+    TextView mAddr;
+    @BindView(R.id.title_cardNum)
     EditText mCardNum;
-    @BindView(R.id.meet_time)
+    @BindView(R.id.title_sclIcon)
+    ImageView mSclIcon;
+    @BindView(R.id.title_schoolName)
+    TextView mSchoolName;
+    @BindView(R.id.title_className)
+    TextView mClassName;
+    @BindView(R.id.title_classAlias)
+    TextView mAlias;
+    @BindView(R.id.title_time)
     TextView mTime;
-    @BindView(R.id.meet_date)
+    @BindView(R.id.title_week)
+    TextView mWeek;
+    @BindView(R.id.title_date)
     TextView mDate;
-    @BindView(R.id.meet_temp)
-    TextView mTemp;
+
     @BindView(R.id.meeting_GridView)
     GridView mGridView;
-    @BindView(R.id.meet_mainAddr)
-    TextView mMainAddr;
     @BindView(R.id.meet_mainTitle)
     TextView mMainTitle;
-    @BindView(R.id.meet_mainSub)
-    TextView mMainSub;
     @BindView(R.id.meet_mainDate)
     TextView mMainDate;
     @BindView(R.id.meet_host)
     TextView mHost;
-    @BindView(R.id.meet_Num)
-    TextView mNum;
-    @BindView(R.id.meet_listTitle)
-    TextView mListTitle;
-    @BindView(R.id.meet_listTime)
-    TextView mListTime;
-    @BindView(R.id.meet_listAddr)
-    TextView mListAddr;
-    @BindView(R.id.meet_listHost)
-    TextView mListHost;
-    @BindView(R.id.meet_listSub)
-    TextView mListSub;
     @BindView(R.id.meet_QRcode)
     ImageView mQRcode;
-    @BindView(R.id.meet_QRcodeText)
-    TextView mQRcodeText;
 
     private Dialog dialog;
     private NetWorkRequest netWorkRequest;
@@ -116,11 +113,34 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
 
         mAcache = ACache.get(this);
         logger = LoggerFactory.getLogger(getClass());
-        //获取时间日期
-        new TimeUtils(MeetingActivity.this, this);
         //进度
         dialog = MyProgressDialog.createLoadingDialog(this, "", this);
         netWorkRequest = new NetWorkRequest(this, this);
+
+        try {
+            String className = mAcache.getAsString("ClassName");
+            String gradeName = mAcache.getAsString("GradeName");
+            String address = mAcache.getAsString("Address");
+            String schoolName = mAcache.getAsString("SchoolName");
+            String logo = mAcache.getAsString("Logo");
+            String alias = mAcache.getAsString("Alias");
+
+            mDate.setText(TimeUtils.getStringDate());
+            mWeek.setText(TimeUtils.getStringWeek());
+            //获取时间日期
+            new TimeUtils(MeetingActivity.this, this);
+
+            mClassName.setText(gradeName + "\n\n"+ className);
+            mAddr.setText("教室编号:" + address);
+            mSchoolName.setText(schoolName);
+            GlideImgManager.glideLoader(MeetingActivity.this, logo, R.drawable.pic_not_found, R.drawable.pic_not_found, mSclIcon, 1);
+            if (!TextUtils.isEmpty(alias) && !alias.equals("null")) {
+                mAlias.setText("(" + alias + ")");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(TAG, e);
+        }
     }
 
     @Override
@@ -132,9 +152,8 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
 
     @Override
     protected void initData() {
+        setUIData(new Meetingbean());
         getCardNum();
-        mDate.setText(TimeUtils.getStringDate());
-
         getUIdata();
     }
 
@@ -146,15 +165,6 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
         if (!EventBus.getDefault().isRegistered(this)) {//加上判断
             EventBus.getDefault().register(this);
         }
-        boolean cons = (boolean) mAcache.getAsObject("conStatus");
-        if (cons) {
-            mTemp.setText("连接状态：已连接");
-            mTemp.setTextColor(getResources().getColor(R.color.white));
-        } else {
-            mTemp.setText("连接状态：已断开");
-            mTemp.setTextColor(getResources().getColor(R.color.conf));
-        }
-
     }
 
     @Override
@@ -183,6 +193,39 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
      * 设置界面数据
      */
     private void setUIData(Meetingbean meetingbean) {
+
+//        address : A3栋101室
+//                * endTime : 2017-09-12 12:30:00
+//                * id : 9980cb09-e445-4e7c-b6ce-7bd1a0c03da4
+//                * meetingUserList : [{"accountId":"342fa921-572e-42f8-8541-6e53d5e92e4f","accountName":"张博","host":true},{"accountId":"7d5bece5-6df4-4d2c-9eff-be4c2cb8b2e9","accountName":"付奇","host":false}]
+//     * name : 这是测试会议
+//                * qrcodeUrl : https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=gQFI8DwAAAAAAAAAAS5odHRwOi8vd2VpeGluLnFxLmNvbS9xLzAyWWhvOE1weU9lUzMxeVVUVDFwY18AAgSwMLdZAwQIBwAA
+//     * startTime : 2017-09-12 12:00:00
+//                * summary : 东方闪电
+
+        meetingbean.setAddress("教学楼101室");
+        meetingbean.setEndTime("2019-04-22 11:30:00");
+        meetingbean.setName("2019届中考动员大会");
+        meetingbean.setQrcodeUrl("https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/w%3D268%3Bg%3D0/sign=7bcb659c9745d688a302b5a29cf91a23/2934349b033b5bb571dc8c5133d3d539b600bc12.jpg");
+        meetingbean.setStartTime("2019-04-22 09:30:00");
+        ArrayList<Meetingbean.MeetingUserListBean> list = new ArrayList<>();
+        list.add(new Meetingbean.MeetingUserListBean("1","李丽1",true,1));
+        list.add(new Meetingbean.MeetingUserListBean("2","李丽2"));
+        list.add(new Meetingbean.MeetingUserListBean("3","李丽3"));
+        list.add(new Meetingbean.MeetingUserListBean("4","李丽4"));
+        list.add(new Meetingbean.MeetingUserListBean("5","李丽5"));
+        list.add(new Meetingbean.MeetingUserListBean("6","李丽6"));
+        list.add(new Meetingbean.MeetingUserListBean("7","李丽7"));
+        list.add(new Meetingbean.MeetingUserListBean("8","李丽8"));
+        list.add(new Meetingbean.MeetingUserListBean("9","李丽9"));
+        list.add(new Meetingbean.MeetingUserListBean("10","李丽10"));
+        list.add(new Meetingbean.MeetingUserListBean("11","李丽11"));
+        list.add(new Meetingbean.MeetingUserListBean("12","李丽12"));
+        list.add(new Meetingbean.MeetingUserListBean("13","李丽13"));
+        list.add(new Meetingbean.MeetingUserListBean("14","李丽14"));
+        meetingbean.setMeetingUserList(list);
+
+
         meetingUserList = meetingbean.getMeetingUserList();
         Meetingbean.MeetingUserListBean host = null;
         String hostName = "无";
@@ -196,19 +239,21 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
                 hostName = host.getAccountName();
             }
         }
-        mMainAddr.setText(meetingbean.getAddress());
         mMainTitle.setText(meetingbean.getName());
-        mMainSub.setText(meetingbean.getSummary());
-        mMainDate.setText(meetingbean.getStartTime() + "        " + meetingbean.getAddress());
+        String endTime = meetingbean.getEndTime();
+        if (!TextUtils.isEmpty(endTime)) {
+            try {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date date = sdf.parse(endTime);
+                SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm:ss");
+                endTime = sdf2.format(date);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        mMainDate.setText(meetingbean.getStartTime() + "--" + endTime);
         mHost.setText("会议主持：" + hostName);
-        mNum.setText("参会人员：" + meetingUserList.size() + "人");
-        mListTitle.setText(meetingbean.getName());
-        mListTime.setText(meetingbean.getStartTime());
-        mListAddr.setText(meetingbean.getAddress());
-        mListHost.setText(hostName);
-        mListSub.setText(meetingbean.getSummary());
         Glide.with(MeetingActivity.this).load(meetingbean.getQrcodeUrl()).into(mQRcode);
-        mQRcodeText.setText("扫码签到");
         setGridData(meetingUserList);
     }
 
@@ -216,14 +261,16 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
      * 设置人员数据
      */
     private void setGridData(List meetingUserList) {
+
         mGridView.setAdapter(new CommonAdapter<Meetingbean.MeetingUserListBean>(MeetingActivity.this, R.layout.item_meeting_grid, meetingUserList) {
             @Override
             protected void convert(ViewHolder viewHolder, Meetingbean.MeetingUserListBean item, int position) {
                 viewHolder.setText(R.id.item_meetgrid_name, item.getAccountName());
+                GlideImgManager.glideLoader(MeetingActivity.this, item.getPhoto(), R.drawable.head_icon, R.drawable.head_icon, (ImageView) (viewHolder.getView(R.id.item_meetgrid_img)), 0);
                 if (item.getSigninStatus() == 1) {
                     viewHolder.setTextColor(R.id.item_meetgrid_name, getResources().getColor(R.color.green));
                 } else {
-                    viewHolder.setTextColor(R.id.item_meetgrid_name, getResources().getColor(R.color.text_black));
+                    viewHolder.setTextColor(R.id.item_meetgrid_name, getResources().getColor(R.color.text_gray));
                 }
             }
         });
@@ -233,7 +280,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
      * 获取刷卡卡号
      */
     private void getCardNum() {
-        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum,this);
+        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum, this);
         getCardNumUtils.getNum(new GetCardNumUtils.SetNum() {
             @Override
             public void setNum(String num) {
@@ -241,9 +288,9 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
                     Intent intent = new Intent(MeetingActivity.this, TcpService.class);
                     intent.putExtra("Num", num);
                     intent.putExtra("Act", 6);
-                    if (meetingbean!=null){
+                    if (meetingbean != null) {
                         intent.putExtra("ext", meetingbean.getId());
-                    }else {
+                    } else {
                         showToast("无参会人员信息");
                         return;
                     }
@@ -304,7 +351,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
                     getUIdata();
                 }
             }
-        }, 5000);
+        }, 30000);
     }
 
     @Override
@@ -331,22 +378,6 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
         }
     }
 
-    /**
-     * 接收到连接信息
-     *
-     * @param event
-     */
-    @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
-    public void onUpdateSynEvent2(LoginEvent event) {
-        LogUtils.d("MainActivity接收到连接状态信息" + event.getType() + event.isStatus());
-        if (event.isStatus()) {
-            mTemp.setText("连接状态：已连接");
-            mTemp.setTextColor(getResources().getColor(R.color.white));
-        } else {
-            mTemp.setText("连接状态：已断开");
-            mTemp.setTextColor(getResources().getColor(R.color.conf));
-        }
-    }
     @Override
     protected void onDestroy() {
         super.onDestroy();

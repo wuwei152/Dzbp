@@ -44,6 +44,16 @@ public class ExamBean implements Serializable{
     }
 
     public static class ExaminationBean  implements Serializable{
+
+        public ExaminationBean() {
+        }
+
+        public ExaminationBean(String name, String startdate, String enddate) {
+            this.name = name;
+            this.startdate = startdate;
+            this.enddate = enddate;
+        }
+
         /**
          * name :
          * startdate :
@@ -51,6 +61,8 @@ public class ExamBean implements Serializable{
          * examinationid :
          * remark :
          */
+
+
 
         private String name;
         private String startdate;

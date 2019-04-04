@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.md.dzbp.R;
 import com.md.dzbp.constants.Constant;
+import com.md.dzbp.data.CameraInfo;
 import com.md.dzbp.tcp.TcpService;
 import com.md.dzbp.ui.activity.ExamActivity;
 import com.md.dzbp.ui.activity.InterestClassActivity;
@@ -39,15 +40,11 @@ import java.util.ArrayList;
  */
 public class MainDialog extends Dialog {
 
-    private TextView act1, act2, act3, act4, act5, act6, act7, act8, act9, act10, act11, bt1, bt2;
+    private TextView act1, act2, act3, act4, act5, act6, act7, act8, act9, act10, act11, bt2, bt1;
+    private EditText et1, et2;
     private Context context;
-    private LinearLayout ll;
     private final SmdtManager smdt;
-    private EditText et;
     private final ACache mAcache;
-    private InputMethodManager imm;
-    private LinearLayout actll;
-    private ImageView erweima;
     private ArrayList<String> adminNum;
 
     public MainDialog(Context context) {
@@ -56,7 +53,7 @@ public class MainDialog extends Dialog {
         WindowManager.LayoutParams attr = getWindow().getAttributes();
         if (attr != null) {
             attr.height = android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-            attr.gravity = Gravity.RIGHT;
+            attr.gravity = Gravity.LEFT;
         }
         smdt = SmdtManager.create(context);
         mAcache = ACache.get(context);
@@ -77,15 +74,16 @@ public class MainDialog extends Dialog {
     @Override
     public void dismiss() {
         closeBoard();
-        et.setText("");
-        actll.setVisibility(View.GONE);
+//        et1.setText("");
+//        et2.setText("");
         super.dismiss();
     }
 
     public void closeBoard() {
         InputMethodManager imm = (InputMethodManager) context
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(et.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(et1.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(et2.getWindowToken(), 0);
 //        if (imm.isActive())  //一直是true
 //            imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT,
 //                    InputMethodManager.HIDE_NOT_ALWAYS);
@@ -107,32 +105,17 @@ public class MainDialog extends Dialog {
         act10 = (TextView) findViewById(R.id.act10);
         act11 = (TextView) findViewById(R.id.act11);
 
-        bt1 = (TextView) findViewById(R.id.bt1);
+        bt1 = findViewById(R.id.bt1);
+        et1 = findViewById(R.id.et1);
+        et2 = findViewById(R.id.et2);
+
         bt2 = (TextView) findViewById(R.id.bt2);
-        et = (EditText) findViewById(R.id.et);
-        ll = (LinearLayout) findViewById(R.id.ll);
-        actll = (LinearLayout) findViewById(R.id.actll);
-        erweima = (ImageView) findViewById(R.id.erweima);
 
         adminNum = Constant.getAdminNum();
-
-//        GlideImgManager.glideLoader(context, mAcache.getAsString("qrcode"), R.drawable.pic_not_found, R.drawable.pic_not_found, erweima);
-
-        imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        ll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imm.hideSoftInputFromWindow(et.getWindowToken(), 0);
-            }
-        });
 
         act1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!YZ()) {
-                    return;
-                }
                 context.startActivity(new Intent(context, MainActivity.class));
                 dismiss();
             }
@@ -140,9 +123,6 @@ public class MainDialog extends Dialog {
         act2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!YZ()) {
-                    return;
-                }
                 context.startActivity(new Intent(context, TeacherActivity.class));
                 dismiss();
             }
@@ -150,9 +130,6 @@ public class MainDialog extends Dialog {
         act3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!YZ()) {
-                    return;
-                }
                 context.startActivity(new Intent(context, StudentActivity.class));
                 dismiss();
             }
@@ -160,9 +137,6 @@ public class MainDialog extends Dialog {
         act4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!YZ()) {
-                    return;
-                }
                 context.startActivity(new Intent(context, ExamActivity.class));
                 dismiss();
             }
@@ -170,9 +144,6 @@ public class MainDialog extends Dialog {
         act5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!YZ()) {
-                    return;
-                }
                 context.startActivity(new Intent(context, PatrolActivity.class));
                 dismiss();
             }
@@ -180,9 +151,6 @@ public class MainDialog extends Dialog {
         act6.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!YZ()) {
-                    return;
-                }
                 context.startActivity(new Intent(context, NoticeActivity.class));
                 dismiss();
             }
@@ -190,9 +158,6 @@ public class MainDialog extends Dialog {
         act7.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!YZ()) {
-                    return;
-                }
                 context.startActivity(new Intent(context, MeetingActivity.class));
                 dismiss();
             }
@@ -200,9 +165,6 @@ public class MainDialog extends Dialog {
         act8.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!YZ()) {
-                    return;
-                }
                 context.startActivity(new Intent(context, SignActivity.class));
                 dismiss();
             }
@@ -210,9 +172,6 @@ public class MainDialog extends Dialog {
         act9.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!YZ()) {
-                    return;
-                }
                 context.startActivity(new Intent(context, InterestClassActivity.class));
                 dismiss();
             }
@@ -220,9 +179,6 @@ public class MainDialog extends Dialog {
         act10.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!YZ()) {
-                    return;
-                }
                 Intent intent = new Intent(context, TcpService.class);
                 intent.putExtra("Log", "");
                 context.startService(intent);
@@ -232,23 +188,8 @@ public class MainDialog extends Dialog {
         act11.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!YZ()) {
-                    return;
-                }
                 context.startActivity(new Intent(context, VideoShowActivity.class));
                 dismiss();
-            }
-        });
-        bt1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!YZ()) {
-                    return;
-                }
-                actll.setVisibility(View.VISIBLE);
-                //显示状态栏
-                smdt.smdtSetStatusBar(context, true);
-                closeBoard();
             }
         });
         bt2.setOnClickListener(new View.OnClickListener() {
@@ -256,31 +197,31 @@ public class MainDialog extends Dialog {
             public void onClick(View view) {
                 //隐藏状态栏
                 smdt.smdtSetStatusBar(context, false);
-                actll.setVisibility(View.GONE);
-                closeBoard();
+                dismiss();
+            }
+        });
+        bt1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!TextUtils.isEmpty(et1.getText().toString().trim()) && !TextUtils.isEmpty(et2.getText().toString().trim())) {
+                    ArrayList<CameraInfo> mCameraInfos = new ArrayList<>();
+                    mCameraInfos.add(new CameraInfo(et1.getText().toString().trim(), "37777", "admin", et2.getText().toString().trim()));//测试
+                    mAcache.put("CameraInfo", mCameraInfos);
+                    et1.setText("");
+                    et2.setText("");
+                    myToast.toast(context, "存储成功！");
+                } else {
+                    myToast.toast(context, "请完善ip与密码信息！");
+                }
             }
         });
 
 
     }
 
-    private boolean YZ() {
-        if (TextUtils.isEmpty(et.getText().toString())) {
-            myToast.toast(context, "请输入管理密码！");
-            return false;
-        }
-        String adminPsw = mAcache.getAsString("AdminPsw");
-        if (!adminNum.contains(adminPsw)) {
-            adminNum.add(adminPsw);
-        }
-        String psw = et.getText().toString();
-        for (String s : adminNum) {
-            if (psw.equals(s)) {
-                return true;
-            }
-        }
-        myToast.toast(context, "密码错误！");
-        return false;
+    @Override
+    public void show() {
+        super.show();
+        smdt.smdtSetStatusBar(context, true);
     }
-
 }

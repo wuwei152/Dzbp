@@ -8,11 +8,13 @@ import java.io.Serializable;
  */
 
 public class CameraInfo implements Serializable {
+    private static final long serialVersionUID = -7142261422095352209L;
 
     private String ip;
     private String port;
     private String username;
     private String psw;
+    private int isPlay;
 
     public CameraInfo() {
     }
@@ -22,6 +24,14 @@ public class CameraInfo implements Serializable {
         this.port = port;
         this.username = username;
         this.psw = psw;
+    }
+
+    public int getIsPlay() {
+        return isPlay;
+    }
+
+    public void setIsPlay(int isPlay) {
+        this.isPlay = isPlay;
     }
 
     public String getIp() {

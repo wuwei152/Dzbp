@@ -72,6 +72,10 @@ public class DahuaModel {
         init();
     }
 
+    public void setListener(DahuaListener listener) {
+        this.listener = listener;
+    }
+
     /**
      * 初始化
      */
@@ -122,7 +126,7 @@ public class DahuaModel {
             mDeviceInfo = new NET_DEVICEINFO_Ex();
             logger.debug(TAG, "开始登录");
             mLoginHandle = INetSDK.LoginEx2(address, Integer.parseInt(port), username, password, EM_LOGIN_SPAC_CAP_TYPE.EM_LOGIN_SPEC_CAP_MOBILE, null, mDeviceInfo, err);
-            logger.debug(TAG,"登录值为："+mLoginHandle);
+            logger.debug(TAG, "登录值为：" + mLoginHandle);
             if (0 == mLoginHandle) {
                 int mErrorCode = INetSDK.GetLastError();
                 logger.debug(TAG, "登录失败！" + mErrorCode + "/" + address);

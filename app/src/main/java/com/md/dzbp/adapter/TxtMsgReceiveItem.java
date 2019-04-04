@@ -12,6 +12,7 @@ import com.md.dzbp.data.TextReceiveMessage;
 import com.md.dzbp.model.TimeUtils;
 import com.md.dzbp.ui.activity.TeacherActivity;
 import com.md.dzbp.utils.EaseSmileUtils;
+import com.md.dzbp.utils.GlideImgManager;
 import com.zhy.adapter.abslistview.ViewHolder;
 import com.zhy.adapter.abslistview.base.ItemViewDelegate;
 
@@ -40,7 +41,7 @@ public class TxtMsgReceiveItem implements ItemViewDelegate<MessageBase> {
         TextReceiveMessage chatMessage = (TextReceiveMessage) message;
         Spannable span = EaseSmileUtils.getSmiledText(context, chatMessage.getContent());
         ((TextView)(holder.getView(R.id.tv_chatcontent))).setText(span, TextView.BufferType.SPANNABLE);
-        Glide.with(context).load(chatMessage.getHeadIcon()).into((ImageView) holder.getView(R.id.iv_userhead));
+        GlideImgManager.glideLoader(context, chatMessage.getHeadIcon(), R.drawable.head_icon, R.drawable.head_icon, ((ImageView) holder.getView(R.id.iv_userhead)), 0);
         holder.setText(R.id.timestamp, TimeUtils.toDateString(chatMessage.getCreateTime()));
         holder.setText(R.id.tv_userid, chatMessage.getUserName());
         if (chatMessage.getCreateTime()==0){

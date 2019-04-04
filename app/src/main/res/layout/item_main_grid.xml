@@ -17,7 +17,7 @@
             android:layout_height="95dp"
             android:layout_alignParentBottom="true"
             fresco:actualImageScaleType="fitXY"
-            fresco:placeholderImage="@drawable/pic_not_found"
+            fresco:placeholderImage="@drawable/head_icon"
             fresco:placeholderImageScaleType="fitXY"
             fresco:roundAsCircle="true"
             fresco:roundingBorderColor="@color/text_gray"

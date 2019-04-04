@@ -6,287 +6,230 @@
     android:orientation="horizontal"
     tools:context="com.md.dzbp.ui.activity.InterestClassActivity">
 
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1380"
-        android:background="@drawable/kc_bj"
-        android:orientation="vertical">
+    <include layout="@layout/item_title" />
 
-        <RelativeLayout
+    <LinearLayout
+        android:layout_width="575dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="-15dp"
+        android:background="@drawable/back_interest"
+        android:orientation="vertical"
+        android:padding="50dp">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="15dp">
+            android:layout_marginTop="120dp"
+            android:gravity="center"
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="114dp"
+                android:layout_height="135dp"
+                android:background="@drawable/green_solid_round_back"
+                android:gravity="center"
                 android:orientation="vertical">
 
-                <EditText
-                    android:id="@+id/interest_cardNum"
-                    android:layout_width="1dp"
-                    android:layout_height="0dp"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true" />
-
                 <TextView
-                    android:id="@+id/interest_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="应到"
                     android:textColor="@color/white"
-                    android:textSize="42sp" />
+                    android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/interest_date"
+                    android:id="@+id/interest_yingdao"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="33"
                     android:textColor="@color/white"
-                    android:textSize="20sp" />
+                    android:textSize="50sp" />
 
-                <TextView
-                    android:id="@+id/interest_temp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textColor="@color/white"
-                    android:textSize="14sp" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/interest_mainAddr"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:textColor="@color/white"
-                android:text="教学地址：A栋101教室"
-                android:textSize="30sp" />
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="100dp"
-            android:layout_weight="1"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            >
-
-            <TextView
-                android:id="@+id/interest_mainTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+            <LinearLayout
+                android:layout_width="114dp"
+                android:layout_height="135dp"
+                android:layout_marginLeft="38dp"
+                android:background="@drawable/green_solid_round_back"
                 android:gravity="center"
-                android:text="小巧手兴趣教学实验班"
-                android:paddingLeft="260dp"
-                android:paddingRight="260dp"
-                android:textColor="@color/white"
-                android:textSize="70sp"
-                android:textStyle="bold" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/interest_mainSub"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingLeft="260dp"
-                android:paddingRight="260dp"
-                android:layout_marginTop="30dp"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="实到"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/interest_shidao"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="33"
+                    android:textColor="@color/white"
+                    android:textSize="50sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="114dp"
+                android:layout_height="135dp"
+                android:layout_marginLeft="38dp"
+                android:background="@drawable/green_solid_round_back"
                 android:gravity="center"
-                android:text="学习知识、扩展视野、培养兴趣"
-                android:textColor="@color/white"
-                android:textSize="24sp" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/interest_mainDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
-                android:gravity="center"
-                android:text="2018-12-04    08:20:00 -- 09:00:00"
-                android:textColor="@color/white"
-                android:textSize="30sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="未到"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
 
-            <com.md.dzbp.ui.view.HorizontalListView
-                android:id="@+id/interest_Hl"
-                android:layout_width="match_parent"
-                android:layout_height="330dp"
-                android:layout_marginBottom="60dp"
-                android:layout_marginLeft="75dp"
-                android:layout_marginRight="75dp"
-                android:layout_marginTop="120dp"
-                android:background="#33000000"
-                android:visibility="visible" />
+                <TextView
+                    android:id="@+id/interest_weidao"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="0"
+                    android:textColor="@color/white"
+                    android:textSize="50sp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-        <LinearLayout
+        <GridView
+            android:id="@+id/interesting_GridView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="25dp"
-            android:orientation="horizontal"
-            android:paddingLeft="100dp"
-            android:paddingRight="100dp">
-
-            <TextView
-                android:id="@+id/interest_host"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="指导老师：李老师"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/interest_Num"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="学习人员：33人"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
-
-        </LinearLayout>
-
+            android:layout_marginBottom="50dp"
+            android:layout_marginTop="155dp"
+            android:background="@android:color/transparent"
+            android:gravity="fill"
+            android:horizontalSpacing="20dp"
+            android:listSelector="#00000000"
+            android:numColumns="4"
+            android:scrollbars="none"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="20dp" />
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="540"
-        android:orientation="vertical"
-        android:padding="30dp">
-
-        <ImageView
-            android:layout_width="180dp"
-            android:layout_height="100dp"
-            android:layout_gravity="right"
-            android:scaleType="fitXY"
-            android:src="@drawable/dianxin"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/interest_listTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="90dp"
-            android:gravity="center"
-            android:text="小巧手兴趣教学实验班"
-            android:textColor="@color/text_black"
-            android:textSize="32sp"
-            android:textStyle="bold" />
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="55dp"
+        android:layout_marginTop="130dp"
+        android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/interest_ImgLL"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="学习时间："
-                android:textColor="@color/text_gray"
-                android:textSize="22sp" />
-
-            <TextView
-                android:id="@+id/interest_listTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2018-12-04    08:20:00 -- 09:00:00"
-                android:textColor="@color/text_black"
-                android:textSize="22sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="教学地址："
-                android:textColor="@color/text_gray"
-                android:textSize="22sp" />
-
-            <TextView
-                android:id="@+id/interest_listAddr"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="A栋101教室"
-                android:textColor="@color/text_black"
-                android:textSize="22sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="指导老师："
-                android:textColor="@color/text_gray"
-                android:textSize="22sp" />
-
-            <TextView
-                android:id="@+id/interest_listHost"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="李老师"
-                android:textColor="@color/text_black"
-                android:textSize="22sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:visibility="gone"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@drawable/zouban_bg"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginBottom="15dp"
-                android:text="学习人员："
-                android:textColor="@color/text_gray"
-                android:textSize="22sp" />
-
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="30dp"
-                android:layout_margin="20dp"
-                android:background="@drawable/dialog_back"
+                android:layout_width="530dp"
+                android:layout_height="470dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="90dp"
+                android:background="@drawable/gray_solid_round_alfa_back"
                 android:orientation="vertical"
-                >
+                android:padding="30dp">
 
-                <GridView
-                    android:id="@+id/interesting_GridView"
+                <TextView
+                    android:id="@+id/interest_mainTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="小巧手兴趣教学实验班"
+                    android:textColor="@color/white"
+                    android:textSize="42sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/interest_mainDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:gravity="center"
+                    android:text="2019-02-19    08:20:00 -- 09:00:00"
+                    android:textColor="@color/white"
+                    android:textSize="22sp" />
+
+                <TextView
+                    android:id="@+id/interest_mainSub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="22dp"
+                    android:text="学习知识、扩展视野、培养兴趣"
+                    android:textColor="@color/white"
+                    android:textSize="22sp" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:gravity="fill"
-                    android:horizontalSpacing="5dp"
-                    android:listSelector="#00000000"
-                    android:numColumns="4"
-                    android:scrollbars="none"
-                    android:stretchMode="columnWidth"
-                    android:verticalSpacing="10dp" />
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <View
+                            android:layout_width="64dp"
+                            android:layout_height="8dp"
+                            android:background="@color/white" />
+
+                        <TextView
+                            android:id="@+id/interest_host"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="50dp"
+                            android:text="指导老师：李老师"
+                            android:textColor="@color/white"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/interest_Num"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="学习人数：33人"
+                            android:textColor="@color/white"
+                            android:textSize="20sp" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/interest_qrcode"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_gravity="bottom"
+                        android:src="@drawable/pic_not_found" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
 
+        <com.md.dzbp.ui.view.HorizontalListView
+            android:id="@+id/interest_listview"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="80dp"
+            android:divider="@null"
+            android:scrollbars="none" />
+
+    </LinearLayout>
 </LinearLayout>

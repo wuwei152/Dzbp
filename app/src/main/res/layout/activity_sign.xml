@@ -1,222 +1,145 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
     tools:context="com.md.dzbp.ui.activity.SignActivity">
 
-    <LinearLayout
-        android:layout_width="0dp"
+    <include layout="@layout/item_title" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1380"
-        android:background="@drawable/kc_bj"
-        android:orientation="vertical">
+        android:background="@drawable/main_back">
+
+
+        <ImageView
+            android:id="@+id/sign_clockimg"
+            android:layout_width="209dp"
+            android:layout_height="202dp"
+            android:layout_marginLeft="380dp"
+            android:layout_marginTop="145dp"
+            android:src="@drawable/clock" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/sign_clockimg"
+            android:layout_marginLeft="405dp"
+            android:layout_marginTop="70dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="离结束打卡还有"
+                android:textColor="@color/text_gray2"
+                android:textSize="25dp" />
+            <TextView
+                android:id="@+id/sign_clock"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="0:00:00"
+                android:textColor="@color/text_gray2"
+                android:textSize="50dp" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:layout_width="406dp"
+            android:layout_height="213dp"
+            android:layout_marginLeft="42dp"
+            android:layout_marginTop="528dp"
+            android:src="@drawable/back_caise" />
+
+        <ImageView
+            android:id="@+id/sign_conStatus"
+            android:layout_width="54dp"
+            android:layout_height="41dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="74dp"
+            android:layout_marginTop="23dp"
+            android:src="@drawable/lianwang" />
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="15dp">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <EditText
-                    android:id="@+id/sign_cardNum"
-                    android:layout_width="1dp"
-                    android:layout_height="0dp"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true" />
-
-                <TextView
-                    android:id="@+id/sign_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:textSize="42sp" />
-
-                <TextView
-                    android:id="@+id/sign_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/sign_temp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textColor="@color/white"
-                    android:textSize="20sp" />
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/sign_mainAddr"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:textColor="@color/white"
-                android:textSize="30sp" />
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingLeft="260dp"
-            android:paddingRight="260dp">
-
-
-            <TextView
-                android:id="@+id/sign_mainTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="班级签到"
-                android:textColor="@color/white"
-                android:textSize="70sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/sign_mainSub"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="100dp"
-                android:layout_marginRight="100dp"
-                android:layout_marginTop="35dp"
-                android:gravity="center"
-                android:text=""
-                android:textColor="@color/white"
-                android:textSize="34sp" />
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="25dp"
-            android:orientation="horizontal"
-            android:paddingLeft="100dp"
-            android:paddingRight="100dp">
-
-            <TextView
-                android:id="@+id/sign_host"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text=""
-                android:textColor="@color/white"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/sign_Num"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text=""
-                android:textColor="@color/white"
-                android:textSize="20sp" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="540"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/sign_listTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="50dp"
-            android:textColor="@color/text_black"
-            android:textSize="32sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/sign_listsub"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="20dp"
-            android:text="班级签到"
-            android:textColor="@color/text_black"
-            android:textSize="20sp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginTop="70dp"
-            android:background="@color/green" />
-
-        <TextView
-            android:id="@+id/sign_tip"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_margin="10dp"
-            android:background="@drawable/dialog_back"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="正在考勤"
-            android:textColor="@color/green"
-            android:textSize="20sp" />
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:layout_margin="10dp"
-            android:background="@drawable/video_back"
-            android:orientation="vertical">
+            android:id="@+id/sign_Rl"
+            android:layout_width="832dp"
+            android:layout_height="477dp"
+            android:layout_marginLeft="700dp"
+            android:layout_marginTop="110dp">
 
             <SurfaceView
                 android:id="@+id/sign_surface"
                 android:layout_width="match_parent"
-                android:layout_height="320dp" />
-        </LinearLayout>
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="33dp" />
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="签到人员："
-                android:textColor="@color/text_gray"
-                android:textSize="22sp" />
-
-            <GridView
-                android:id="@+id/signing_GridView"
+            <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:gravity="fill"
-                android:horizontalSpacing="5dp"
-                android:listSelector="#00000000"
-                android:numColumns="4"
-                android:scrollbars="none"
-                android:stretchMode="columnWidth"
-                android:verticalSpacing="10dp" />
-        </LinearLayout>
-    </LinearLayout>
+                android:layout_height="match_parent"
+                android:layout_marginTop="23dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/back_qiandao" />
+
+            <ImageView
+                android:layout_width="174dp"
+                android:layout_height="54dp"
+                android:layout_centerHorizontal="true"
+                android:scaleType="fitXY"
+                android:src="@drawable/qiandao" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/sign_daka"
+            android:layout_width="wrap_content"
+            android:layout_height="61dp"
+            android:layout_below="@+id/sign_Rl"
+            android:layout_marginLeft="860dp"
+            android:layout_marginTop="65dp"
+            android:paddingLeft="25dp"
+            android:paddingRight="25dp"
+            android:background="@drawable/green_solid_circle_back"
+            android:gravity="center"
+            android:text="请您面向屏幕刷卡,听到语音后离开"
+            android:textColor="#236D68"
+            android:textSize="30dp" />
+
+        <GridView
+            android:id="@+id/signing_GridView"
+            android:layout_width="1300dp"
+            android:layout_height="230dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="65dp"
+            android:background="@android:color/transparent"
+            android:gravity="fill"
+            android:horizontalSpacing="20dp"
+            android:listSelector="#00000000"
+            android:numColumns="12"
+            android:scrollbars="none"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="40dp" />
+
+        <com.md.dzbp.ui.view.ProgressCustomView
+            android:id="@+id/sign_progress"
+            android:layout_width="520dp"
+            android:layout_height="520dp"
+            android:layout_marginLeft="-205dp"
+            android:layout_marginTop="100dp"
+            android:visibility="visible"
+            app:progressColor="#6CBA7D"
+            app:roundColor="#E8F4DD"
+            app:roundWidth="70"
+            app:textColor="#7AC089"
+            app:textIsShow="true"
+            app:textSize="30sp" />
+
+    </RelativeLayout>
+
 </LinearLayout>

@@ -63,7 +63,7 @@
         <item name="android:backgroundDimEnabled">true</item>
 
         <!-- Dialog进入及退出动画 -->
-        <item name="android:windowAnimationStyle">@style/ActionSheetDialogAnimation</item>
+        <!--<item name="android:windowAnimationStyle">@style/ActionSheetDialogAnimation</item>-->
 
         <item name="android:windowIsTranslucent">false</item>
         <item name="android:background">@android:color/transparent</item>

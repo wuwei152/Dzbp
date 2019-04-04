@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.md.dzbp.R;
 import com.md.dzbp.data.StudentInfoBean;
+import com.md.dzbp.utils.GlideImgManager;
 
 import java.util.ArrayList;
 
@@ -86,9 +87,9 @@ public class HonorListAdapter extends RecyclerView.Adapter<HonorListAdapter.View
         StudentInfoBean.HonorBean honorBean = mDatas.get(i);
         viewHolder.mName.setText(honorBean.getName());
         try {
-            if (honorBean.getImagelist()!=null&&honorBean.getImagelist().size()>0)
-            Glide.with(context).load(honorBean.getImagelist().get(0).getThumburl()).into(viewHolder.mImg);
-        }catch (Exception e){
+            if (honorBean.getImagelist() != null && honorBean.getImagelist().size() > 0)
+                GlideImgManager.glideLoader(context, honorBean.getImagelist().get(0).getThumburl(), R.drawable.pic_not_found, R.drawable.pic_not_found, viewHolder.mImg, 1);
+        } catch (Exception e) {
         }
         //如果设置了回调，则设置点击事件
         if (mOnItemClickLitener != null) {

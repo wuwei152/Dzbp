@@ -35,21 +35,28 @@ import com.md.dzbp.data.PatrolBean;
 import com.md.dzbp.model.DahuaListener;
 import com.md.dzbp.model.DahuaModel;
 import com.md.dzbp.model.NetWorkRequest;
+import com.md.dzbp.model.TimeListener;
+import com.md.dzbp.model.TimeUtils;
 import com.md.dzbp.model.UIDataListener;
 import com.md.dzbp.tcp.TcpService;
 import com.md.dzbp.ui.view.HorizontalListView;
 import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
+import com.md.dzbp.utils.FileUtils;
 import com.md.dzbp.utils.GetCardNumUtils;
 import com.md.dzbp.utils.GlideImgManager;
+import com.yjing.imageeditlibrary.editimage.EditImageActivity;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,14 +65,29 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callback, UIDataListener {
+public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callback, TimeListener, UIDataListener {
 
-    @BindView(R.id.patrol_cardNum)
-    EditText mCardNum;
-    @BindView(R.id.patrol_classinfo)
-    TextView mClassinfo;
-    @BindView(R.id.patrol_addr)
+
+    @BindView(R.id.title_classAddr)
     TextView mAddr;
+    @BindView(R.id.title_cardNum)
+    EditText mCardNum;
+    @BindView(R.id.title_sclIcon)
+    ImageView mSclIcon;
+    @BindView(R.id.title_schoolName)
+    TextView mSchoolName;
+    @BindView(R.id.title_className)
+    TextView mClassName;
+    @BindView(R.id.title_classAlias)
+    TextView mAlias;
+    @BindView(R.id.title_time)
+    TextView mTime;
+    @BindView(R.id.title_week)
+    TextView mWeek;
+    @BindView(R.id.title_date)
+    TextView mDate;
+
+
     @BindView(R.id.patrol_teacherIcon)
     ImageView mTeacherIcon;
     @BindView(R.id.patrol_teacherName)
@@ -74,14 +96,10 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
     TextView mTeacherCourse;
     @BindView(R.id.patrol_teacherPeroid)
     TextView mTeacherPeroid;
-    @BindView(R.id.patrol_teacherChapter)
-    TextView mTeacherChapter;
     @BindView(R.id.patrol_mngIcon)
     ImageView mMngIcon;
     @BindView(R.id.patrol_mngName)
     TextView mMngName;
-    @BindView(R.id.patrol_mngCourse)
-    TextView mMngCourse;
     @BindView(R.id.patrol_listview)
     ListView mListview;
     @BindView(R.id.patrol_yingdao)
@@ -92,12 +110,8 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
     TextView mWeidao;
     @BindView(R.id.patrol_confrim)
     TextView mConfrim;
-    @BindView(R.id.patrol_img)
-    ImageView mImg;
     @BindView(R.id.patrol_mSurface)
     SurfaceView mSurface;
-    @BindView(R.id.patrol_qiehuan)
-    ImageView mQiehuan;
     @BindView(R.id.patrol_videoList)
     HorizontalListView mVideoList;
     private Dialog dialog;
@@ -134,8 +148,31 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
         netWorkRequest = new NetWorkRequest(this, this);
 
         logger = LoggerFactory.getLogger(getClass());
-        mSurface.getHolder().addCallback(this);
 
+        try {
+            String className = mAcache.getAsString("ClassName");
+            String gradeName = mAcache.getAsString("GradeName");
+            String address = mAcache.getAsString("Address");
+            String schoolName = mAcache.getAsString("SchoolName");
+            String logo = mAcache.getAsString("Logo");
+            String alias = mAcache.getAsString("Alias");
+
+            mDate.setText(TimeUtils.getStringDate());
+            mWeek.setText(TimeUtils.getStringWeek());
+            //获取时间日期
+            new TimeUtils(PatrolActivity.this, this);
+
+            mClassName.setText(gradeName + "\n\n" + className);
+            mAddr.setText("教室编号:" + address);
+            mSchoolName.setText(schoolName);
+            GlideImgManager.glideLoader(PatrolActivity.this, logo, R.drawable.pic_not_found, R.drawable.pic_not_found, mSclIcon, 1);
+            if (!TextUtils.isEmpty(alias) && !alias.equals("null")) {
+                mAlias.setText("(" + alias + ")");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(TAG, e);
+        }
     }
 
     @Override
@@ -158,40 +195,48 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
         getCardNum();
 
         getUIdata();
-        dahuaModel = new DahuaModel(PatrolActivity.this, mSurface);
 
-        mVideoList.setAdapter(new CommonAdapter<CameraInfo>(PatrolActivity.this, R.layout.item_video_list, mCameraInfos) {
-            @Override
-            protected void convert(final ViewHolder viewHolder, CameraInfo item, int position) {
-//                new DahuaModel(PatrolActivity.this, item, new DahuaListener() {
-//                    @Override
-//                    public void resLis(final int code, final boolean isSuccess, final String file) {
-//
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                if (isSuccess) {
-//                                    GlideImgManager.glideLoader(PatrolActivity.this, file, R.drawable.pic_not_found, R.drawable.pic_not_found, (ImageView) viewHolder.getView(R.id.item_img));
-//                                }
-//                            }
-//                        });
-//                    }
-//                });
-                viewHolder.setText(R.id.item_text, position + 1 + "路视频");
-            }
-        });
-        mVideoList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                CameraInfo cameraInfo = mCameraInfos.get(position);
-                dahuaModel.stopPlay();
-                dahuaModel.logout();
-                if (mSurface.isAttachedToWindow()) {
-                    dahuaModel.LoginToPlay(cameraInfo.getIp(), cameraInfo.getPort(), cameraInfo.getUsername(), cameraInfo.getPsw());
+        if (mCameraInfos != null) {
+            mVideoList.setAdapter(new CommonAdapter<CameraInfo>(PatrolActivity.this, R.layout.item_video_list, mCameraInfos) {
+                @Override
+                protected void convert(final ViewHolder viewHolder, CameraInfo item, int position) {
+                    viewHolder.setText(R.id.item_text, position + 1 + "路视频");
                 }
-            }
-        });
+            });
+            mVideoList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    CameraInfo cameraInfo = mCameraInfos.get(position);
+                    if (cameraInfo.getIsPlay() == 0) {
+                        dahuaModel.stopPlay();
+                        dahuaModel.logout();
+                        if (mSurface.isAttachedToWindow()) {
+                            dahuaModel.LoginToPlay(cameraInfo.getIp(), cameraInfo.getPort(), cameraInfo.getUsername(), cameraInfo.getPsw());
+                        }
+                        for (int i = 0; i < mCameraInfos.size(); i++) {
+                            mCameraInfos.get(i).setIsPlay(0);
+                        }
+                        cameraInfo.setIsPlay(1);
+                    } else {
+                        showToast("当前正在播放该路视频！");
+                    }
+                }
+            });
+        }
+
+//        dahuaModel.setListener(new DahuaListener() {
+//            @Override
+//            public void resLis(int code, boolean isSuccess, String file) {
+//                dismissDialog();
+//                if (isSuccess && !TextUtils.isEmpty(file)) {
+//                    EditImageActivity.start(PatrolActivity.this, file, FileUtils.getDiskCacheDir(PatrolActivity.this) + "Screenshot/patrol_" + new File(file).getName(), 200);
+//                } else {
+//                    //出错：Can't create handler inside thread that has not called Looper.prepare()
+//                    showToast("未获取到视频截图，请重试！");
+//                }
+//            }
+//        });
     }
 
     @Override
@@ -205,6 +250,10 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
         super.onResume();
         logger.debug(TAG, "巡查界面");
         Constant.SCREENTYPE = 3;
+        mSurface.setZOrderOnTop(true);
+        mSurface.setZOrderMediaOverlay(true);
+        mSurface.getHolder().addCallback(this);
+        dahuaModel = new DahuaModel(PatrolActivity.this, mSurface);
     }
 
     @Override
@@ -233,12 +282,8 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
         Map map = new HashMap();
         map.put("deviceId", Constant.getDeviceId(PatrolActivity.this));
         map.put("accountId", userId);
-        netWorkRequest.doGetRequest(0, Constant.getUrl(PatrolActivity.this, APIConfig.GET_PATROL), true, map);
+        netWorkRequest.doGetRequest(0, Constant.getUrl(PatrolActivity.this, APIConfig.GET_PATROL), false, map);
     }
-
-//    private void setGrid(){
-//        new CommonAdapter<>()
-//    }
 
     /**
      * 获取卡号
@@ -260,20 +305,16 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
     }
 
 
-    @OnClick({R.id.patrol_back, R.id.patrol_confrim, R.id.patrol_qiehuan})
+    @OnClick({R.id.patrol_back, R.id.patrol_confrim})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.patrol_back:
                 finish();
                 break;
-            case R.id.patrol_qiehuan:
-                if (videoPosition == 0) {
-                    videoPosition = 1;
-                } else {
-                    videoPosition = 0;
-                }
-                showToast("切换成功，请稍后...");
-                break;
+//            case R.id.patrol_share:
+//                showDialog();
+//                dahuaModel.snap(0);
+//                break;
             case R.id.patrol_confrim:
                 ClassInfoBean classInfo = patrolBean.getClassInfo();
                 PatrolBean.TeacherBean teacher = patrolBean.getTeacher();
@@ -301,17 +342,6 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
                 break;
         }
     }
-
-//    @Override
-//    public boolean onTouchEvent(MotionEvent event) {
-//        try {
-//            return gestureDetector.onTouchEvent(event);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return false;
-//        }
-//    }
-
 
     @Override
     public void loadDataFinish(int code, Object data) {
@@ -343,22 +373,20 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
         PatrolBean.TeacherBean teacher = patrolBean.getTeacher();
         ClassManagerBean classManager = patrolBean.getClassManager();
         if (classInfo != null) {
-            mClassinfo.setText(classInfo.getGradeName() + classInfo.getClassName());
-            mAddr.setText(classInfo.getAddress());
+            mClassName.setText(classInfo.getGradeName() + "\n\n" + classInfo.getClassName());
+            mAddr.setText("教室编号:" + classInfo.getAddress());
         }
         if (teacher != null) {
 //            Glide.with(PatrolActivity.this).load(teacher.getPhoto()).into(mTeacherIcon);
-            GlideImgManager.glideLoader(PatrolActivity.this, teacher.getPhoto(), R.drawable.pic_not_found, R.drawable.pic_not_found, mTeacherIcon);
+            GlideImgManager.glideLoader(PatrolActivity.this, teacher.getPhoto(), R.drawable.pic_not_found, R.drawable.pic_not_found, mTeacherIcon, 1);
             mTeacherName.setText("教师：" + teacher.getAccountName());
-            mTeacherCourse.setText("任  课：" + teacher.getSubjectName().toString());
-            mTeacherPeroid.setText("节次：" + teacher.getPeriodName());
-            mTeacherChapter.setText("章节：");
+            mTeacherCourse.setText(teacher.getSubjectName().toString());
+            mTeacherPeroid.setText(teacher.getPeriodName());
         }
 
         if (classManager != null) {
-            GlideImgManager.glideLoader(PatrolActivity.this, classManager.getPhoto(), R.drawable.pic_not_found, R.drawable.pic_not_found, mMngIcon);
-            mMngName.setText("班主任：" + classManager.getAccountName());
-//            mMngCourse.setText("任课：" + classManager.getSubjects().toString());
+            GlideImgManager.glideLoader(PatrolActivity.this, classManager.getPhoto(), R.drawable.pic_not_found, R.drawable.pic_not_found, mMngIcon, 0);
+            mMngName.setText(classManager.getAccountName());
         }
         List<PatrolBean.InspectionParametersBean> inspectionParameters = patrolBean.getInspectionParameters();
         if (inspectionParameters != null && inspectionParameters.size() > 0) {
@@ -387,9 +415,9 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
 
         PatrolBean.AttendanceBean attendance = patrolBean.getAttendance();
         if (attendance != null) {
-            mYingdao.setText(attendance.getYindao() + "人");
-            mShidao.setText(attendance.getShidao() + "人");
-            mWeidao.setText(attendance.getWeidao() + "人");
+            mYingdao.setText(attendance.getYindao() + "");
+            mShidao.setText(attendance.getShidao() + "");
+            mWeidao.setText(attendance.getWeidao() + "");
         }
     }
 
@@ -430,7 +458,7 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
                     getUIdata();
                 }
             }
-        }, 10000);
+        }, 30000);
     }
 
     @Override
@@ -451,15 +479,32 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 
+        LogUtils.d("surfaceChanged");
+
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-//        LogUtils.d("surfaceDestroyed");
+        LogUtils.d("surfaceDestroyed");
         if (mCameraInfos != null && mCameraInfos.size() > 0) {
             dahuaModel.stopPlay();
             dahuaModel.logout();
         }
+    }
+
+    @Override
+    public void getTime(String time) {
+        mTime.setText(time);
+    }
+
+    /**
+     * 接收摄像头截图编辑完后图片
+     *
+     * @param event
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN) //在ui线程执行
+    public void onUpdateSynEvent(HashMap<String, String> event) {
+        LogUtils.d("编辑成功：" + event);
     }
 
 }

@@ -52,25 +52,31 @@ public class NetWorkRequest {
         }
         currentUrl = url;
 //        LogUtils.d(currentUrl + "?" + params);
-        logger.debug(TAG,currentUrl + "?" + params.toString());
+        logger.debug(TAG, currentUrl + "?" + params.toString());
         HttpRequest.get(url, params, new BaseHttpRequestCallback<String>() {
 
             //请求网络前
             @Override
             public void onStart() {
-                if (context!=null&&isShowDialog)
+                if (context != null && isShowDialog)
                     uiDataListener.showDialog();
             }
 
             @Override
             protected void onSuccess(String response) {
 //                LogUtils.d(flag + "/" +response   );
-                logger.error(TAG,"onSuccess"+ "/"+flag);
+                logger.error(TAG, "onSuccess" + "/" + flag);
                 if (TextUtils.isEmpty(response)) {
                     return;
                 } else {
-                    BaseBean result = JSON.parseObject(response, new TypeReference<BaseBean>() {
-                    });
+                    BaseBean result = null;
+                    try {
+                        result = JSON.parseObject(response, new TypeReference<BaseBean>() {
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        logger.debug(TAG, e);
+                    }
                     if (result != null && result.getStatus() == 1) {
                         uiDataListener.loadDataFinish(flag, result.getData());
                     } else if (result != null) {
@@ -82,7 +88,7 @@ public class NetWorkRequest {
             //请求失败（服务返回非法JSON、服务器异常、网络异常）
             @Override
             public void onFailure(int errorCode, String msg) {
-                logger.error(TAG,"onFailure" + errorCode + ""+ msg);
+                logger.error(TAG, "onFailure" + errorCode + "" + msg);
                 uiDataListener.onError(flag, msg);
             }
 
@@ -111,7 +117,7 @@ public class NetWorkRequest {
         }
         currentUrl = url;
 //        LogUtils.d(currentUrl + "?" + params);
-        logger.debug(TAG,currentUrl + "?" + params.toString());
+        logger.debug(TAG, currentUrl + "?" + params.toString());
         HttpRequest.post(url, params, new BaseHttpRequestCallback<String>() {
 
             //请求网络前
@@ -123,12 +129,18 @@ public class NetWorkRequest {
 
             @Override
             protected void onSuccess(String response) {
-                logger.error(TAG,"onSuccess"+ "/"+flag);
+                logger.error(TAG, "onSuccess" + "/" + flag);
                 if (TextUtils.isEmpty(response)) {
                     return;
                 } else {
-                    BaseBean result = JSON.parseObject(response, new TypeReference<BaseBean>() {
-                    });
+                    BaseBean result = null;
+                    try {
+                        result = JSON.parseObject(response, new TypeReference<BaseBean>() {
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        logger.debug(TAG, e);
+                    }
 
                     if (result != null && result.getStatus() == 1) {
                         uiDataListener.loadDataFinish(flag, result.getData());
@@ -141,7 +153,7 @@ public class NetWorkRequest {
             //请求失败（服务返回非法JSON、服务器异常、网络异常）
             @Override
             public void onFailure(int errorCode, String msg) {
-                logger.error(TAG,"onFailure" + errorCode + ""+ msg);
+                logger.error(TAG, "onFailure" + errorCode + "" + msg);
                 uiDataListener.onError(flag, msg);
             }
 
@@ -152,17 +164,18 @@ public class NetWorkRequest {
             }
         });
     }
+
     /**
      * Json Post请求
      */
-    public void doPostRequest(final int flag, String url, final boolean isShowDialog,String json) {
+    public void doPostRequest(final int flag, String url, final boolean isShowDialog, String json) {
         RequestParams params = new RequestParams((HttpCycleContext) context);//请求参数
-        params.addHeader("Content-type","application/json; charset=utf-8");
+        params.addHeader("Content-type", "application/json; charset=utf-8");
 //        params.setRequestBodyString(json);
-        params.setRequestBody("application/json; charset=utf-8",json);
+        params.setRequestBody("application/json; charset=utf-8", json);
         currentUrl = url;
 //        LogUtils.d(currentUrl + "?" + json);
-        logger.debug(TAG,currentUrl + "?" + params.toString());
+        logger.debug(TAG, currentUrl + "?" + params.toString());
         HttpRequest.post(url, params, new BaseHttpRequestCallback<String>() {
 
             //请求网络前
@@ -174,12 +187,18 @@ public class NetWorkRequest {
 
             @Override
             protected void onSuccess(String response) {
-                logger.error(TAG,"onSuccess"+ "/"+flag);
+                logger.error(TAG, "onSuccess" + "/" + flag);
                 if (TextUtils.isEmpty(response)) {
                     return;
                 } else {
-                    BaseBean result = JSON.parseObject(response, new TypeReference<BaseBean>() {
-                    });
+                    BaseBean result = null;
+                    try {
+                        result = JSON.parseObject(response, new TypeReference<BaseBean>() {
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        logger.debug(TAG,e);
+                    }
 
                     if (result != null && result.getStatus() == 1) {
                         uiDataListener.loadDataFinish(flag, result.getData());
@@ -192,7 +211,7 @@ public class NetWorkRequest {
             //请求失败（服务返回非法JSON、服务器异常、网络异常）
             @Override
             public void onFailure(int errorCode, String msg) {
-                logger.error(TAG,"onFailure" + errorCode + ""+ msg);
+                logger.error(TAG, "onFailure" + errorCode + "" + msg);
 
                 uiDataListener.onError(flag, msg);
             }

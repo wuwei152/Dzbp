@@ -3,6 +3,7 @@ package com.md.dzbp.ui.activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,6 +24,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.apkfuns.logutils.LogUtils;
 import com.bumptech.glide.Glide;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
 import com.md.dzbp.adapter.ChatAdapter;
@@ -41,6 +43,7 @@ import com.md.dzbp.data.TextSendMessage;
 import com.md.dzbp.data.VoiceReceiveMessage;
 import com.md.dzbp.data.VoiceSendMessage;
 import com.md.dzbp.model.NetWorkRequest;
+import com.md.dzbp.model.TimeListener;
 import com.md.dzbp.model.TimeUtils;
 import com.md.dzbp.model.UIDataListener;
 import com.md.dzbp.tcp.TcpService;
@@ -50,6 +53,7 @@ import com.md.dzbp.ui.view.MyRecyclerView;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.GetCardNumUtils;
+import com.md.dzbp.utils.GlideImgManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -66,24 +70,38 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class StudentActivity extends BaseActivity implements UIDataListener {
+public class StudentActivity extends BaseActivity implements UIDataListener, TimeListener {
+
+
+    @BindView(R.id.title_classAddr)
+    TextView mAddr;
+    @BindView(R.id.title_cardNum)
+    EditText mCardNum;
+    @BindView(R.id.title_sclIcon)
+    ImageView mSclIcon;
+    @BindView(R.id.title_schoolName)
+    TextView mSchoolName;
+    @BindView(R.id.title_className)
+    TextView mClassName;
+    @BindView(R.id.title_classAlias)
+    TextView mAlias;
+    @BindView(R.id.title_time)
+    TextView mTime;
+    @BindView(R.id.title_week)
+    TextView mWeek;
+    @BindView(R.id.title_date)
+    TextView mDate;
 
     @BindView(R.id.student_chatlist)
     ListView mChatlist;
     @BindView(R.id.student_audioRecorder)
     AudioRecorderButton mAudioRecorder;
-    @BindView(R.id.student_cardNum)
-    EditText mCardNum;
-    @BindView(R.id.student_title)
-    TextView mTitle;
-    @BindView(R.id.student_addr)
-    TextView mAddr;
     @BindView(R.id.student_icon)
-    ImageView mIcon;
-    @BindView(R.id.student_name)
-    TextView mName;
+    SimpleDraweeView mIcon;
     @BindView(R.id.student_class)
     TextView mClass;
+    @BindView(R.id.student_name)
+    TextView mName;
     @BindView(R.id.student_recycle)
     RecyclerView mRecycle;
     @BindView(R.id.stu_honorRecyclerView)
@@ -224,6 +242,32 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
             }
         });
 
+        try {
+            String className = mAcache.getAsString("ClassName");
+            String gradeName = mAcache.getAsString("GradeName");
+            String address = mAcache.getAsString("Address");
+            String schoolName = mAcache.getAsString("SchoolName");
+            String logo = mAcache.getAsString("Logo");
+            String alias = mAcache.getAsString("Alias");
+
+            mDate.setText(TimeUtils.getStringDate());
+            mWeek.setText(TimeUtils.getStringWeek());
+            //获取时间日期
+            new TimeUtils(StudentActivity.this, this);
+
+            mClassName.setText(gradeName+ "\n\n"+ className);
+            mClass.setText(gradeName+ "  "+ className);
+            mAddr.setText("教室编号:" + address);
+            mSchoolName.setText(schoolName);
+            GlideImgManager.glideLoader(StudentActivity.this, logo, R.drawable.pic_not_found, R.drawable.pic_not_found, mSclIcon, 1);
+            if (!TextUtils.isEmpty(alias) && !alias.equals("null")) {
+                mAlias.setText("(" + alias + ")");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(TAG, e);
+        }
+
     }
 
     @OnClick({R.id.student_back, R.id.student_inputType, R.id.student_textSend})
@@ -294,7 +338,7 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
      */
     private void getCardNum() {
 
-        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum, true,this);
+        GetCardNumUtils getCardNumUtils = new GetCardNumUtils(mCardNum, true, this);
         getCardNumUtils.getNum(new GetCardNumUtils.SetNum() {
             @Override
             public void setNum(String num) {
@@ -416,15 +460,15 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
         }
     }
 
-    private void setFlickerAnimation(int offset, View iv_chat_head) {
-        final Animation animation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
-        animation.setDuration(50); // duration - half a second
-        animation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
-        animation.setRepeatCount(Animation.INFINITE); // Repeat animation infinitely
-        animation.setRepeatMode(Animation.REVERSE); //
-        animation.setStartOffset(offset);
-        iv_chat_head.setAnimation(animation);
-    }
+//    private void setFlickerAnimation(int offset, View iv_chat_head) {
+//        final Animation animation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
+//        animation.setDuration(50); // duration - half a second
+//        animation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
+//        animation.setRepeatCount(Animation.INFINITE); // Repeat animation infinitely
+//        animation.setRepeatMode(Animation.REVERSE); //
+//        animation.setStartOffset(offset);
+//        iv_chat_head.setAnimation(animation);
+//    }
 
     @Override
     protected void onDestroy() {
@@ -489,17 +533,16 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
      * 设置UI数据
      */
     private void setUIData(StudentInfoBean studentInfo) {
-        mAddr.setText(studentInfo.getAddress());
+        mAddr.setText("教室编号:" + studentInfo.getAddress());
         StudentInfoBean.StudentBean student = studentInfo.getStudent();
         if (student != null) {
-            mTitle.setText(student.getAccountname());
             try {
-                Glide.with(StudentActivity.this).load(student.getPhoto()).into(mIcon);
+                mIcon.setImageURI(Uri.parse(student.getPhoto()));
             } catch (Exception e) {
                 logger.error("Studentactivity-->{}", e.getMessage());
             }
             mName.setText(student.getAccountname());
-            mClass.setText(student.getGradename() + student.getClassname());
+            mClassName.setText(student.getGradename()+ "\n\n" + student.getClassname());
         }
         List<StudentInfoBean.ParentsBean> parents = studentInfo.getParents();
         if (parents != null) {
@@ -566,7 +609,12 @@ public class StudentActivity extends BaseActivity implements UIDataListener {
                     getUIdata();
                 }
             }
-        }, 5000);
+        }, 30000);
+    }
+
+    @Override
+    public void getTime(String time) {
+        mTime.setText(time);
     }
 
     @Override

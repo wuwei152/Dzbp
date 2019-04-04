@@ -14,6 +14,7 @@ import com.md.dzbp.R;
 import com.md.dzbp.data.MessageBase;
 import com.md.dzbp.data.VoiceSendMessage;
 import com.md.dzbp.model.TimeUtils;
+import com.md.dzbp.utils.GlideImgManager;
 import com.zhy.adapter.abslistview.ViewHolder;
 import com.zhy.adapter.abslistview.base.ItemViewDelegate;
 
@@ -47,7 +48,7 @@ public class VoiceMsgSendItem implements ItemViewDelegate<MessageBase> {
     @Override
     public void convert(final ViewHolder holder, final MessageBase message, int position) {
         final VoiceSendMessage chatMessage = (VoiceSendMessage) message;
-        Glide.with(context).load(chatMessage.getHeadIcon()).into((ImageView) holder.getView(R.id.iv_userhead));
+        GlideImgManager.glideLoader(context, chatMessage.getHeadIcon(), R.drawable.head_icon, R.drawable.head_icon, ((ImageView) holder.getView(R.id.iv_userhead)), 0);
         holder.setText(R.id.timestamp, TimeUtils.toDateString(chatMessage.getCreateTime()));
 //        holder.setText(R.id.tv_length, chatMessage.getLength()+"  \"");
         holder.setText(R.id.tv_userid, chatMessage.getUserName());

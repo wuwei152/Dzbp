@@ -5,6 +5,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.format.DateFormat;
 
+import com.apkfuns.logutils.LogUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -47,21 +49,25 @@ public class TimeUtils {
         String timeStr = df.format(new Date());
         return timeStr;
     }
+
     public static String getCurrentTime() {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");//设置日期格式
         String timeStr = df.format(new Date());
         return timeStr;
     }
+
     public static String getCurrentTime2() {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
         String timeStr = df.format(new Date());
         return timeStr;
     }
+
     public static String getCurrentDate() {
         SimpleDateFormat df = new SimpleDateFormat("yyyy:MM:dd");//设置日期格式
         String timeStr = df.format(new Date());
         return timeStr;
     }
+
     public static String getCurrentDate2() {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
         String timeStr = df.format(new Date());
@@ -156,6 +162,25 @@ public class TimeUtils {
         if (day < 10) {
             dayStr = "0" + day;
         }
+        String dateNow = year + "年" + monthStr + "月" + dayStr + "日";
+        return dateNow;
+    }
+
+    public static String getStringWeek() {
+        //获取当前日期
+        Calendar ca = Calendar.getInstance();
+        int year = ca.get(Calendar.YEAR);//获取年份
+        int month = ca.get(Calendar.MONTH) + 1;//获取月份
+        int day = ca.get(Calendar.DATE);//获取日
+        String weak = String.valueOf(ca.get(Calendar.DAY_OF_WEEK));//获取日
+        String monthStr = "" + month;
+        String dayStr = "" + day;
+        if (month < 10) {
+            monthStr = "0" + month;
+        }
+        if (day < 10) {
+            dayStr = "0" + day;
+        }
         if ("1".equals(weak)) {
             weak = "天";
         } else if ("2".equals(weak)) {
@@ -171,7 +196,7 @@ public class TimeUtils {
         } else if ("7".equals(weak)) {
             weak = "六";
         }
-        String dateNow = year + "年" + monthStr + "月" + dayStr + "日    " + "星期" + weak;
+        String dateNow = "星期" + weak;
         return dateNow;
     }
 
@@ -187,7 +212,7 @@ public class TimeUtils {
     }
 
 
-    public static  boolean compareDate(String time1, String time2){
+    public static boolean compareDate(String time1, String time2) {
         try {
             //如果想比较日期则写成"yyyy-MM-dd"就可以了
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd:HH:mm:ss");
@@ -204,8 +229,28 @@ public class TimeUtils {
         }
         return false;
     }
+
+    public static boolean compareTime(String time1, String time2) {
+        try {
+            //如果想比较日期则写成"yyyy-MM-dd"就可以了
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            //将字符串形式的时间转化为Date类型的时间
+            Date a = sdf.parse(time1);
+            Date b = sdf.parse(time2);
+            //Date类的一个方法，如果a早于b返回true，否则返回false
+            if (a.getTime() > b.getTime())
+                return true;
+            else
+                return false;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     /**
      * 两个时间相差距离多少天多少小时多少分多少秒
+     *
      * @param str1 时间参数 1 格式：1990-01-01 12:00:00
      * @param str2 时间参数 2 格式：2009-01-01 12:00:00
      * @return long[] 返回值为：{天, 时, 分, 秒}
@@ -223,8 +268,8 @@ public class TimeUtils {
             two = df.parse(str2);
             long time1 = one.getTime();
             long time2 = two.getTime();
-            long diff ;
-            if(time1<time2) {
+            long diff;
+            if (time1 < time2) {
                 diff = time2 - time1;
             } else {
                 diff = time1 - time2;
@@ -232,7 +277,7 @@ public class TimeUtils {
             day = diff / (24 * 60 * 60 * 1000);
             hour = (diff / (60 * 60 * 1000) - day * 24);
             min = ((diff / (60 * 1000)) - day * 24 * 60 - hour * 60);
-            sec = (diff/1000-day*24*60*60-hour*60*60-min*60);
+            sec = (diff / 1000 - day * 24 * 60 * 60 - hour * 60 * 60 - min * 60);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -259,5 +304,104 @@ public class TimeUtils {
             e.printStackTrace();
         }
         return "";
+    }
+
+    /**
+     * 获取两个时间与当前时间的已过去的百分比
+     * 格式："10:30:30";
+     *
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    public static double getpercentageTime(String startTime, String endTime) {
+        try {
+            String currentTime1 = getCurrentTime1();
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            double remainingTime = getRemainingTime(startTime, endTime, sdf);
+            double currentRemainingTime = getRemainingTime(startTime, currentTime1, sdf);
+//            LogUtils.d(remainingTime);
+//            LogUtils.d(currentRemainingTime);
+            return currentRemainingTime / remainingTime;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    /**
+     * 获取两个时间差
+     * 格式："2018-01-01 10:30:30";
+     *
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    public static Long getRemainingTime(String startTime, String endTime, SimpleDateFormat sdf) {
+        try {
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            //转换成date类型
+            Date start = sdf.parse(startTime);
+            Date end = sdf.parse(endTime);
+            //获取毫秒数
+            Long startLong = start.getTime();
+            Long endLong = end.getTime();
+            //计算时间差,单位毫秒
+            Long ms = endLong - startLong;
+            return ms;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return Long.valueOf(0);
+        }
+    }
+
+    /**
+     * 获取两个时间差的实际表示
+     * 格式："2018-01-01 10:30:30";
+     *
+     * @param ms
+     * @return
+     */
+    public static String longTimeToDay(Long ms) {
+        Integer ss = 1000;
+        Integer mi = ss * 60;
+        Integer hh = mi * 60;
+        Integer dd = hh * 24;
+
+        Long day = ms / dd;
+        Long hour = (ms - day * dd) / hh;
+        Long minute = (ms - day * dd - hour * hh) / mi;
+        Long second = (ms - day * dd - hour * hh - minute * mi) / ss;
+        Long milliSecond = ms - day * dd - hour * hh - minute * mi - second * ss;
+
+        StringBuffer sb = new StringBuffer();
+//        if (day > 0) {
+//            sb.append(day + "天");
+//        }
+        if (hour >= 0) {
+            if (hour < 10) {
+                sb.append("0" + hour + ":");
+            } else {
+                sb.append(hour + ":");
+            }
+        }
+        if (minute >= 0) {
+            if (minute < 10) {
+                sb.append("0" + minute + ":");
+            } else {
+                sb.append(minute + ":");
+            }
+        }
+        if (second >= 0) {
+            if (second < 10) {
+                sb.append("0" + second + ":");
+            } else {
+                sb.append(second + "");
+            }
+        }
+//        if (milliSecond > 0) {
+//            sb.append(milliSecond + "毫秒");
+//        }
+        return sb.toString();
     }
 }

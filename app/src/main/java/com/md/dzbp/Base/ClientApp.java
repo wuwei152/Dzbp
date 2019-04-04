@@ -41,8 +41,8 @@ public class ClientApp extends Application {
         mAcache = ACache.get(this);
         logger = LoggerFactory.getLogger(getClass());
         FlowManager.init(this);
-        CrashHandler crashHandler = CrashHandler.getInstance();
-        crashHandler.init(this);
+//        CrashHandler crashHandler = CrashHandler.getInstance();
+//        crashHandler.init(this);
 
         Fresco.initialize(this);
         OkHttpFinalConfiguration.Builder builder = new OkHttpFinalConfiguration.Builder();
@@ -71,7 +71,7 @@ public class ClientApp extends Application {
 
     private void initLogs() {
         LogUtils.getLogConfig()
-                .configAllowLog(false)
+                .configAllowLog(true)
                 .configTagPrefix("MyApp")
                 .configShowBorders(true)
                 .configLevel(LogLevel.TYPE_VERBOSE);
