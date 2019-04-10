@@ -222,20 +222,20 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
 //        mSurface.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         mSurface.getHolder().addCallback(callback); // 将Callback绑定到SurfaceView
 
-        mCardNum.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-
-                } else {
-                    logger.error(TAG, "失去焦点，开始请求焦点");
-                    mCardNum.setFocusable(true);
-                    mCardNum.setFocusableInTouchMode(true);
-                    mCardNum.requestFocus();
-                    mCardNum.findFocus();
-                }
-            }
-        });
+//        mCardNum.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                if (hasFocus) {
+//
+//                } else {
+//                    logger.error(TAG, "失去焦点，开始请求焦点");
+//                    mCardNum.setFocusable(true);
+//                    mCardNum.setFocusableInTouchMode(true);
+//                    mCardNum.requestFocus();
+//                    mCardNum.findFocus();
+//                }
+//            }
+//        });
 
     }
 
@@ -282,6 +282,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
 //                    camera = Camera.open();
                     logger.debug(TAG, "摄像头开始初始化");
                     camera = Camera.open(0);
+                    logger.debug(TAG, "摄像头开启");
                     camera.setPreviewDisplay(mSurface.getHolder());
                     //        camera.setDisplayOrientation(90);
                     parameters = camera.getParameters();
