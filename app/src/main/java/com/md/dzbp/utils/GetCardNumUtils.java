@@ -10,6 +10,9 @@ import com.apkfuns.logutils.LogUtils;
 import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.constants.Constant;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 
 /**
@@ -22,10 +25,13 @@ public class GetCardNumUtils {
     private EditText et;
     private BaseActivity act;
     private ArrayList<String> adminNum;
+    private Logger logger;
+    private String TAG = "GetCardNumUtils-->{}";
 
     public GetCardNumUtils(final EditText et, BaseActivity activity) {
         this.et = et;
         this.act = activity;
+        logger = LoggerFactory.getLogger(act.getClass());
         adminNum = Constant.getAdminNum();
         foucus_handler = null;
         foucus_handler = new Handler();
@@ -41,6 +47,7 @@ public class GetCardNumUtils {
     public GetCardNumUtils(EditText et, boolean f, BaseActivity activity) {
         this.act = activity;
         adminNum = Constant.getAdminNum();
+        logger = LoggerFactory.getLogger(act.getClass());
         this.et = et;
     }
 
@@ -57,8 +64,7 @@ public class GetCardNumUtils {
                 if (event != null && KeyEvent.KEYCODE_ENTER == event.getKeyCode() && KeyEvent.ACTION_DOWN == event.getAction()) {
                     String num = et.getText().toString().trim();
                     if (!TextUtils.isEmpty(num) && !"\n".equals(num)) {
-                        LogUtils.d(num + "卡号");
-
+                        logger.info(TAG, "读取卡号:" + num);
                         boolean isMng = false;
                         for (String s : adminNum) {
                             if (num.equals(s)) {

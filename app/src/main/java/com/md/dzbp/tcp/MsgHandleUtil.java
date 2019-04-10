@@ -3,7 +3,9 @@ package com.md.dzbp.tcp;
 import android.app.smdt.SmdtManager;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,6 +17,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.TypeReference;
 import com.apkfuns.logutils.LogUtils;
+import com.md.dzbp.R;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.constants.ERRORTYPE;
 import com.md.dzbp.data.CameraInfo;
@@ -843,6 +846,7 @@ public class MsgHandleUtil {
                 break;
         }
         myToast.toast(context, msg);
+        play(0);
     }
 
     /**
@@ -1202,5 +1206,23 @@ public class MsgHandleUtil {
 //                logger.debug(TAG, "开始直接截屏");
 //                dahuaModel.snap(0);
 //            }
+    }
+
+    private void play(int k) {
+        logger.debug(TAG, "播放刷卡提示音");
+        SoundPool soundPool;
+        soundPool = new SoundPool(21, AudioManager.STREAM_SYSTEM, 10);
+        if (k == 1) {
+            soundPool.load(context, R.raw.card_sucsess, 1);
+        } else {
+            soundPool.load(context, R.raw.card_fails, 1);
+        }
+        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public void onLoadComplete(SoundPool soundPool, int i, int i1) {
+                logger.debug(TAG, "开始播放！");
+                soundPool.play(1, 1, 1, 0, 0, 1.2f);
+            }
+        });
     }
 }

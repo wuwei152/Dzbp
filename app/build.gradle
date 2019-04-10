@@ -20,8 +20,8 @@ android {
         applicationId "com.md.dzbp"
         minSdkVersion 18
         targetSdkVersion 23
-        versionCode 13
-        versionName "2.0.5"
+        versionCode 14
+        versionName "2.0.5.1"
         multiDexEnabled true
         //推送选择要添加的对应cpu类型的.so库。
         ndk {

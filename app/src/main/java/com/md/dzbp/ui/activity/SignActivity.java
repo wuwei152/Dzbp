@@ -1,17 +1,21 @@
 package com.md.dzbp.ui.activity;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -139,6 +143,13 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
         if (intent.hasExtra("End")) {
             mSignEndTime = intent.getStringExtra("End");
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.CAMERA}, 1);
+            }
+        }
+
         callback = new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
@@ -211,6 +222,21 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
 //        mSurface.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         mSurface.getHolder().addCallback(callback); // 将Callback绑定到SurfaceView
 
+        mCardNum.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+
+                } else {
+                    logger.error(TAG, "失去焦点，开始请求焦点");
+                    mCardNum.setFocusable(true);
+                    mCardNum.setFocusableInTouchMode(true);
+                    mCardNum.requestFocus();
+                    mCardNum.findFocus();
+                }
+            }
+        });
+
     }
 
     @Override
@@ -252,7 +278,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
             @Override
             public void run() {
                 try {
-                    Thread.sleep(300);
+                    Thread.sleep(500);
 //                    camera = Camera.open();
                     logger.debug(TAG, "摄像头开始初始化");
                     camera = Camera.open(0);
@@ -269,7 +295,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
                 } catch (Exception e) {
                     logger.debug(TAG, "摄像头初始化失败");
                     e.printStackTrace();
-                    logger.error(TAG, e.getMessage());
+                    logger.error(TAG, e);
                     new Handler(getMainLooper()).postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -279,7 +305,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
                                 initCamera();
                             }
                         }
-                    }, 5000);
+                    }, 15000);
                 }
             }
         }).start();
@@ -347,7 +373,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
                     }
                 }
             });
-            logger.debug(TAG, "开始结束！");
+            logger.debug(TAG, "拍照结束！");
         } else {
             logger.debug(TAG, "camera为空异常，不带文件上传考勤！");
             Intent intent = new Intent(SignActivity.this, TcpService.class);

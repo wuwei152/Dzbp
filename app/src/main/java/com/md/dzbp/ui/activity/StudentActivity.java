@@ -335,6 +335,7 @@ public class StudentActivity extends BaseActivity implements UIDataListener, Tim
 
     /**
      * 获取卡号
+     * 未加持续请求焦点。防止输入时抢焦点
      */
     private void getCardNum() {
 

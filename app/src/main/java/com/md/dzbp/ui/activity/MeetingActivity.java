@@ -130,7 +130,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
             //获取时间日期
             new TimeUtils(MeetingActivity.this, this);
 
-            mClassName.setText(gradeName + "\n\n"+ className);
+            mClassName.setText(gradeName + "\n\n" + className);
             mAddr.setText("教室编号:" + address);
             mSchoolName.setText(schoolName);
             GlideImgManager.glideLoader(MeetingActivity.this, logo, R.drawable.pic_not_found, R.drawable.pic_not_found, mSclIcon, 1);
@@ -152,7 +152,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
 
     @Override
     protected void initData() {
-        setUIData(new Meetingbean());
+//        setUIData(new Meetingbean());
         getCardNum();
         getUIdata();
     }
@@ -229,6 +229,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
             if (host != null) {
                 hostName = host.getAccountName();
             }
+            setGridData(meetingUserList);
         }
         mMainTitle.setText(meetingbean.getName());
         String endTime = meetingbean.getEndTime();
@@ -245,7 +246,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
         mMainDate.setText(meetingbean.getStartTime() + "--" + endTime);
         mHost.setText("会议主持：" + hostName);
         Glide.with(MeetingActivity.this).load(meetingbean.getQrcodeUrl()).into(mQRcode);
-        setGridData(meetingUserList);
+
     }
 
     /**
