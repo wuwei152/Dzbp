@@ -28,6 +28,7 @@ import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
 import com.md.dzbp.constants.APIConfig;
 import com.md.dzbp.constants.Constant;
+import com.md.dzbp.data.CheckDelayEvent;
 import com.md.dzbp.data.LoginEvent;
 import com.md.dzbp.data.MainData;
 import com.md.dzbp.data.SendSignEvent;
@@ -177,7 +178,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
             String logo = mAcache.getAsString("Logo");
             String alias = mAcache.getAsString("Alias");
 
-            mClassName.setText(gradeName + "\n\n"+ className);
+            mClassName.setText(gradeName + "\n\n" + className);
             mMainAddr.setText("教室编号:" + address);
             mSchoolName.setText(schoolName);
             GlideImgManager.glideLoader(SignActivity.this, logo, R.drawable.pic_not_found, R.drawable.pic_not_found, mSclIcon, 1);
@@ -302,8 +303,9 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
                         public void run() {
                             retry++;
                             if (retry < 5) {
-                                logger.debug(TAG, "摄像头初始化失败，重试中。。。");
-                                initCamera();
+                                logger.debug(TAG, "摄像头初始化失败，重试中。。。" + retry);
+                                startActivity(new Intent(SignActivity.this, MainActivity.class));
+                                EventBus.getDefault().post(new CheckDelayEvent(5));
                             }
                         }
                     }, 15000);
@@ -456,7 +458,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
         studentsList = signInfoBean.getStudent();
         if (classInfo != null) {
             mMainAddr.setText("教室编号:" + classInfo.getAddress());
-            mClassName.setText(classInfo.getGradeName() + "\n\n"+ classInfo.getClassName());
+            mClassName.setText(classInfo.getGradeName() + "\n\n" + classInfo.getClassName());
         }
         if (studentsList != null && studentsList.size() > 0) {
             setGridData(studentsList);

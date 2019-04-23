@@ -58,6 +58,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -298,7 +299,11 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
      */
     private void setPager() {
         try {
-            ArrayList<MainData.PhotosBean> photos = (ArrayList<MainData.PhotosBean>) mAcache.getAsObject("Photos");
+            List<MainData.PhotosBean> photos = (List<MainData.PhotosBean>) mAcache.getAsObject("Photos");
+
+            if (photos.size()>16){
+                photos = photos.subList(0, 16);
+            }
 
             ArrayList<String> images = new ArrayList<>();
             for (MainData.PhotosBean photo : photos) {

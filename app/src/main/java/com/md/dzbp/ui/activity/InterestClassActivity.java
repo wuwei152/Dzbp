@@ -98,7 +98,7 @@ public class InterestClassActivity extends BaseActivity implements TimeListener,
     private String TAG = "InterestClassActivity-->{}";
     private String classMng;
     private CommonAdapter adapter;
-    private ArrayList<MainData.PhotosBean> photos;
+    private List<MainData.PhotosBean> photos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -218,8 +218,14 @@ public class InterestClassActivity extends BaseActivity implements TimeListener,
         setGridData(interestingUserList);
 
         try {
-            photos = (ArrayList<MainData.PhotosBean>) mAcache.getAsObject("Photos");
+            photos = (List<MainData.PhotosBean>) mAcache.getAsObject("Photos");
+
             if (photos!=null&&photos.size()>0){
+
+                if (photos.size()>16){
+                    photos = photos.subList(0, 16);
+                }
+
                 photos.get(0).setChecked(true);
                 adapter = new CommonAdapter<MainData.PhotosBean>(InterestClassActivity.this, R.layout.item_interest_list, photos) {
                     @Override

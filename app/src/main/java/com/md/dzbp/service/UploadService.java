@@ -132,7 +132,7 @@ public class UploadService extends Service {
                             Thread.sleep(500);
                         }
                     } catch (Exception e) {
-                        logger.error(TAG, e.getMessage());
+                        logger.error(TAG, e);
                     }
                 }
             }
