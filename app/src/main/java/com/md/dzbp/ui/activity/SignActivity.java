@@ -337,7 +337,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
     /**
      * 拍照
      */
-    private void TakePicture(final String cardNum) {
+    private void TakePicture(final String cardNum, final String picName) {
         logger.debug(TAG, "开始拍照！" + cardNum);
         if (camera != null) {
             camera.takePicture(null, null, new Camera.PictureCallback() {
@@ -349,41 +349,24 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
                         if (!filePath.exists()) {
                             filePath.mkdirs();
                         }
-                        File fileName = new File(filePath, System.currentTimeMillis() + (int) (Math.random() * 1000) + ".jpeg");
+                        File fileName = new File(filePath, picName);
                         fileName.createNewFile();
                         FileOutputStream fos = new FileOutputStream(fileName);
                         fos.write(data);
                         fos.flush();
                         fos.close();
 
-                        Intent intent = new Intent(SignActivity.this, TcpService.class);
-                        intent.putExtra("Num", cardNum);
-                        intent.putExtra("Act", 7);
-                        intent.putExtra("ext", fileName.getName());
-                        startService(intent);
-
                         logger.debug(TAG, "拍照成功！");
                         compress(fileName);
                     } catch (Exception e) {
-                        logger.debug(TAG, "拍照处理异常，不带文件上传考勤！");
-                        Intent intent = new Intent(SignActivity.this, TcpService.class);
-                        intent.putExtra("Num", cardNum);
-                        intent.putExtra("Act", 7);
-                        intent.putExtra("ext", "");
-                        startService(intent);
+                        logger.error(TAG, "拍照处理异常，不带文件上传考勤！" + e);
                         e.printStackTrace();
-                        logger.error(TAG, e);
                     }
                 }
             });
             logger.debug(TAG, "拍照结束！");
         } else {
             logger.debug(TAG, "camera为空异常，不带文件上传考勤！");
-            Intent intent = new Intent(SignActivity.this, TcpService.class);
-            intent.putExtra("Num", cardNum);
-            intent.putExtra("Act", 7);
-            intent.putExtra("ext", "");
-            startService(intent);
         }
 
     }
@@ -422,7 +405,13 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
             @Override
             public void setNum(String num) {
                 if (!TextUtils.isEmpty(num)) {
-                    TakePicture(num);
+                    String picName = System.currentTimeMillis() + (int) (Math.random() * 1000) + ".jpeg";
+                    Intent intent = new Intent(SignActivity.this, TcpService.class);
+                    intent.putExtra("Num", num);
+                    intent.putExtra("Act", 7);
+                    intent.putExtra("ext", picName);
+                    startService(intent);
+                    TakePicture(num, picName);
                 }
             }
         });
