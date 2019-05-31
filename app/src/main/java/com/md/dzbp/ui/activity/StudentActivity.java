@@ -544,6 +544,7 @@ public class StudentActivity extends BaseActivity implements UIDataListener, Tim
             }
             mName.setText(student.getAccountname());
             mClassName.setText(student.getGradename()+ "\n\n" + student.getClassname());
+            mClass.setText(student.getGradename()+ "  "+ student.getClassname());
         }
         List<StudentInfoBean.ParentsBean> parents = studentInfo.getParents();
         if (parents != null) {

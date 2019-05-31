@@ -3,6 +3,7 @@ package com.md.dzbp.tcp;
 import android.app.smdt.SmdtManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
@@ -42,6 +43,7 @@ import com.md.dzbp.ui.activity.VideoShowActivity;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.FileUtils;
+import com.nanchen.compresshelper.CompressHelper;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import org.greenrobot.eventbus.EventBus;
@@ -59,8 +61,6 @@ import java.util.List;
 import java.util.Map;
 
 import cn.finalteam.toolsfinal.ManifestUtils;
-import top.zibin.luban.Luban;
-import top.zibin.luban.OnCompressListener;
 
 /**
  * 处理TCP消息工具类
@@ -309,16 +309,26 @@ public class MsgHandleUtil {
      * @param listener
      */
 
-    public void CompressImg(File file, String targetDir, OnCompressListener listener) {
+    public void CompressImg(File file, String targetDir, com.md.dzbp.model.OnCompressListener listener) {
         try {
-            Luban.with(context)
-                    .load(file)                                   // 传人要压缩的图片列表
-                    .ignoreBy(30)                                  // 忽略不压缩图片的大小
-                    .setTargetDir(targetDir)                        // 设置压缩后文件存储位置
-                    .setCompressListener(listener).launch();    //启动压缩
+            File newFile = new CompressHelper.Builder(context)
+                    .setQuality(80)    // 默认压缩质量为80  0--100  值越小图片压缩越大
+                    .setFileName(file.getName().substring(0, file.getName().indexOf("."))) // 设置你需要修改的文件名
+                    .setCompressFormat(Bitmap.CompressFormat.JPEG) // 设置默认压缩为jpg格式
+                    .setDestinationDirectoryPath(targetDir)
+                    .build()
+                    .compressToFile(file);
+
+            if (newFile.exists()) {
+                listener.onSuccess(newFile);
+            } else {
+                listener.onError();
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error(TAG,e);
+            listener.onError();
+            logger.error(TAG, e);
         }
     }
 
@@ -337,7 +347,7 @@ public class MsgHandleUtil {
                 File file = new File(fileDir);
                 try {
                     //单文件上传
-                    if (!file.exists()){
+                    if (!file.exists()) {
                         logger.error(TAG, "文件不存在！");
                         fileHandle.handleFail(1, "");
                         return;
@@ -927,15 +937,11 @@ public class MsgHandleUtil {
                 public void resLis(int code, boolean isSuccess, String file) {
                     LogUtils.d(file);
                     if (isSuccess && !TextUtils.isEmpty(file)) {
-                        CompressImg(new File(file), FileUtils.getDiskCacheDir(context) + "Screenshot/", new OnCompressListener() {
-                            @Override
-                            public void onStart() {
-                                logger.debug(TAG, "开始压缩！");
-                            }
+                        CompressImg(new File(file), FileUtils.getDiskCacheDir(context) + "Screenshot/", new com.md.dzbp.model.OnCompressListener() {
 
                             @Override
                             public void onSuccess(File file) {
-                                logger.debug(TAG, "压缩成功！"+file.getAbsolutePath());
+                                logger.debug(TAG, "压缩成功！" + file.getAbsolutePath());
                                 UploadFile(file.getAbsolutePath(), Constant.Ftp_Camera, new FileHandle() {
                                     @Override
                                     public void handleSuccess(int code, String data) {
@@ -963,7 +969,7 @@ public class MsgHandleUtil {
                             }
 
                             @Override
-                            public void onError(Throwable e) {
+                            public void onError() {
                                 logger.debug(TAG, "压缩失败！");
                                 for (String s : OpenList) {
                                     yingda(0xA610, false, deviceId, s);
@@ -1030,15 +1036,11 @@ public class MsgHandleUtil {
                 public void resLis(int code, boolean isSuccess, String file) {
                     LogUtils.d(file);
                     if (isSuccess && !TextUtils.isEmpty(file)) {
-                        CompressImg(new File(file), FileUtils.getDiskCacheDir(context) + "Screenshot/", new OnCompressListener() {
-                            @Override
-                            public void onStart() {
-                                logger.debug(TAG, "开始压缩！");
-                            }
+                        CompressImg(new File(file), FileUtils.getDiskCacheDir(context) + "Screenshot/", new com.md.dzbp.model.OnCompressListener() {
 
                             @Override
                             public void onSuccess(File file) {
-                                logger.debug(TAG, "压缩成功！"+file.getAbsolutePath());
+                                logger.debug(TAG, "压缩成功！" + file.getAbsolutePath());
                                 UploadFile(file.getAbsolutePath(), Constant.Ftp_Camera, new FileHandle() {
                                     @Override
                                     public void handleSuccess(int code, String data) {
@@ -1067,7 +1069,7 @@ public class MsgHandleUtil {
                             }
 
                             @Override
-                            public void onError(Throwable e) {
+                            public void onError() {
                                 logger.debug(TAG, "压缩失败！");
                                 for (Integer s : OpenList2) {
                                     yingda(0xA515, false, deviceId, s);
@@ -1134,15 +1136,15 @@ public class MsgHandleUtil {
                     if (isSuccess && !TextUtils.isEmpty(file)) {
                         logger.debug(TAG, "截屏成功:" + file);
                         File file1 = new File(file);
-                        CompressImg(file1, FileUtils.getDiskCacheDir(context) + "Screenshot/", new OnCompressListener() {
-                            @Override
-                            public void onStart() {
-                                logger.debug(TAG, "开始压缩！");
-                            }
+                        CompressImg(file1, FileUtils.getDiskCacheDir(context) + "Screenshot/", new com.md.dzbp.model.OnCompressListener() {
+//                            @Override
+//                            public void onStart() {
+//                                logger.debug(TAG, "开始压缩！");
+//                            }
 
                             @Override
                             public void onSuccess(File file) {
-                                logger.debug(TAG, "压缩成功！"+file.getAbsolutePath());
+                                logger.debug(TAG, "压缩成功！" + file.getAbsolutePath());
                                 File file2 = new File(file.getParent(), mFileName);
                                 boolean rename = file.renameTo(file2);
                                 logger.debug(TAG, "文件更名是否成功:" + rename);
@@ -1172,7 +1174,7 @@ public class MsgHandleUtil {
                             }
 
                             @Override
-                            public void onError(Throwable e) {
+                            public void onError() {
                                 logger.debug(TAG, "压缩失败！");
                                 yingda(0xA515, false, deviceId, "");
                                 mFileName = "";
