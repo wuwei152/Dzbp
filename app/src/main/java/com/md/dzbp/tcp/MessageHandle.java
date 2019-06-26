@@ -300,6 +300,17 @@ public class MessageHandle {
                     msgHandleUtil.yingda(0xA515, false, deviceId, msgid515);
                 }
                 break;
+            case 0xE515://摄像头截屏2---微信页面截屏,新加改SN为String
+                final String msgid5152 = tcpMessage.ReadString(tcpMessage.ReadInt());//SN
+                logger.debug(TAG, "0xE515收到摄像头截屏2指令" + msgid5152);
+                try {
+                    msgHandleUtil.TakeVideoPic2(msgid5152);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logger.debug(TAG,"截屏出错"+e.getMessage());
+                    msgHandleUtil.yingda(0xE515, false, deviceId, msgid5152);
+                }
+                break;
             case 0xA516://摄像头截屏3---发送考勤统计截屏
                 final int length516 = tcpMessage.ReadInt();
                 String fileName = tcpMessage.ReadString(length516);

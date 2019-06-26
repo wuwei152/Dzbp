@@ -82,6 +82,7 @@ public class MsgHandleUtil {
     private int retry;
     private DahuaModel dahuaModel2;
     private DahuaModel dahuaModel3;
+    private DahuaModel dahuaModel21;
 
     public MsgHandleUtil(Context context, TcpClient client) {
         this.context = context;
@@ -272,6 +273,30 @@ public class MsgHandleUtil {
             int length3 = openId.getBytes("UTF-8").length;
             message.Write(length3);
             message.Write(openId, length3);
+            client.getTransceiver().send(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.debug(TAG, e.getMessage());
+        }
+    }
+
+    /**
+     * 摄像头截屏应答
+     *
+     * @param xyh 协议号
+     * @param b
+     */
+    private void yingda(int xyh, boolean b, String diviceId, String path, String openId, int s) {
+        try {
+            TCPMessage message = new TCPMessage(xyh);
+            int length3 = openId.getBytes("UTF-8").length;
+            message.Write(length3);
+            message.Write(openId, length3);
+            message.Write(b);
+            message.Write(diviceId, 36);
+            int length2 = path.getBytes("UTF-8").length;
+            message.Write(length2);
+            message.Write(path, length2);
             client.getTransceiver().send(message);
         } catch (Exception e) {
             e.printStackTrace();
@@ -1114,6 +1139,101 @@ public class MsgHandleUtil {
 //                logger.debug(TAG, "开始直接截屏");
 //                dahuaModel.snap(0);
 //            }
+    }
+
+    /**
+     * 获取摄像头截屏21
+     * <p>
+     * 页面点击班级名称截屏
+     */
+
+    ArrayList<String> OpenList21 = new ArrayList<>();
+
+    public void TakeVideoPic2(String openId) {
+        logger.debug(TAG, "openId:" + openId);
+        retry = 0;
+        if (!OpenList21.contains(openId)) {
+            OpenList21.add(openId);
+        }
+        if (dahuaModel21 == null) {
+            dahuaModel21 = new DahuaModel(context, new DahuaListener() {
+                @Override
+                public void resLis(int code, boolean isSuccess, String file) {
+                    LogUtils.d(file);
+                    if (isSuccess && !TextUtils.isEmpty(file)) {
+                        CompressImg(new File(file), FileUtils.getDiskCacheDir(context) + "Screenshot/", new com.md.dzbp.model.OnCompressListener() {
+
+                            @Override
+                            public void onSuccess(File file) {
+                                logger.debug(TAG, "压缩成功！" + file.getAbsolutePath());
+                                UploadFile(file.getAbsolutePath(), Constant.Ftp_Camera, new FileHandle() {
+                                    @Override
+                                    public void handleSuccess(int code, String data) {
+                                        logger.debug(TAG, "上传snap成功！" + data + "/");
+                                        for (String s : OpenList21) {
+                                            yingda(0xE515, true, deviceId, data, s, 1);
+                                            logger.debug(TAG, "发送成功！" + data + "/" + s);
+                                        }
+                                        OpenList21.clear();
+                                    }
+
+                                    @Override
+                                    public void handleFail(int code, String data) {
+                                        logger.debug(TAG, "上传snap失败！" + data);
+                                        for (String s : OpenList21) {
+                                            yingda(0xE515, false, deviceId, s);
+                                        }
+                                        OpenList21.clear();
+                                    }
+
+                                    @Override
+                                    public void handleFinished(int code, String data) {
+                                        logger.debug(TAG, "上传进程完成！" + data);
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onError() {
+                                logger.debug(TAG, "压缩失败！");
+                                for (String s : OpenList21) {
+                                    yingda(0xE515, false, deviceId, s);
+                                }
+                                OpenList21.clear();
+                            }
+                        });
+                    } else {
+                        if (retry == 0) {
+                            retry = 1;
+                            logger.debug(TAG, "摄像头截屏获取失败重试中。。。！");
+                            CameraInfo cameraInfo = mCameraInfos.get(0);
+                            dahuaModel21.logout();
+                            dahuaModel21.LoginToSnap(cameraInfo.getIp(), cameraInfo.getPort(), cameraInfo.getUsername(), cameraInfo.getPsw());
+                            return;
+                        }
+                        logger.debug(TAG, "摄像头截屏获取失败！");
+                        for (String s : OpenList21) {
+                            yingda(0xE515, false, deviceId, s);
+                        }
+                        OpenList21.clear();
+                    }
+//                    dahuaModel.logout();
+                }
+            });
+        }
+//            if (dahuaModel.mLoginHandle == 0) {
+        if (mCameraInfos != null && mCameraInfos.size() > 0) {
+            logger.debug(TAG, "开始登录截屏");
+            dahuaModel21.logout();
+            CameraInfo cameraInfo = mCameraInfos.get(0);
+            dahuaModel21.LoginToSnap(cameraInfo.getIp(), cameraInfo.getPort(), cameraInfo.getUsername(), cameraInfo.getPsw());
+        } else {
+            logger.debug(TAG, "未获取到摄像头信息");
+            for (String s : OpenList21) {
+                yingda(0xE515, false, deviceId, s);
+            }
+            OpenList21.clear();
+        }
     }
 
     /**

@@ -317,7 +317,7 @@ public class SwitchTask extends Timer {
                                 endTime = triggerTime.substring(11);
                             }
                             intent.putExtra("End", endTime);
-                            LogUtils.d("End" + p.getTriggerTime());
+//                            LogUtils.d("End" + p.getTriggerTime());
                         }
                     }
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
