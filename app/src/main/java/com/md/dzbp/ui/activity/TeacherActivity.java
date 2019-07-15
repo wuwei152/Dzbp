@@ -222,7 +222,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
             setCourseList();
             setPager();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(TAG, e);
         }
     }
 
@@ -247,51 +247,53 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
             mNextCourse.setText("上课中...");
         }
 //        mListview.setOverScrollMode(View.OVER_SCROLL_NEVER);
-        mListview.setAdapter(new CommonAdapter<MainData.CourseBean>(TeacherActivity.this, R.layout.item_main_list, course) {
-            @Override
-            protected void convert(ViewHolder viewHolder, MainData.CourseBean item, int position) {
-                viewHolder.setText(R.id.item_l1, item.getRemarks() + "");
-                viewHolder.setText(R.id.item_l3, item.getSubjectname());
-                viewHolder.setText(R.id.item_l2, item.getPeriod());
-                viewHolder.setText(R.id.item_l4, item.getAccountname());
-                if (position == 0) {
-                    viewHolder.getView(R.id.item_top).setVisibility(View.INVISIBLE);
-                } else {
-                    viewHolder.getView(R.id.item_top).setVisibility(View.VISIBLE);
-                }
-                if (position == course.size() - 1) {
-                    viewHolder.getView(R.id.item_bot).setVisibility(View.INVISIBLE);
-                } else {
-                    viewHolder.getView(R.id.item_bot).setVisibility(View.VISIBLE);
-                }
+        if (course != null) {
+            mListview.setAdapter(new CommonAdapter<MainData.CourseBean>(TeacherActivity.this, R.layout.item_main_list, course) {
+                @Override
+                protected void convert(ViewHolder viewHolder, MainData.CourseBean item, int position) {
+                    viewHolder.setText(R.id.item_l1, item.getRemarks() + "");
+                    viewHolder.setText(R.id.item_l3, item.getSubjectname());
+                    viewHolder.setText(R.id.item_l2, item.getPeriod());
+                    viewHolder.setText(R.id.item_l4, item.getAccountname());
+                    if (position == 0) {
+                        viewHolder.getView(R.id.item_top).setVisibility(View.INVISIBLE);
+                    } else {
+                        viewHolder.getView(R.id.item_top).setVisibility(View.VISIBLE);
+                    }
+                    if (position == course.size() - 1) {
+                        viewHolder.getView(R.id.item_bot).setVisibility(View.INVISIBLE);
+                    } else {
+                        viewHolder.getView(R.id.item_bot).setVisibility(View.VISIBLE);
+                    }
 
-                if (TimeUtils.compareTime(item.getStartTime(), current)) {
-                    viewHolder.setBackgroundRes(R.id.item_qiu, R.drawable.gray_solid_circle_back);
-                } else {
-                    viewHolder.setBackgroundRes(R.id.item_qiu, R.drawable.green_solid_circle_back);
+                    if (TimeUtils.compareTime(item.getStartTime(), current)) {
+                        viewHolder.setBackgroundRes(R.id.item_qiu, R.drawable.gray_solid_circle_back);
+                    } else {
+                        viewHolder.setBackgroundRes(R.id.item_qiu, R.drawable.green_solid_circle_back);
+                    }
+
+                    if (bean != null && bean.getPeriod().equals(item.getPeriod())) {
+                        viewHolder.getView(R.id.item_icon).setVisibility(View.VISIBLE);
+                        GlideImgManager.glideLoader(TeacherActivity.this, bean.getPhoto(), R.drawable.icon_head_teacher, R.drawable.icon_head_teacher, (ImageView) (viewHolder.getView(R.id.item_icon)), 0);
+                        viewHolder.setBackgroundRes(R.id.item_qiu, R.drawable.red_solid_circle_back);
+                        viewHolder.setBackgroundRes(R.id.item_ll, R.color.green2);
+
+                        ((TextView) (viewHolder.getView(R.id.item_l1))).setTextColor(getResources().getColor(R.color.white));
+                        ((TextView) (viewHolder.getView(R.id.item_l2))).setTextColor(getResources().getColor(R.color.white));
+                        ((TextView) (viewHolder.getView(R.id.item_l3))).setTextColor(getResources().getColor(R.color.white));
+                        ((TextView) (viewHolder.getView(R.id.item_l4))).setTextColor(getResources().getColor(R.color.white));
+
+                    } else {
+                        viewHolder.setBackgroundRes(R.id.item_ll, R.color.white);
+                        viewHolder.getView(R.id.item_icon).setVisibility(View.INVISIBLE);
+                        ((TextView) (viewHolder.getView(R.id.item_l1))).setTextColor(getResources().getColor(R.color.text_gray));
+                        ((TextView) (viewHolder.getView(R.id.item_l2))).setTextColor(getResources().getColor(R.color.text_black));
+                        ((TextView) (viewHolder.getView(R.id.item_l3))).setTextColor(getResources().getColor(R.color.text_black));
+                        ((TextView) (viewHolder.getView(R.id.item_l4))).setTextColor(getResources().getColor(R.color.text_black));
+                    }
                 }
-
-                if (bean != null && bean.getPeriod().equals(item.getPeriod())) {
-                    viewHolder.getView(R.id.item_icon).setVisibility(View.VISIBLE);
-                    GlideImgManager.glideLoader(TeacherActivity.this, bean.getPhoto(), R.drawable.icon_head_teacher, R.drawable.icon_head_teacher, (ImageView) (viewHolder.getView(R.id.item_icon)), 0);
-                    viewHolder.setBackgroundRes(R.id.item_qiu, R.drawable.red_solid_circle_back);
-                    viewHolder.setBackgroundRes(R.id.item_ll, R.color.green2);
-
-                    ((TextView) (viewHolder.getView(R.id.item_l1))).setTextColor(getResources().getColor(R.color.white));
-                    ((TextView) (viewHolder.getView(R.id.item_l2))).setTextColor(getResources().getColor(R.color.white));
-                    ((TextView) (viewHolder.getView(R.id.item_l3))).setTextColor(getResources().getColor(R.color.white));
-                    ((TextView) (viewHolder.getView(R.id.item_l4))).setTextColor(getResources().getColor(R.color.white));
-
-                } else {
-                    viewHolder.setBackgroundRes(R.id.item_ll, R.color.white);
-                    viewHolder.getView(R.id.item_icon).setVisibility(View.INVISIBLE);
-                    ((TextView) (viewHolder.getView(R.id.item_l1))).setTextColor(getResources().getColor(R.color.text_gray));
-                    ((TextView) (viewHolder.getView(R.id.item_l2))).setTextColor(getResources().getColor(R.color.text_black));
-                    ((TextView) (viewHolder.getView(R.id.item_l3))).setTextColor(getResources().getColor(R.color.text_black));
-                    ((TextView) (viewHolder.getView(R.id.item_l4))).setTextColor(getResources().getColor(R.color.text_black));
-                }
-            }
-        });
+            });
+        }
     }
 
     /**
@@ -301,7 +303,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
         try {
             List<MainData.PhotosBean> photos = (List<MainData.PhotosBean>) mAcache.getAsObject("Photos");
 
-            if (photos.size()>16){
+            if (photos.size() > 16) {
                 photos = photos.subList(0, 16);
             }
 
@@ -447,7 +449,7 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
      */
     private void setUIData(CourseBean courseBean) {
         try {
-            mClassName.setText(courseBean.getGradeName() + "\n\n"+ courseBean.getClassName());
+            mClassName.setText(courseBean.getGradeName() + "\n\n" + courseBean.getClassName());
             if (!TextUtils.isEmpty(courseBean.getSubjectName())) {
                 mCourseName.setText(courseBean.getSubjectName());
                 mCourseName.setVisibility(View.VISIBLE);
