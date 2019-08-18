@@ -6,10 +6,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -20,8 +18,6 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.apkfuns.logutils.LogUtils;
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
@@ -171,7 +167,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         mStuListRecycler.setAdapter(stuListAdapter);
         mStuListRecycler.setEmptyView(mRecyclerEmpty);
 
-        logger = LoggerFactory.getLogger(ExamActivity.class);
+        logger = LoggerFactory.getLogger(MainActivity.class);
 
         SmdtManager smdt = SmdtManager.create(this);
         //隐藏状态栏
