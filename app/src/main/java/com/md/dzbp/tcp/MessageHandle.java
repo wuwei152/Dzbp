@@ -512,6 +512,10 @@ public class MessageHandle {
                     }, 30000);
                 }
                 break;
+            case 0xA614://更新首页数据
+                logger.debug(TAG, "0xA614收到更新首页数据指令");
+                EventBus.getDefault().post(new MainUpdateEvent(1, ""));
+                break;
             default:
                 break;
         }

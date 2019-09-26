@@ -25,8 +25,8 @@
 
     <ImageView
         android:id="@+id/title_sclIcon"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
         android:layout_marginTop="26dp"
         android:scaleType="fitXY"
         android:src="@drawable/pic_not_found" />

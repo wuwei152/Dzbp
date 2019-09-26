@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -395,9 +396,9 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
      */
     private void setPager(List<MainData.PhotosBean> photos) {
 
-        if (photos.size()>16){
-            photos = photos.subList(0, 16);
-        }
+//        if (photos.size() > 16) {
+//            photos = photos.subList(0, 16);
+//        }
         try {
             ArrayList<String> images = new ArrayList<>();
             for (MainData.PhotosBean photo : photos) {
@@ -563,9 +564,21 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         }
         MainData.AttendanceBean attendance = mainData.getAttendance();
         if (attendance != null) {
-            mYingdao.setText(attendance.getYindao() + "");
-            mShidao.setText(attendance.getShidao() + "");
-            mWeidao.setText(attendance.getWeidao() + "");
+            if (attendance.getYindao() == 0) {
+                mYingdao.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+                mShidao.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+                mWeidao.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+                mYingdao.setText("统计中");
+                mShidao.setText("统计中");
+                mWeidao.setText("统计中");
+            } else {
+                mYingdao.setTextSize(TypedValue.COMPLEX_UNIT_SP, 38);
+                mShidao.setTextSize(TypedValue.COMPLEX_UNIT_SP, 38);
+                mWeidao.setTextSize(TypedValue.COMPLEX_UNIT_SP, 38);
+                mYingdao.setText(attendance.getYindao() + "");
+                mShidao.setText(attendance.getShidao() + "");
+                mWeidao.setText(attendance.getWeidao() + "");
+            }
         }
     }
 
@@ -695,7 +708,8 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     public void onUpdateSynEvent(MainUpdateEvent event) {
         LogUtils.d("MainActivity接收到局部更新消息" + event.getId());
         switch (event.getId()) {
-            case 1://相册更新
+            case 1://首页更新
+                getUIdata();
                 break;
             case 2://课表更新
                 break;
