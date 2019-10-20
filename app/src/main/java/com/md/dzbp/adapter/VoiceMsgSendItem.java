@@ -9,11 +9,17 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.apkfuns.logutils.LogUtils;
 import com.bumptech.glide.Glide;
 import com.md.dzbp.R;
+import com.md.dzbp.constants.Constant;
+import com.md.dzbp.constants.ERRORTYPE;
 import com.md.dzbp.data.MessageBase;
+import com.md.dzbp.data.VoiceReceiveMessage;
 import com.md.dzbp.data.VoiceSendMessage;
+import com.md.dzbp.ftp.FTP;
 import com.md.dzbp.model.TimeUtils;
+import com.md.dzbp.utils.FileUtils;
 import com.md.dzbp.utils.GlideImgManager;
 import com.zhy.adapter.abslistview.ViewHolder;
 import com.zhy.adapter.abslistview.base.ItemViewDelegate;
@@ -21,6 +27,8 @@ import com.zhy.adapter.abslistview.base.ItemViewDelegate;
 import org.greenrobot.eventbus.EventBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
 
 /**
  * 发送语音消息
@@ -84,6 +92,12 @@ public class VoiceMsgSendItem implements ItemViewDelegate<MessageBase> {
                 },2000);
                 if (!TextUtils.isEmpty(chatMessage.getVoiceLocalPath())){
                     play(chatMessage.getVoiceLocalPath());
+                }else {
+                    try {
+                        downloadVoice(chatMessage);
+                    } catch (Exception e) {
+                        logger.error("VoiceMsgReceiveItem--{}",e.getMessage());
+                    }
                 }
             }
         });
@@ -93,6 +107,48 @@ public class VoiceMsgSendItem implements ItemViewDelegate<MessageBase> {
                 EventBus.getDefault().post(chatMessage);
             }
         });
+    }
+
+    private void downloadVoice(final VoiceSendMessage chatMessage) {
+        final String fileName = chatMessage.getVoicePath();
+        File voice = new File(FileUtils.getDiskCacheDir(context) + "SendVoiceCache/" + fileName);
+        if (voice.exists()){
+            play(voice.getAbsolutePath());
+            chatMessage.setVoiceLocalPath(FileUtils.getDiskCacheDir(context)+"SendVoiceCache/" + fileName);
+            play(chatMessage.getVoiceLocalPath());
+            return;
+        }
+        LogUtils.d("下载语音："+ Constant.Ftp_Voice + fileName);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // 下载
+                try {
+                    //单文件下载
+                    new FTP(context).downloadSingleFile(Constant.Ftp_Voice+"/" + fileName, FileUtils.getDiskCacheDir(context)+"SendVoiceCache/", fileName, new FTP.DownLoadProgressListener() {
+
+                        @Override
+                        public void onDownLoadProgress(String currentStep, long downProcess, File file) {
+                            if (currentStep.equals(ERRORTYPE.FTP_DOWN_SUCCESS)) {
+                                logger.debug("VoiceMsgReceiveItem--{}","-----xiazaiyuyin--successful");
+                                chatMessage.setVoiceLocalPath(FileUtils.getDiskCacheDir(context)+"SendVoiceCache/" + fileName);
+                                play(chatMessage.getVoiceLocalPath());
+                            } else if (currentStep.equals(ERRORTYPE.FTP_DOWN_LOADING)) {
+                                logger.debug("VoiceMsgReceiveItem--{}","-----xiazaiyuyin---" + downProcess + "%");
+                            } else if (currentStep.equals(ERRORTYPE.FTP_DOWN_FAIL)) {
+                                logger.debug("VoiceMsgReceiveItem--{}","-----xiazaiyuyin--fail---");
+                            }
+                        }
+
+                    });
+
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();
     }
 
     private void play(String path){

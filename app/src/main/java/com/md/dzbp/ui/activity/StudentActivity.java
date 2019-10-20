@@ -511,7 +511,7 @@ public class StudentActivity extends BaseActivity implements UIDataListener, Tim
                                 VoiceReceiveMessage message = new VoiceReceiveMessage(TimeUtils.parseLong(msg.getCreatetime()), currentParent.getPhoto(), currentParent.getAccountname(), msg.getRes());
                                 msgList.add(message);
                             } else if (msg.getReceiveid().equals(currentParent.getAccountid())) {
-                                VoiceSendMessage message = new VoiceSendMessage(4, TimeUtils.parseLong(msg.getCreatetime()), studentInfo.getStudent().getPhoto(), studentInfo.getStudent().getAccountname(), msg.getRes(), 0, "", studentId, currentParent.getAccountid());
+                                VoiceSendMessage message = new VoiceSendMessage(4, TimeUtils.parseLong(msg.getCreatetime()), studentInfo.getStudent().getPhoto(), studentInfo.getStudent().getAccountname(), "", 0, msg.getRes(), studentId, currentParent.getAccountid());
                                 message.setStatus(1);
                                 message.setSendMsg(true);
                                 msgList.add(message);

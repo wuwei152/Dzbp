@@ -396,9 +396,9 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
      */
     private void setPager(List<MainData.PhotosBean> photos) {
 
-//        if (photos.size() > 16) {
-//            photos = photos.subList(0, 16);
-//        }
+        if (photos.size() > 25) {
+            photos = photos.subList(0, 25);
+        }
         try {
             ArrayList<String> images = new ArrayList<>();
             for (MainData.PhotosBean photo : photos) {
