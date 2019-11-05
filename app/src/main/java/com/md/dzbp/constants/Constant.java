@@ -107,7 +107,16 @@ public class Constant {
         numList.add("3533746030");//公交卡
         numList.add("0435760425");//
 
-
+        numList.add("0490413222");//
+        numList.add("0497877414");//
+        numList.add("0494762390");//
+        numList.add("0621817734");//
+        numList.add("0635708550");//
+        numList.add("0629240694");//
+        numList.add("0629849206");//
+        numList.add("0496258966");//
+        numList.add("0494449558");//
+        numList.add("0634647926");//
         return numList;
     }
 
