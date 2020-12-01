@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,8 +59,12 @@ public class SettingActivity extends BaseActivity implements UIDataListener {
     TextView mConfirm;
     @BindView(R.id.set_ip)
     EditText mIp;
+    @BindView(R.id.set_port)
+    EditText mport;
     @BindView(R.id.set_psw)
     EditText mPsw;
+    @BindView(R.id.set_cameratype)
+    RadioGroup cameratype;
     private NetWorkRequest netWorkRequest;
     private Dialog dialog;
     private ArrayList<SchoolBean> schoolList;
@@ -131,15 +136,25 @@ public class SettingActivity extends BaseActivity implements UIDataListener {
                     showToast("请输入IP");
                     return;
                 }
+                if (TextUtils.isEmpty(mport.getText().toString())) {
+                    showToast("请输入端口");
+                    return;
+                }
                 if (TextUtils.isEmpty(mPsw.getText().toString())) {
                     showToast("请输入密码");
                     return;
                 }
 
                 ArrayList<CameraInfo> mCameraInfos = new ArrayList<>();
-                mCameraInfos.add(new CameraInfo(mIp.getText().toString().trim(), "37777", "admin", mPsw.getText().toString().trim()));//测试
+                mCameraInfos.add(new CameraInfo(mIp.getText().toString().trim(), mport.getText().toString().trim(), "admin", mPsw.getText().toString().trim()));//测试
                 mAcache.put("CameraInfo", mCameraInfos);
                 LogUtils.d(mCameraInfos.get(0));
+
+                if (cameratype.getCheckedRadioButtonId() == R.id.set_type1) {
+                    mAcache.put("CameraType", "1");
+                } else {
+                    mAcache.put("CameraType", "2");
+                }
 
 
                 Map map = new HashMap();
@@ -195,7 +210,7 @@ public class SettingActivity extends BaseActivity implements UIDataListener {
 
                 if (!TextUtils.isEmpty(deviceId)) {
                     mAcache.put("DeviceId", deviceId);
-                    if (TextUtils.isEmpty(qrcode)){
+                    if (TextUtils.isEmpty(qrcode)) {
                         qrcode = "  ";
                     }
                     mAcache.put("qrcode", qrcode);

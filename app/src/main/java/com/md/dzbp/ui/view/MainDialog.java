@@ -41,7 +41,7 @@ import java.util.ArrayList;
 public class MainDialog extends Dialog {
 
     private TextView act1, act2, act3, act4, act5, act6, act7, act8, act9, act10, act11, bt2, bt1;
-    private EditText et1, et2;
+    private EditText et1, et2,et3;
     private Context context;
     private final SmdtManager smdt;
     private final ACache mAcache;
@@ -84,6 +84,7 @@ public class MainDialog extends Dialog {
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(et1.getWindowToken(), 0);
         imm.hideSoftInputFromWindow(et2.getWindowToken(), 0);
+        imm.hideSoftInputFromWindow(et3.getWindowToken(), 0);
 //        if (imm.isActive())  //一直是true
 //            imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT,
 //                    InputMethodManager.HIDE_NOT_ALWAYS);
@@ -108,6 +109,7 @@ public class MainDialog extends Dialog {
         bt1 = findViewById(R.id.bt1);
         et1 = findViewById(R.id.et1);
         et2 = findViewById(R.id.et2);
+        et3 = findViewById(R.id.et3);
 
         bt2 = (TextView) findViewById(R.id.bt2);
 
@@ -203,15 +205,16 @@ public class MainDialog extends Dialog {
         bt1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!TextUtils.isEmpty(et1.getText().toString().trim()) && !TextUtils.isEmpty(et2.getText().toString().trim())) {
+                if (!TextUtils.isEmpty(et1.getText().toString().trim()) && !TextUtils.isEmpty(et2.getText().toString().trim()) && !TextUtils.isEmpty(et3.getText().toString().trim())) {
                     ArrayList<CameraInfo> mCameraInfos = new ArrayList<>();
-                    mCameraInfos.add(new CameraInfo(et1.getText().toString().trim(), "37777", "admin", et2.getText().toString().trim()));//测试
+                    mCameraInfos.add(new CameraInfo(et1.getText().toString().trim(), et3.getText().toString().trim(), "admin", et2.getText().toString().trim()));//测试
                     mAcache.put("CameraInfo", mCameraInfos);
                     et1.setText("");
                     et2.setText("");
+                    et3.setText("");
                     myToast.toast(context, "存储成功！");
                 } else {
-                    myToast.toast(context, "请完善ip与密码信息！");
+                    myToast.toast(context, "请完善ip端口与密码信息！");
                 }
             }
         });
@@ -222,6 +225,6 @@ public class MainDialog extends Dialog {
     @Override
     public void show() {
         super.show();
-        smdt.smdtSetStatusBar(context, true);
+//        smdt.smdtSetStatusBar(context, true);
     }
 }

@@ -11,11 +11,11 @@
     <include layout="@layout/item_title" />
 
     <LinearLayout
-        android:layout_width="410dp"
+        android:layout_width="630dp"
         android:layout_height="match_parent"
         android:layout_marginLeft="55dp"
-        android:layout_marginRight="60dp"
         android:layout_marginTop="70dp"
+        android:layout_marginRight="60dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -79,6 +79,29 @@
                         android:textColor="@color/text_gray2"
                         android:textSize="16dp" />
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="25dp"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/qianbao" />
+
+                    <TextView
+                        android:id="@+id/student_yue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:text="¥ 0"
+                        android:textColor="@color/text_gray2"
+                        android:textSize="16dp" />
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>
@@ -87,7 +110,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
+            android:layout_marginTop="50dp"
             android:text="荣誉墙"
             android:textColor="@color/text_black"
             android:textSize="28sp" />
@@ -105,10 +128,103 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="80dp"
-            android:text="兴趣选课"
+            android:layout_marginTop="70dp"
+            android:text="图书借阅"
             android:textColor="@color/text_black"
             android:textSize="28sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:background="#80AEE291"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="120dp"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:text="书名"
+                android:textColor="@color/text_black"
+                android:textSize="18sp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="60dp"
+                android:background="@color/white" />
+
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:text="价格"
+                android:textColor="@color/text_black"
+                android:textSize="18sp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="60dp"
+                android:background="@color/white" />
+
+            <TextView
+                android:layout_width="80dp"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:text="状态"
+                android:textColor="@color/text_black"
+                android:textSize="18sp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="60dp"
+                android:background="@color/white" />
+
+            <TextView
+                android:layout_width="120dp"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:text="借出日期"
+                android:textColor="@color/text_black"
+                android:textSize="18sp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="60dp"
+                android:background="@color/white" />
+
+            <TextView
+                android:layout_width="120dp"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:text="应还日期"
+                android:textColor="@color/text_black"
+                android:textSize="18sp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="60dp"
+                android:background="@color/white" />
+
+            <TextView
+                android:layout_width="120dp"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:text="归还日期"
+                android:textColor="@color/text_black"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+
+        <ListView
+            android:id="@+id/stu_BookListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:dividerHeight="0dp"
+            android:divider="@null"
+            android:background="@android:color/transparent"
+            android:listSelector="#00000000"
+            android:scrollbars="none" />
 
 
     </LinearLayout>
@@ -122,10 +238,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="125dp"
-            android:padding="10dp"
-            android:background="@drawable/gray_solid_round_back">
+            android:background="@drawable/gray_solid_round_back"
+            android:padding="10dp">
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/student_recycle"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
@@ -168,8 +284,8 @@
             android:layout_height="0dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginBottom="30dp"
             android:layout_marginTop="26dp"
+            android:layout_marginBottom="30dp"
             android:layout_weight="1"
             android:background="@drawable/gray_solid_round_back"
             android:orientation="vertical"
@@ -193,8 +309,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp"
                 android:layout_marginTop="45dp"
+                android:layout_marginBottom="30dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -236,10 +352,10 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:background="@drawable/recorderbutton_normal_back"
-                    android:paddingBottom="8dp"
                     android:paddingLeft="30dp"
-                    android:paddingRight="30dp"
                     android:paddingTop="8dp"
+                    android:paddingRight="30dp"
+                    android:paddingBottom="8dp"
                     android:text="发送"
                     android:textColor="@color/white"
                     android:textSize="20dp"

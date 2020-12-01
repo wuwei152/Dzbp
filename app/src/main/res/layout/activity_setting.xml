@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/green_solid_round_back"
+    android:background="@color/text_green"
     android:orientation="vertical"
     tools:context="com.md.dzbp.ui.activity.SettingActivity">
 
@@ -92,6 +92,20 @@
                 android:paddingRight="5dp"
                 android:textColor="@color/text_black"
                 android:textSize="14sp" />
+            <EditText
+                android:id="@+id/set_port"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginRight="15dp"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:digits="0123456789"
+                android:gravity="center"
+                android:hint="请输入摄像头端口"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:textColor="@color/text_black"
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/set_psw"
@@ -107,6 +121,34 @@
                 android:textColor="@color/text_black"
                 android:textSize="14sp" />
         </LinearLayout>
+
+        <RadioGroup
+            android:id="@+id/set_cameratype"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/set_type1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="大华"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/set_type2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:checked="false"
+                android:text="海康"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+        </RadioGroup>
 
         <TextView
             android:id="@+id/set_confirm"

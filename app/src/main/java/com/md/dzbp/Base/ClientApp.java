@@ -48,7 +48,7 @@ public class ClientApp extends Application {
         OkHttpFinalConfiguration.Builder builder = new OkHttpFinalConfiguration.Builder();
         OkHttpFinal.getInstance().init(builder.build());
 
-        NetSDKLib.getInstance().init();
+//        NetSDKLib.getInstance().init();
         try {
             deleteCache();
         } catch (Exception e) {
@@ -61,7 +61,8 @@ public class ClientApp extends Application {
             mAcache.put("AdminPsw", "135792468");
         }
 
-
+//        mAcache.put("DeviceId","14f168d8-1536-4064-8edb-45fab71f8bf5");
+//        mAcache.put("CameraType", "2");
     }
 
     public static ClientApp getInstance() {

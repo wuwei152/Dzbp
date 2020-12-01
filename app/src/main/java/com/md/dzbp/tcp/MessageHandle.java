@@ -45,6 +45,7 @@ import java.util.Iterator;
 public class MessageHandle {
     private static final String TAG = "MessageHandle-->{}";
     private final Logger logger;
+    private String cameraType;
     private Context context;
     private TcpClient client;
     private Handler x_handler;
@@ -56,6 +57,7 @@ public class MessageHandle {
     private Runnable x_runnable;
     private int XTfailNum = 0;
     public final MsgHandleUtil msgHandleUtil;
+    private final HC_Camera_TakePic_Handle hcHandleUtil;
 
     public MessageHandle(Context context, TcpClient client) {
         this.context = context;
@@ -65,6 +67,13 @@ public class MessageHandle {
         deviceId = Constant.getDeviceId(context);
         logger = LoggerFactory.getLogger(context.getClass());
         msgHandleUtil = new MsgHandleUtil(context, client);
+
+        cameraType = mACache.getAsString("CameraType");
+        if (TextUtils.isEmpty(cameraType)){
+            cameraType = "";
+        }
+        hcHandleUtil = new HC_Camera_TakePic_Handle(context, msgHandleUtil);
+
     }
 
     public void handleMessage(TCPMessage tcpMessage) {
@@ -99,7 +108,7 @@ public class MessageHandle {
 //                    mACache.put("GUAN",guanji);
 //                    mACache.put("KAI",kaiji);
                     logger.debug(TAG, "0xA002设置开关机指令：关" + guanji + "/开" + kaiji);//更换成开关屏
-                    smdtManager.smdtSetTimingSwitchMachine(guanji, kaiji, "1");
+//                    smdtManager.smdtSetTimingSwitchMachine(guanji, kaiji, "1");
 
 
                     int length3 = tcpMessage.ReadInt();
@@ -293,10 +302,15 @@ public class MessageHandle {
                 final int msgid515 = tcpMessage.ReadInt();//SN
                 logger.debug(TAG, "0xA515收到摄像头截屏2指令" + msgid515);
                 try {
+                    if (cameraType.equals("2")) {
+                        hcHandleUtil.TakeVideoPic2(msgid515);
+                    } else {
+                        msgHandleUtil.TakeVideoPic2(msgid515);
+                    }
                     msgHandleUtil.TakeVideoPic2(msgid515);
                 } catch (Exception e) {
                     e.printStackTrace();
-                    logger.debug(TAG,"截屏出错"+e.getMessage());
+                    logger.debug(TAG, "截屏出错" + e.getMessage());
                     msgHandleUtil.yingda(0xA515, false, deviceId, msgid515);
                 }
                 break;
@@ -304,10 +318,15 @@ public class MessageHandle {
                 final String msgid5152 = tcpMessage.ReadString(tcpMessage.ReadInt());//SN
                 logger.debug(TAG, "0xE515收到摄像头截屏2指令" + msgid5152);
                 try {
-                    msgHandleUtil.TakeVideoPic2(msgid5152);
+
+                    if (cameraType.equals("2")) {
+                        hcHandleUtil.TakeVideoPic2(msgid5152);
+                    } else {
+                        msgHandleUtil.TakeVideoPic2(msgid5152);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    logger.debug(TAG,"截屏出错"+e.getMessage());
+                    logger.debug(TAG, "截屏出错" + e.getMessage());
                     msgHandleUtil.yingda(0xE515, false, deviceId, msgid5152);
                 }
                 break;
@@ -316,10 +335,14 @@ public class MessageHandle {
                 String fileName = tcpMessage.ReadString(length516);
                 logger.debug(TAG, "0xA516收到摄像头截屏3指令" + fileName);
                 try {
-                    msgHandleUtil.TakeVideoPic3(fileName);
+                    if (cameraType.equals("2")) {
+                        hcHandleUtil.TakeVideoPic3(fileName);
+                    } else {
+                        msgHandleUtil.TakeVideoPic3(fileName);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    logger.debug(TAG,"截屏出错"+e.getMessage());
+                    logger.debug(TAG, "截屏出错" + e.getMessage());
                     msgHandleUtil.yingda(0xA516, false, deviceId, "");
                 }
                 break;
@@ -348,11 +371,11 @@ public class MessageHandle {
                 msgHandleUtil.gotoActivity(type555, "", "");
                 msgHandleUtil.yingda(0xA555, true, deviceId);
                 break;
-            case 0xA556://刷卡屏幕跳转
+            case 0xA556://屏幕跳转
                 int type556 = tcpMessage.ReadInt();
 //                int length556 = tcpMessage.ReadInt();
                 String userId556 = tcpMessage.ReadString(36);
-                logger.debug("0xA556收到扫码屏幕跳转指令", type556 + "///"+userId556);
+                logger.debug("0xA556收到扫码屏幕跳转指令", type556 + "///" + userId556);
                 msgHandleUtil.gotoActivity(type556, userId556, "");
                 msgHandleUtil.yingda(0xA556, true, deviceId);
                 break;
@@ -490,10 +513,14 @@ public class MessageHandle {
                 logger.debug(TAG, "0xA609收到摄像头截屏指令" + id609);
                 msgHandleUtil.yingda(0xA609, true, deviceId);
                 try {
-                    msgHandleUtil.TakeVideoPic(id609);
+                    if (cameraType.equals("2")) {
+                        hcHandleUtil.TakeVideoPic(id609);
+                    } else {
+                        msgHandleUtil.TakeVideoPic(id609);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    logger.debug(TAG,"截屏出错"+e.getMessage());
+                    logger.debug(TAG, "截屏出错" + e.getMessage());
                     msgHandleUtil.yingda(0xA609, false, deviceId, id609);
                 }
                 break;

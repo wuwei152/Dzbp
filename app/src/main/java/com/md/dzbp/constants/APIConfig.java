@@ -127,4 +127,18 @@ public interface APIConfig {
      * ?deviceId=6dd62d53-249e-4845-8716-05926842568f
      */
     public static final String GET_EXAM = "zhxy/api/exam/info";
+
+    /**
+     * 获取一卡通余额
+     * 请求方式：Get
+     * 参数：
+     * ?studentId=e6d0a4b6-57f0-45c4-b2c1-2fb8b01d4e88
+     */
+    public static final String GET_BALANCE = "zhxy/api/student/getBalance";
+    /**
+     * 获取图书借阅
+     * 请求方式：Get
+     * 参数：
+     */
+    public static final String GET_DZLENDLIST= "zhxy/api/book/dzLendList";
 }

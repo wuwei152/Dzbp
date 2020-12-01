@@ -123,11 +123,11 @@ public class MsgHandleUtil {
     public void SendSignData(int xyh) {
         try {
             List<SignBean> signList = SQLite.select().from(SignBean.class).queryList();
+            logger.debug(TAG, "开始上传考勤本地数据");
+            Intent intent = new Intent(context, UploadService.class);
+            intent.putExtra("upload", "");
+            context.startService(intent);
             if (signList != null && signList.size() > 0) {
-                logger.debug(TAG, "开始上传考勤本地数据");
-                Intent intent = new Intent(context, UploadService.class);
-                intent.putExtra("upload", "");
-                context.startService(intent);
                 HashMap<String, List<SignBean>> map = (HashMap) groupList(signList);
                 for (String in : map.keySet()) {
                     List<SignBean> list = map.get(in);
@@ -262,7 +262,7 @@ public class MsgHandleUtil {
      * @param xyh 协议号
      * @param b
      */
-    private void yingda(int xyh, boolean b, String diviceId, String path, String openId) {
+    public void yingda(int xyh, boolean b, String diviceId, String path, String openId) {
         try {
             TCPMessage message = new TCPMessage(xyh);
             message.Write(b);
@@ -286,7 +286,7 @@ public class MsgHandleUtil {
      * @param xyh 协议号
      * @param b
      */
-    private void yingda(int xyh, boolean b, String diviceId, String path, String openId, int s) {
+    public void yingda(int xyh, boolean b, String diviceId, String path, String openId, int s) {
         try {
             TCPMessage message = new TCPMessage(xyh);
             int length3 = openId.getBytes("UTF-8").length;
@@ -337,9 +337,11 @@ public class MsgHandleUtil {
     public void CompressImg(File file, String targetDir, com.md.dzbp.model.OnCompressListener listener) {
         try {
             File newFile = new CompressHelper.Builder(context)
-                    .setQuality(80)    // 默认压缩质量为80  0--100  值越小图片压缩越大
+                    .setQuality(95)    // 默认压缩质量为80  0--100  值越小图片压缩越大
                     .setFileName(file.getName().substring(0, file.getName().indexOf("."))) // 设置你需要修改的文件名
                     .setCompressFormat(Bitmap.CompressFormat.JPEG) // 设置默认压缩为jpg格式
+                    .setMaxWidth(1280.0f)
+                    .setMaxHeight(720.0f)
                     .setDestinationDirectoryPath(targetDir)
                     .build()
                     .compressToFile(file);
@@ -903,6 +905,9 @@ public class MsgHandleUtil {
                 break;
             case 1:
                 intent = new Intent(context, TeacherActivity.class);
+
+                //定时上传
+                SendSignData(0xA611);
                 break;
             case 2:
                 intent = new Intent(context, StudentActivity.class);
@@ -1117,11 +1122,9 @@ public class MsgHandleUtil {
                         }
                         OpenList2.clear();
                     }
-//                    dahuaModel.logout();
                 }
             });
         }
-//            if (dahuaModel.mLoginHandle == 0) {
         if (mCameraInfos != null && mCameraInfos.size() > 0) {
             logger.debug(TAG, "开始登录截屏");
             dahuaModel2.logout();
@@ -1134,11 +1137,6 @@ public class MsgHandleUtil {
             }
             OpenList2.clear();
         }
-//            }
-//            else {
-//                logger.debug(TAG, "开始直接截屏");
-//                dahuaModel.snap(0);
-//            }
     }
 
     /**
@@ -1217,11 +1215,10 @@ public class MsgHandleUtil {
                         }
                         OpenList21.clear();
                     }
-//                    dahuaModel.logout();
+
                 }
             });
         }
-//            if (dahuaModel.mLoginHandle == 0) {
         if (mCameraInfos != null && mCameraInfos.size() > 0) {
             logger.debug(TAG, "开始登录截屏");
             dahuaModel21.logout();
@@ -1234,6 +1231,12 @@ public class MsgHandleUtil {
             }
             OpenList21.clear();
         }
+    }
+
+
+    private void handleImgFile(File file) {
+
+
     }
 
     /**
@@ -1328,11 +1331,6 @@ public class MsgHandleUtil {
             yingda(0xA515, false, deviceId, "");
             mFileName = "";
         }
-//            }
-//            else {
-//                logger.debug(TAG, "开始直接截屏");
-//                dahuaModel.snap(0);
-//            }
     }
 
     private void play(int k) {

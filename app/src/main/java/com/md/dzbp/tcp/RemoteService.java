@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.apkfuns.logutils.LogUtils;
 import com.md.dzbp.ProcessService;
@@ -32,7 +30,7 @@ public class RemoteService extends Service {
     public void onCreate() {
         super.onCreate();
         binder = new RemoteBinder();
-        if(myConn == null){
+        if (myConn == null) {
             myConn = new RemoteConn();
         }
     }
@@ -45,7 +43,7 @@ public class RemoteService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    class RemoteBinder extends ProcessService.Stub{
+    class RemoteBinder extends ProcessService.Stub {
         @Override
         public String getServiceName() throws RemoteException {
             return "RemoteService";

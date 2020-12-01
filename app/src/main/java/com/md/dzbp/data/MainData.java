@@ -330,7 +330,25 @@ public class MainData implements Serializable {
         private String description;
         private String name;
         private String url;
+        private String thumburl;
+        private String mimeType;
         private boolean checked;
+
+        public String getThumburl() {
+            return thumburl;
+        }
+
+        public void setThumburl(String thumburl) {
+            this.thumburl = thumburl;
+        }
+
+        public String getMimeType() {
+            return mimeType;
+        }
+
+        public void setMimeType(String mimeType) {
+            this.mimeType = mimeType;
+        }
 
         public boolean isChecked() {
             return checked;

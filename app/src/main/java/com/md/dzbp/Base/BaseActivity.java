@@ -1,17 +1,14 @@
 package com.md.dzbp.Base;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.Window;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.apkfuns.logutils.LogUtils;
 import com.md.dzbp.R;
 import com.md.dzbp.data.ScreenShotEvent;
-import com.md.dzbp.ui.activity.ExamActivity;
 import com.md.dzbp.ui.view.MainDialog;
-import com.md.dzbp.utils.MainGestureDetector;
 import com.md.dzbp.utils.SnapUtils;
 
 import org.greenrobot.eventbus.Subscribe;

@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -19,6 +17,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
@@ -33,6 +34,7 @@ import com.md.dzbp.adapter.ParentListAdapter;
 import com.md.dzbp.constants.APIConfig;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.constants.MSGTYPE;
+import com.md.dzbp.data.BookBean;
 import com.md.dzbp.data.HistoryMsg;
 import com.md.dzbp.data.ImageReceiveMessage;
 import com.md.dzbp.data.MessageBase;
@@ -54,6 +56,8 @@ import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.GetCardNumUtils;
 import com.md.dzbp.utils.GlideImgManager;
+import com.zhy.adapter.abslistview.CommonAdapter;
+import com.zhy.adapter.abslistview.ViewHolder;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -112,6 +116,10 @@ public class StudentActivity extends BaseActivity implements UIDataListener, Tim
     EditText mTextInput;
     @BindView(R.id.student_textSend)
     TextView mTextSend;
+    @BindView(R.id.student_yue)
+    TextView mYue;
+    @BindView(R.id.stu_BookListView)
+    ListView mBookListView;
     private ArrayList<MessageBase> msgList;
     private ChatAdapter chatAdapter;
 
@@ -199,6 +207,38 @@ public class StudentActivity extends BaseActivity implements UIDataListener, Tim
         map.put("deviceId", Constant.getDeviceId(StudentActivity.this));
         map.put("studentId", mStuUserId);
         netWorkRequest.doGetRequest(0, Constant.getUrl(StudentActivity.this, APIConfig.GET_STUDENT), true, map);
+
+        Map map2 = new HashMap();
+        map2.put("studentId", mStuUserId);
+        netWorkRequest.doGetRequest(2, Constant.getUrl(StudentActivity.this, APIConfig.GET_BALANCE), false, map2);
+
+        mBookListView.setAdapter(null);
+
+        Map map3 = new HashMap();
+        map3.put("studentId", mStuUserId);
+        map3.put("is_lend_history", "1");
+        netWorkRequest.doGetRequest(3, Constant.getUrl(StudentActivity.this, APIConfig.GET_DZLENDLIST), false, map3);
+
+//        List<BookBean> bookBeansList = new ArrayList<>();
+//        bookBeansList.add(new BookBean("我的伯父毛岸英","1","45.6","2020-09-23","2020-10-22"));
+//        bookBeansList.add(new BookBean("毛岸英","2","45.6","2020-09-23","2020-10-22"));
+//        bookBeansList.add(new BookBean("父毛岸英","2","45.6","2020-09-23","2020-10-22"));
+//        bookBeansList.add(new BookBean("我的伯父","1","45.6","2020-09-23","2020-10-22"));
+//        bookBeansList.add(new BookBean("我的伯父毛岸英","1","45.6","2020-09-23","2020-10-22"));
+//        bookBeansList.add(new BookBean("我的伯父毛岸英我的伯父毛岸英","2","45.6","2020-09-23","2020-10-22"));
+//        bookBeansList.add(new BookBean("我的伯父毛岸英我的伯父毛岸英我的伯父毛岸英","1","45.6","2020-09-23","2020-10-22"));
+//        mBookListView.setAdapter(new CommonAdapter<BookBean>(StudentActivity.this, R.layout.item_book_list, bookBeansList) {
+//            @Override
+//            protected void convert(ViewHolder viewHolder, BookBean item, int position) {
+//                viewHolder.setText(R.id.tab1, item.getTitle());
+//                viewHolder.setText(R.id.tab2, item.getPrice());
+//                viewHolder.setText(R.id.tab3, item.getLend_status().equals("1") ? "借出" : "还回");
+//                viewHolder.setText(R.id.tab4, item.getAdd_time());
+//                viewHolder.setText(R.id.tab5, item.getMust_time());
+//                viewHolder.setText(R.id.tab6, item.getEnd_time());
+//            }
+//        });
+
     }
 
     @Override
@@ -255,8 +295,8 @@ public class StudentActivity extends BaseActivity implements UIDataListener, Tim
             //获取时间日期
             new TimeUtils(StudentActivity.this, this);
 
-            mClassName.setText(gradeName+ "\n\n"+ className);
-            mClass.setText(gradeName+ "  "+ className);
+            mClassName.setText(gradeName + "\n\n" + className);
+            mClass.setText(gradeName + "  " + className);
             mAddr.setText("教室编号:" + address);
             mSchoolName.setText(schoolName);
             GlideImgManager.glideLoader(StudentActivity.this, logo, R.drawable.pic_not_found, R.drawable.pic_not_found, mSclIcon, 1);
@@ -527,6 +567,31 @@ public class StudentActivity extends BaseActivity implements UIDataListener, Tim
                     parentListAdapter.notifyDataSetChanged();
                 }
             }
+        } else if (code == 2) {
+            if (data != null) {
+                String yue = data + "";
+                if (!TextUtils.isEmpty(yue)) {
+                    mYue.setText("¥ " + yue + " 元");
+                }
+            }
+        } else if (code == 3) {
+            if (data != null) {
+                ArrayList<BookBean> bookBeansList = JSON.parseObject(data.toString(), new TypeReference<ArrayList<BookBean>>() {
+                });
+                if (bookBeansList != null) {
+                    mBookListView.setAdapter(new CommonAdapter<BookBean>(StudentActivity.this, R.layout.item_book_list, bookBeansList) {
+                        @Override
+                        protected void convert(ViewHolder viewHolder, BookBean item, int position) {
+                            viewHolder.setText(R.id.tab1, item.getTitle());
+                            viewHolder.setText(R.id.tab2, item.getPrice());
+                            viewHolder.setText(R.id.tab3, item.getLend_status().equals("1") ? "借出" : "还回");
+                            viewHolder.setText(R.id.tab4, item.getAdd_time());
+                            viewHolder.setText(R.id.tab5, item.getMust_time());
+                            viewHolder.setText(R.id.tab6, item.getEnd_time());
+                        }
+                    });
+                }
+            }
         }
     }
 
@@ -543,8 +608,8 @@ public class StudentActivity extends BaseActivity implements UIDataListener, Tim
                 logger.error("Studentactivity-->{}", e.getMessage());
             }
             mName.setText(student.getAccountname());
-            mClassName.setText(student.getGradename()+ "\n\n" + student.getClassname());
-            mClass.setText(student.getGradename()+ "  "+ student.getClassname());
+            mClassName.setText(student.getGradename() + "\n\n" + student.getClassname());
+            mClass.setText(student.getGradename() + "  " + student.getClassname());
         }
         List<StudentInfoBean.ParentsBean> parents = studentInfo.getParents();
         if (parents != null) {

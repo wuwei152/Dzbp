@@ -45,21 +45,23 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="18dp"
+                    android:layout_marginTop="60dp"
                     android:layout_marginRight="28dp"
                     android:layout_toRightOf="@id/main_classMng_icon"
-                    android:layout_marginTop="60dp"
                     android:orientation="vertical">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="班主任："
                             android:textColor="@color/text_gray2"
                             android:textSize="17sp" />
+
                         <TextView
                             android:id="@+id/main_classMng_name"
                             android:layout_width="wrap_content"
@@ -79,6 +81,7 @@
                         android:textSize="20sp" />
 
                 </LinearLayout>
+
                 <ScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -237,9 +240,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="43dp"
                     android:layout_marginTop="20dp"
-                    android:layout_marginBottom="55dp"
                     android:layout_marginRight="46dp"
-                    />
+                    android:layout_marginBottom="55dp" />
 
                 <TextView
                     android:id="@+id/main_noticeTitle"
@@ -247,24 +249,24 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="43dp"
                     android:layout_marginTop="20dp"
-                    android:maxLines="2"
-                    android:visibility="gone"
                     android:layout_weight="1"
                     android:ellipsize="end"
+                    android:maxLines="2"
                     android:textColor="@color/text_gray2"
-                    android:textSize="17sp" />
+                    android:textSize="17sp"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/main_noticeTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="55dp"
-                    android:layout_marginRight="46dp"
-                    android:visibility="gone"
                     android:layout_marginTop="20dp"
+                    android:layout_marginRight="46dp"
+                    android:layout_marginBottom="55dp"
                     android:gravity="right"
                     android:textColor="@color/text_gray"
-                    android:textSize="17sp" />
+                    android:textSize="17sp"
+                    android:visibility="gone" />
             </LinearLayout>
         </LinearLayout>
 
@@ -279,8 +281,8 @@
                 android:layout_width="54dp"
                 android:layout_height="41dp"
                 android:layout_gravity="right"
-                android:layout_marginRight="44dp"
                 android:layout_marginTop="23dp"
+                android:layout_marginRight="44dp"
                 android:src="@drawable/lianwang" />
 
             <LinearLayout
@@ -294,14 +296,21 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <com.youth.banner.Banner
+                    <!--                    <com.youth.banner.Banner-->
+                    <!--                        android:id="@+id/main_Loop"-->
+                    <!--                        android:layout_width="match_parent"-->
+                    <!--                        android:layout_height="468dp"-->
+                    <!--                        app:banner_default_image="@drawable/teacher"-->
+                    <!--                        app:indicator_height="12dp"-->
+                    <!--                        app:indicator_margin="3dp"-->
+                    <!--                        app:indicator_width="12dp" />-->
+
+                    <com.zk.banner.Banner
                         android:id="@+id/main_Loop"
                         android:layout_width="match_parent"
-                        android:layout_height="468dp"
-                        app:banner_default_image="@drawable/teacher"
-                        app:indicator_height="12dp"
-                        app:indicator_margin="3dp"
-                        app:indicator_width="12dp" />
+                        app:indicator_width="15dp"
+                        app:indicator_height="15dp"
+                        android:layout_height="468dp" />
 
                     <LinearLayout
                         android:layout_width="800dp"
@@ -376,9 +385,9 @@
                         android:id="@+id/main_nextCourse"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="47dp"
                         android:layout_marginLeft="40dp"
                         android:layout_marginTop="40dp"
+                        android:layout_marginBottom="47dp"
                         android:text="下一节课:"
                         android:textColor="#F19292"
                         android:textSize="35sp" />

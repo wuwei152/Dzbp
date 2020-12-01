@@ -5,9 +5,8 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.RequiresApi;
+import android.os.Message;
 import android.text.TextUtils;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -18,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import androidx.annotation.RequiresApi;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -32,7 +33,6 @@ import com.md.dzbp.data.CameraInfo;
 import com.md.dzbp.data.ClassInfoBean;
 import com.md.dzbp.data.ClassManagerBean;
 import com.md.dzbp.data.PatrolBean;
-import com.md.dzbp.model.DahuaListener;
 import com.md.dzbp.model.DahuaModel;
 import com.md.dzbp.model.NetWorkRequest;
 import com.md.dzbp.model.TimeListener;
@@ -43,10 +43,10 @@ import com.md.dzbp.ui.view.HorizontalListView;
 import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
-import com.md.dzbp.utils.FileUtils;
 import com.md.dzbp.utils.GetCardNumUtils;
 import com.md.dzbp.utils.GlideImgManager;
-import com.yjing.imageeditlibrary.editimage.EditImageActivity;
+import com.md.dzbp.utils.hcUtils.HCSdk;
+import com.md.dzbp.utils.hcUtils.HCSdkManager;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
@@ -56,7 +56,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +65,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callback, TimeListener, UIDataListener {
-
 
     @BindView(R.id.title_classAddr)
     TextView mAddr;
@@ -124,6 +122,8 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
     private int videoPosition = 0;
     private ArrayList<CameraInfo> mCameraInfos;
     private ACache mAcache;
+    private String cameraType;
+    private HCSdk hcSdk;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +143,12 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
         }
         mAcache = ACache.get(this);
         mCameraInfos = (ArrayList<CameraInfo>) mAcache.getAsObject("CameraInfo");
+        cameraType = mAcache.getAsString("CameraType");
+        if (TextUtils.isEmpty(cameraType)) {
+            cameraType = "";
+        }
+
+        LogUtils.e("摄像头类型：" + cameraType);
 
         dialog = MyProgressDialog.createLoadingDialog(this, "", this);
         netWorkRequest = new NetWorkRequest(this, this);
@@ -209,10 +215,18 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     CameraInfo cameraInfo = mCameraInfos.get(position);
                     if (cameraInfo.getIsPlay() == 0) {
-                        dahuaModel.stopPlay();
-                        dahuaModel.logout();
-                        if (mSurface.isAttachedToWindow()) {
-                            dahuaModel.LoginToPlay(cameraInfo.getIp(), cameraInfo.getPort(), cameraInfo.getUsername(), cameraInfo.getPsw());
+                        if (cameraType.equals("2")) {
+                            hcSdk = HCSdkManager.getInstance().initAndLogin(PatrolActivity.this, cameraInfo);
+                            hcSdk.setSurfaceView(mSurface);
+                            if (hcSdk != null) {
+                                hcSdk.startSinglePreview();
+                            }
+                        } else {
+                            dahuaModel.stopPlay();
+                            dahuaModel.logout();
+                            if (mSurface.isAttachedToWindow()) {
+                                dahuaModel.LoginToPlay(cameraInfo.getIp(), cameraInfo.getPort(), cameraInfo.getUsername(), cameraInfo.getPsw());
+                            }
                         }
                         for (int i = 0; i < mCameraInfos.size(); i++) {
                             mCameraInfos.get(i).setIsPlay(0);
@@ -224,19 +238,6 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
                 }
             });
         }
-
-//        dahuaModel.setListener(new DahuaListener() {
-//            @Override
-//            public void resLis(int code, boolean isSuccess, String file) {
-//                dismissDialog();
-//                if (isSuccess && !TextUtils.isEmpty(file)) {
-//                    EditImageActivity.start(PatrolActivity.this, file, FileUtils.getDiskCacheDir(PatrolActivity.this) + "Screenshot/patrol_" + new File(file).getName(), 200);
-//                } else {
-//                    //出错：Can't create handler inside thread that has not called Looper.prepare()
-//                    showToast("未获取到视频截图，请重试！");
-//                }
-//            }
-//        });
     }
 
     @Override
@@ -253,19 +254,27 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
         mSurface.setZOrderOnTop(true);
         mSurface.setZOrderMediaOverlay(true);
         mSurface.getHolder().addCallback(this);
-        dahuaModel = new DahuaModel(PatrolActivity.this, mSurface);
+        if (!cameraType.equals("2"))
+            dahuaModel = new DahuaModel(PatrolActivity.this, mSurface);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         LogUtils.d("onPause");
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        dahuaModel.releaseRes();
+        if (!cameraType.equals("2")) {
+            dahuaModel.releaseRes();
+        } else {
+            if (hcSdk != null) {
+                hcSdk.stopSinglePreview();
+            }
+        }
         LogUtils.d("onStop");
     }
 
@@ -469,10 +478,18 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         LogUtils.d("surfaceCreated");
-        dahuaModel.initSurfaceView(mSurface);
         if (mCameraInfos != null && mCameraInfos.size() > 0) {
             CameraInfo cameraInfo = mCameraInfos.get(0);
-            dahuaModel.LoginToPlay(cameraInfo.getIp(), cameraInfo.getPort(), cameraInfo.getUsername(), cameraInfo.getPsw());
+            if (!cameraType.equals("2")) {
+                dahuaModel.initSurfaceView(mSurface);
+                dahuaModel.LoginToPlay(cameraInfo.getIp(), cameraInfo.getPort(), cameraInfo.getUsername(), cameraInfo.getPsw());
+            } else {
+                hcSdk =HCSdkManager.getInstance().initAndLogin(PatrolActivity.this, cameraInfo);
+                hcSdk.setSurfaceView(mSurface);
+                if (hcSdk != null) {
+                    hcSdk.startSinglePreview();
+                }
+            }
         }
     }
 
@@ -487,8 +504,10 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
     public void surfaceDestroyed(SurfaceHolder holder) {
         LogUtils.d("surfaceDestroyed");
         if (mCameraInfos != null && mCameraInfos.size() > 0) {
-            dahuaModel.stopPlay();
-            dahuaModel.logout();
+            if (!cameraType.equals("2")) {
+                dahuaModel.stopPlay();
+                dahuaModel.logout();
+            }
         }
     }
 

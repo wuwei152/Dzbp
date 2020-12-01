@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
@@ -16,6 +15,10 @@ import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.viewpager.widget.ViewPager;
+
+import com.ToxicBakery.viewpager.transforms.RotateUpTransformer;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.apkfuns.logutils.LogUtils;
@@ -45,14 +48,15 @@ import com.md.dzbp.ui.view.MyProgressDialog;
 import com.md.dzbp.ui.view.MyRecyclerView;
 import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
+import com.md.dzbp.utils.BannerVideoLoader;
 import com.md.dzbp.utils.GetCardNumUtils;
-import com.md.dzbp.utils.GlideImageLoader;
 import com.md.dzbp.utils.GlideImgManager;
-import com.youth.banner.Banner;
-import com.youth.banner.BannerConfig;
-import com.youth.banner.Transformer;
+import com.md.dzbp.utils.GlideZBImageLoader;
 import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
+import com.zk.banner.Banner;
+import com.zk.banner.BannerConfig;
+import com.zk.banner.listener.OnBannerListener;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -67,8 +71,9 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import cn.jzvd.Jzvd;
 
-public class MainActivity extends BaseActivity implements TimeListener, UIDataListener {
+public class MainActivity extends BaseActivity implements TimeListener, UIDataListener, OnBannerListener {
 
     @BindView(R.id.title_classAddr)
     TextView mLoction;
@@ -91,6 +96,8 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
 
     @BindView(R.id.main_listview)
     ListView mListview;
+    //    @BindView(R.id.main_Loop)
+//    Banner banner;
     @BindView(R.id.main_Loop)
     Banner banner;
     @BindView(R.id.main_stuList)
@@ -170,9 +177,9 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
 
         logger = LoggerFactory.getLogger(MainActivity.class);
 
-        SmdtManager smdt = SmdtManager.create(this);
+//        SmdtManager smdt = SmdtManager.create(this);
         //隐藏状态栏
-        smdt.smdtSetStatusBar(MainActivity.this, false);
+//        smdt.smdtSetStatusBar(MainActivity.this, false);
 
 //        ArrayList<CameraInfo> mCameraInfos = new ArrayList<>();
 //        mCameraInfos.add(new CameraInfo("192.168.0.112", "37777", "admin", "yc123456"));//测试
@@ -219,7 +226,6 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         }
         getUIdata();
 //        logger.debug(Tag,"");
-
     }
 
     /**
@@ -239,11 +245,19 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     protected void onPause() {
         super.onPause();
         LogUtils.d("解注册EventBus");
+        Jzvd.releaseAllVideos();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        banner.startAutoPlay();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        banner.stopAutoPlay();
         LogUtils.d("main--onStop");
         if (EventBus.getDefault().isRegistered(this))//加上判断
             EventBus.getDefault().unregister(this);
@@ -399,34 +413,80 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         if (photos.size() > 25) {
             photos = photos.subList(0, 25);
         }
-        try {
-            ArrayList<String> images = new ArrayList<>();
-            for (MainData.PhotosBean photo : photos) {
-                images.add(photo.getUrl());
-            }
-            //设置banner样式
-            banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR);
-            //设置图片加载器
-            banner.setImageLoader(new GlideImageLoader());
-            //设置图片集合
-            banner.setImages(images);
-            //设置banner动画效果
-            banner.setBannerAnimation(Transformer.RotateUp);
-            //设置标题集合（当banner样式有显示title时）
-//        banner.setBannerTitles(titles);
-            //设置自动轮播，默认为true
-            banner.isAutoPlay(true);
-            //设置轮播时间
-            banner.setDelayTime(6000);
-            //设置指示器位置（当banner模式中有指示器时）
-            banner.setIndicatorGravity(BannerConfig.LEFT);
-            //banner设置方法全部调用完毕时最后调用
-            banner.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(TAG, e.getMessage());
+//        try {
+//            ArrayList<String> images = new ArrayList<>();
+//            for (MainData.PhotosBean photo : photos) {
+//                images.add(photo.getUrl());
+//            }
+//            //设置banner样式
+//            banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR);
+//            //设置图片加载器
+//            banner.setImageLoader(new GlideImageLoader());
+//            //设置图片集合
+//            banner.setImages(images);
+//            //设置banner动画效果
+//            banner.setBannerAnimation(Transformer.RotateUp);
+//            //设置标题集合（当banner样式有显示title时）
+////        banner.setBannerTitles(titles);
+//            //设置自动轮播，默认为true
+//            banner.isAutoPlay(true);
+//            //设置轮播时间
+//            banner.setDelayTime(6000);
+//            //设置指示器位置（当banner模式中有指示器时）
+//            banner.setIndicatorGravity(BannerConfig.LEFT);
+//            //banner设置方法全部调用完毕时最后调用
+//            banner.start();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            logger.error(TAG, e.getMessage());
+//        }
+
+        List<String> list = new ArrayList<>();
+        for (MainData.PhotosBean photo : photos) {
+            list.add(photo.getUrl());
         }
 
+        //设置图片加载器
+        banner.setImageLoader(new GlideZBImageLoader())
+                //设置视频加载
+                .setVideoLoader(new BannerVideoLoader(photos))
+                //设置图片和视频集合
+                .setImages(list)
+                .isAutoPlay(true)
+                //设置轮播时间
+                .setDelayTime(10000)
+                //设置指示器位置（当banner模式中有指示器时）
+                .setIndicatorGravity(BannerConfig.CENTER)
+//        .setPageTransformer(true, new RotateUpTransformer())
+                .setOnBannerListener(this)
+                //banner设置方法全部调用完毕时最后调用
+                .start();
+
+        banner.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                Jzvd.releaseAllVideos();
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+    }
+
+    @Override
+    public void OnBannerClick(int position) {
+        ArrayList<MainData.PhotosBean> photos = mainData.getPhotos();
+        Intent intent = new Intent(MainActivity.this, LooperImgPlayActivity.class);
+        intent.putExtra("photos", photos);
+        startActivity(intent);
     }
 
     @Override
@@ -739,4 +799,6 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     @Override
     public void onBackPressed() {
     }
+
+
 }
