@@ -108,7 +108,7 @@ public class MessageHandle {
 //                    mACache.put("GUAN",guanji);
 //                    mACache.put("KAI",kaiji);
                     logger.debug(TAG, "0xA002设置开关机指令：关" + guanji + "/开" + kaiji);//更换成开关屏
-//                    smdtManager.smdtSetTimingSwitchMachine(guanji, kaiji, "1");
+                    smdtManager.smdtSetTimingSwitchMachine(guanji, kaiji, "1");
 
 
                     int length3 = tcpMessage.ReadInt();

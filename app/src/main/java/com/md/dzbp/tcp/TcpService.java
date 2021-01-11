@@ -24,6 +24,7 @@ import com.md.dzbp.data.SignEvent;
 import com.md.dzbp.data.TextSendMessage;
 import com.md.dzbp.data.VoiceSendMessage;
 import com.md.dzbp.model.TimeUtils;
+import com.md.dzbp.task.CheckAppRunningForegroundTask;
 import com.md.dzbp.task.SwitchTask;
 import com.md.dzbp.utils.ACache;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
@@ -46,6 +47,7 @@ public class TcpService extends Service {
     private LocalConn conn;
     public SwitchTask mSwitchTask;
     private ACache mACache;
+    private CheckAppRunningForegroundTask checkAppRunningForegroundTask;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -80,6 +82,8 @@ public class TcpService extends Service {
         mSwitchTask.TaskRun();
 //        mSwitchTask.CheckCurrentTask();
 
+        checkAppRunningForegroundTask = CheckAppRunningForegroundTask.getInstance(this);
+        checkAppRunningForegroundTask.TaskRun();
     }
 
     @Override

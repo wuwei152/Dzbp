@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.md.dzbp.R;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.CameraInfo;
+import com.md.dzbp.task.CheckAppRunningForegroundTask;
 import com.md.dzbp.tcp.TcpService;
 import com.md.dzbp.ui.activity.ExamActivity;
 import com.md.dzbp.ui.activity.InterestClassActivity;
@@ -199,6 +200,7 @@ public class MainDialog extends Dialog {
             public void onClick(View view) {
                 //隐藏状态栏
                 smdt.smdtSetStatusBar(context, false);
+                CheckAppRunningForegroundTask.getInstance(context).TaskChange(0);
                 dismiss();
             }
         });
@@ -225,6 +227,7 @@ public class MainDialog extends Dialog {
     @Override
     public void show() {
         super.show();
-//        smdt.smdtSetStatusBar(context, true);
+        CheckAppRunningForegroundTask.getInstance(context).TaskChange(1);
+        smdt.smdtSetStatusBar(context, true);
     }
 }
