@@ -51,7 +51,7 @@ public class CheckAppRunningForegroundTask extends Timer {
      * 运行任务
      */
     public void TaskRun() {
-        checkTask.scheduleAtFixedRate(timerTask, 1000, 5000);
+        checkTask.scheduleAtFixedRate(timerTask, 1000, 1000);
     }
 
     /**
