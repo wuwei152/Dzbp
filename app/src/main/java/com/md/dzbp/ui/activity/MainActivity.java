@@ -219,8 +219,8 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
             mConStatus.setImageResource(R.drawable.lianwang_no);
         }
         //首先加载缓存
-        MainData mainData = (MainData) mAcache.getAsObject("MainData");
-//        LogUtils.d(mainData);
+         mainData = (MainData) mAcache.getAsObject("MainData");
+//        LogUtils.e(mainData);
         if (mainData != null) {
             setUIData(mainData);
         }
@@ -410,6 +410,8 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
      */
     private void setPager(List<MainData.PhotosBean> photos) {
 
+//        LogUtils.e(mainData);
+
         if (photos.size() > 25) {
             photos = photos.subList(0, 25);
         }
@@ -483,6 +485,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
 
     @Override
     public void OnBannerClick(int position) {
+//        LogUtils.e(mainData);
         ArrayList<MainData.PhotosBean> photos = mainData.getPhotos();
         Intent intent = new Intent(MainActivity.this, LooperImgPlayActivity.class);
         intent.putExtra("photos", photos);
@@ -511,10 +514,12 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
 
     @Override
     public void loadDataFinish(int code, Object data) {
+//        LogUtils.e(data);
         if (code == 0) {
             if (data != null) {
                 mainData = JSON.parseObject(data.toString(), new TypeReference<MainData>() {
                 });
+//                LogUtils.e(mainData);
                 if (mainData != null) {
                     setUIData(mainData);
                     mAcache.put("MainData", mainData);
@@ -593,6 +598,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
             setNoticeList(notice);
         }
 
+        //轮播
         if (mainData.getPhotos() != null && mainData.getPhotos().size() > 0) {
             mAcache.put("Photos", mainData.getPhotos());
             setPager(mainData.getPhotos());

@@ -154,6 +154,7 @@ public class StudentActivity extends BaseActivity implements UIDataListener, Tim
         Intent intent = getIntent();
         if (intent.hasExtra("userId")) {
             mStuUserId = intent.getStringExtra("userId");
+
         }
         logger = LoggerFactory.getLogger(getClass());
         mAcache = ACache.get(this);
@@ -184,6 +185,7 @@ public class StudentActivity extends BaseActivity implements UIDataListener, Tim
         super.onNewIntent(intent);
         LogUtils.d("onNewIntent");
         if (intent.hasExtra("userId")) {
+            setIntent(intent);
             mStuUserId = intent.getStringExtra("userId");
             getUIdata();
         }
