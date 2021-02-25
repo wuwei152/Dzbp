@@ -1,7 +1,9 @@
 package com.md.dzbp.Base;
 
 import android.app.Application;
-import android.text.TextUtils;
+import android.content.Context;
+
+import androidx.multidex.MultiDex;
 
 import com.apkfuns.logutils.LogLevel;
 import com.apkfuns.logutils.LogUtils;
@@ -54,11 +56,6 @@ public class ClientApp extends Application {
         } catch (Exception e) {
             LogUtils.e(e.getMessage());
             logger.error("ClientApp", e.getMessage());
-        }
-        //加入初始密码
-        String adminPsw = mAcache.getAsString("AdminPsw");
-        if (TextUtils.isEmpty(adminPsw)) {
-            mAcache.put("AdminPsw", "135792468");
         }
 
 //        mAcache.put("DeviceId","ab0f2b4e-9c71-45fe-a717-efcd59223cd9");
@@ -140,5 +137,15 @@ public class ClientApp extends Application {
                 }
             }).start();
         }
+    }
+
+    /**
+     * 分割 Dex 支持
+     * @param base
+     */
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 }

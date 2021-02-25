@@ -141,4 +141,13 @@ public interface APIConfig {
      * 参数：
      */
     public static final String GET_DZLENDLIST= "zhxy/api/book/dzLendList";
+
+
+    /**
+     * 获取考勤
+     * 请求方式：Get
+     * 参数：
+     */
+    public static final String getAllClassAttendanceDetail= "zhxy/api/attendance/getAllClassAttendanceDetail";
+
 }

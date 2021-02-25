@@ -120,6 +120,11 @@
             android:launchMode="singleInstance"
             android:windowSoftInputMode="stateHidden" />
         <activity
+            android:name=".ui.activity.AttendanceActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
             android:name=".ui.activity.LooperImgPlayActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleInstance"

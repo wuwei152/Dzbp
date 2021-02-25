@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:background="#494C5051"
+    tools:context=".ui.activity.VideoShowActivity">
+
+    <include layout="@layout/item_title" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="50dp">
+
+        <LinearLayout
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="60dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="35dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/student_back" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:text="返回"
+                android:textColor="@color/text_gray2"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab"
+            style="@style/MyTablayoutstyle"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            app:tabGravity="fill"
+            app:tabMode="fixed"
+            app:tabMaxWidth="0dp"
+            android:layout_marginTop="80dp"
+            />
+
+        <LinearLayout
+            android:id="@+id/add11"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/green_back"
+            android:orientation="horizontal"
+            android:padding="15dp">
+
+            <TextView
+                android:id="@+id/text1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:text="已到0人"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/add1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:text="+"
+                android:textColor="@color/white"
+                android:textSize="28sp" />
+        </LinearLayout>
+
+        <GridView
+            android:id="@+id/listview1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:numColumns="auto_fit"
+            android:columnWidth="150dp"
+            android:verticalSpacing="10dp"
+            android:horizontalSpacing="10dp"
+            android:cacheColorHint="#00000000"
+            android:listSelector="#00000000"
+            android:divider="@null"
+            android:visibility="gone"
+            android:scrollbars="none" />
+        <LinearLayout
+            android:id="@+id/add12"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/red_back"
+            android:orientation="horizontal"
+            android:padding="15dp">
+
+            <TextView
+                android:id="@+id/text2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:text="迟到0人"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/add2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:text="+"
+                android:textColor="@color/white"
+                android:textSize="28sp" />
+        </LinearLayout>
+
+        <GridView
+            android:id="@+id/listview2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:numColumns="auto_fit"
+            android:columnWidth="150dp"
+            android:verticalSpacing="10dp"
+            android:horizontalSpacing="10dp"
+            android:cacheColorHint="#00000000"
+            android:listSelector="#00000000"
+            android:divider="@null"
+            android:visibility="gone"
+            android:scrollbars="none" />
+        <LinearLayout
+            android:id="@+id/add13"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/blue_back"
+            android:orientation="horizontal"
+            android:padding="15dp">
+
+            <TextView
+                android:id="@+id/text3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:text="未到0人"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/add3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:text="+"
+                android:textColor="@color/white"
+                android:textSize="28sp" />
+        </LinearLayout>
+
+        <GridView
+            android:id="@+id/listview3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:numColumns="auto_fit"
+            android:columnWidth="150dp"
+            android:verticalSpacing="10dp"
+            android:horizontalSpacing="10dp"
+            android:cacheColorHint="#00000000"
+            android:listSelector="#00000000"
+            android:divider="@null"
+            android:visibility="gone"
+            android:scrollbars="none" />
+        <LinearLayout
+            android:id="@+id/add14"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/yellow_back"
+            android:orientation="horizontal"
+            android:padding="15dp">
+
+            <TextView
+                android:id="@+id/text4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:text="事假0人"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/add4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:text="+"
+                android:textColor="@color/white"
+                android:textSize="28sp" />
+        </LinearLayout>
+
+        <GridView
+            android:id="@+id/listview4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:numColumns="auto_fit"
+            android:columnWidth="150dp"
+            android:verticalSpacing="10dp"
+            android:horizontalSpacing="10dp"
+            android:cacheColorHint="#00000000"
+            android:listSelector="#00000000"
+            android:divider="@null"
+            android:visibility="gone"
+            android:scrollbars="none" />
+        <LinearLayout
+            android:id="@+id/add15"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/white_back"
+            android:orientation="horizontal"
+            android:padding="15dp">
+
+            <TextView
+                android:id="@+id/text5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_weight="1"
+                android:text="病假0人"
+                android:textColor="@color/text_black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/add5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:text="+"
+                android:textColor="@color/text_black"
+                android:textSize="28sp" />
+        </LinearLayout>
+
+        <GridView
+            android:id="@+id/listview5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:numColumns="auto_fit"
+            android:columnWidth="150dp"
+            android:verticalSpacing="10dp"
+            android:horizontalSpacing="10dp"
+            android:cacheColorHint="#00000000"
+            android:listSelector="#00000000"
+            android:divider="@null"
+            android:visibility="gone"
+            android:scrollbars="none" />
+
+    </LinearLayout>
+
+</LinearLayout>

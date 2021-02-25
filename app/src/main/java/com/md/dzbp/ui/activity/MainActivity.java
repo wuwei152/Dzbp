@@ -11,6 +11,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -18,17 +19,18 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager.widget.ViewPager;
 
-import com.ToxicBakery.viewpager.transforms.RotateUpTransformer;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.apkfuns.logutils.LogUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.material.tabs.TabLayout;
 import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
 import com.md.dzbp.adapter.MyViewPagerAdapter;
 import com.md.dzbp.adapter.StuListAdapter;
 import com.md.dzbp.constants.APIConfig;
 import com.md.dzbp.constants.Constant;
+import com.md.dzbp.data.Attendance;
 import com.md.dzbp.data.CameraInfo;
 import com.md.dzbp.data.ClassInfoBean;
 import com.md.dzbp.data.ClassManagerBean;
@@ -134,6 +136,14 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     TextView mNextCourse;
     @BindView(R.id.main_viewPager)
     AutoScrollViewPager mViewPager;
+    @BindView(R.id.main_tab)
+    TabLayout mTab;
+    @BindView(R.id.main_ydList)
+    ListView ydList;
+    @BindView(R.id.main_tab1)
+    LinearLayout tab1;
+    @BindView(R.id.main_more)
+    TextView more;
     private ACache mAcache;
     private StuListAdapter stuListAdapter;
     private NetWorkRequest netWorkRequest;
@@ -178,12 +188,42 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         logger = LoggerFactory.getLogger(MainActivity.class);
 
         SmdtManager smdt = SmdtManager.create(this);
-        //隐藏状态栏
+//        //隐藏状态栏
         smdt.smdtSetStatusBar(MainActivity.this, false);
 
 //        ArrayList<CameraInfo> mCameraInfos = new ArrayList<>();
 //        mCameraInfos.add(new CameraInfo("192.168.0.112", "37777", "admin", "yc123456"));//测试
 //        mAcache.put("CameraInfo", mCameraInfos);
+
+        mTab.addTab(mTab.newTab().setText("考勤统计"));
+        mTab.addTab(mTab.newTab().setText("考勤排名"));
+
+        mTab.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                LogUtils.e(tab.getPosition());
+                if (tab.getPosition() == 0) {
+                    tab1.setVisibility(View.VISIBLE);
+                    ydList.setVisibility(View.GONE);
+                    more.setVisibility(View.GONE);
+                } else {
+                    ydList.setVisibility(View.VISIBLE);
+                    more.setVisibility(View.VISIBLE);
+                    tab1.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
     }
 
     @Override
@@ -219,7 +259,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
             mConStatus.setImageResource(R.drawable.lianwang_no);
         }
         //首先加载缓存
-         mainData = (MainData) mAcache.getAsObject("MainData");
+        mainData = (MainData) mAcache.getAsObject("MainData");
 //        LogUtils.e(mainData);
         if (mainData != null) {
             setUIData(mainData);
@@ -234,8 +274,10 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     private void getUIdata() {
         Map map = new HashMap();
         map.put("deviceId", Constant.getDeviceId(MainActivity.this));
+//        map.put("deviceId", "3bcf351f-ec26-475a-bd5c-8dab32235b4e");
         netWorkRequest.doGetRequest(0, Constant.getUrl(MainActivity.this, APIConfig.GET_Main), false, map);
         netWorkRequest.doGetRequest(2, Constant.getUrl(MainActivity.this, APIConfig.GET_LOAD_MSG), false, map);
+        netWorkRequest.doGetRequest(4, Constant.getUrl(MainActivity.this, APIConfig.getAllClassAttendanceDetail), false, map);
         mDate.setText(TimeUtils.getStringDate());
         mWeek.setText(TimeUtils.getStringWeek());
         mWeek2.setText(TimeUtils.getStringWeek());
@@ -379,7 +421,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         });
     }
 
-    @OnClick({R.id.main_left, R.id.main_right})
+    @OnClick({R.id.main_left, R.id.main_right, R.id.main_more})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.main_left:
@@ -401,6 +443,9 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
                         mStuListRecycler.smoothScrollToPosition(recyclePosition + 9);
                     }
                 }
+                break;
+            case R.id.main_more:
+                startActivity(new Intent(MainActivity.this, AttendanceActivity.class));
                 break;
         }
     }
@@ -539,6 +584,29 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
                 });
                 if (mNoticeBeanList != null) {
                     setNoticeList(mNoticeBeanList);
+                }
+            }
+        } else if (code == 4) {
+            if (data != null) {
+                List<Attendance> mAttendanceList = JSON.parseObject(data.toString(), new TypeReference<List<Attendance>>() {
+                });
+                if (mAttendanceList != null) {
+
+                    for (Attendance attendance : mAttendanceList) {
+                        if (attendance != null && attendance.isActive()) {
+                            List<Attendance.AttendancedataBean.StuBean> yd = attendance.getAttendancedata().getYd();
+                            if (yd.size() > 10) {
+                                yd = yd.subList(0, 10);
+                            }
+                            ydList.setAdapter(new CommonAdapter<Attendance.AttendancedataBean.StuBean>(MainActivity.this, R.layout.item_attendance_list, yd) {
+                                @Override
+                                protected void convert(ViewHolder viewHolder, Attendance.AttendancedataBean.StuBean item, int position) {
+                                    viewHolder.setText(R.id.tab1, item.getStudentname());
+                                    viewHolder.setText(R.id.tab2, item.getAttendancetime());
+                                }
+                            });
+                        }
+                    }
                 }
             }
         }
