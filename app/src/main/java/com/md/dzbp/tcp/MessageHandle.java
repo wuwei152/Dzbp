@@ -327,7 +327,7 @@ public class MessageHandle {
                 } catch (Exception e) {
                     e.printStackTrace();
                     logger.debug(TAG, "截屏出错" + e.getMessage());
-                    msgHandleUtil.yingda(0xE515, false, deviceId, msgid5152);
+                    msgHandleUtil.yingda(0xE515, false, deviceId, null, msgid5152, 1);
                 }
                 break;
             case 0xA516://摄像头截屏3---发送考勤统计截屏

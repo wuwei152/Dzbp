@@ -457,9 +457,9 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
 
 //        LogUtils.e(mainData);
 
-        if (photos.size() > 25) {
-            photos = photos.subList(0, 25);
-        }
+//        if (photos.size() > 25) {
+//            photos = photos.subList(0, 25);
+//        }
 //        try {
 //            ArrayList<String> images = new ArrayList<>();
 //            for (MainData.PhotosBean photo : photos) {

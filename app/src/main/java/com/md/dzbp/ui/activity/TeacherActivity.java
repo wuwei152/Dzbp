@@ -346,9 +346,9 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
 
         List<MainData.PhotosBean> photos = (List<MainData.PhotosBean>) mAcache.getAsObject("Photos");
 
-        if (photos.size() > 25) {
-            photos = photos.subList(0, 25);
-        }
+//        if (photos.size() > 25) {
+//            photos = photos.subList(0, 25);
+//        }
 
         List<String> list = new ArrayList<>();
         for (MainData.PhotosBean photo : photos) {

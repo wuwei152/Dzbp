@@ -254,7 +254,7 @@ public class HC_Camera_TakePic_Handle {
                             public void handleFail(int code, String data) {
                                 logger.debug(TAG, "上传snap失败！" + data);
                                 for (String s : OpenList21) {
-                                    util.yingda(0xE515, false, deviceId, s);
+                                    util.yingda(0xE515, false, deviceId, data, s, 1);
                                 }
                                 OpenList21.clear();
                             }
@@ -270,7 +270,7 @@ public class HC_Camera_TakePic_Handle {
                     public void onError() {
                         logger.debug(TAG, "压缩失败！");
                         for (String s : OpenList21) {
-                            util.yingda(0xE515, false, deviceId, s);
+                            util.yingda(0xE515, false, deviceId, null, s, 1);
                         }
                         OpenList21.clear();
                     }
@@ -278,14 +278,14 @@ public class HC_Camera_TakePic_Handle {
             } else {
                 logger.debug(TAG, "摄像头截屏获取失败！");
                 for (String s : OpenList21) {
-                    util.yingda(0xE515, false, deviceId, s);
+                    util.yingda(0xE515, false, deviceId, null, s, 1);
                 }
                 OpenList21.clear();
             }
         } else {
             logger.debug(TAG, "未获取到摄像头信息");
             for (String s : OpenList21) {
-                util.yingda(0xE515, false, deviceId, s);
+                util.yingda(0xE515, false, deviceId, null, s, 1);
             }
             OpenList21.clear();
         }

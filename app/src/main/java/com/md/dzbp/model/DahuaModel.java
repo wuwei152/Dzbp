@@ -204,17 +204,18 @@ public class DahuaModel {
 
         @Override
         protected Boolean doInBackground(String... params) {
-            return login(params[0], params[1], params[2], params[3]);
+//            return login(params[0], params[1], params[2], params[3]);
+            return NetSDKLib.loginSessionId != 0;
         }
 
         @Override
         protected void onPostExecute(Boolean result) {
             if (result) {
-                logger.debug(TAG, "登录成功--回调");
+//                logger.debug(TAG, "登录成功--回调");
                 snap(0);
             } else {
                 logger.debug(TAG, "登录失败--回调");
-                listener.resLis(1, false, null);
+//                listener.resLis(1, false, null);
             }
         }
     }
@@ -367,7 +368,7 @@ public class DahuaModel {
         stSnapParam.mode = 0;
         stSnapParam.InterSnap = 5;
         stSnapParam.CmdSerial = 100;
-        if (INetSDK.SnapPictureEx(mLoginHandle, stSnapParam)) {
+        if (INetSDK.SnapPictureEx(NetSDKLib.loginSessionId, stSnapParam)) {
             logger.debug(TAG, "远程抓图成功");
             try {
                 timer = new Timer();

@@ -117,6 +117,11 @@ public class Constant {
         numList.add("0496258966");//
         numList.add("0494449558");//
         numList.add("0634647926");//
+        numList.add("1106111405");//
+        numList.add("3617998007"); // 张成远公交卡
+        numList.add("3762131284");
+        numList.add("3762337348");
+
         return numList;
     }
 

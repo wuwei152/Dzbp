@@ -294,9 +294,12 @@ public class MsgHandleUtil {
             message.Write(openId, length3);
             message.Write(b);
             message.Write(diviceId, 36);
-            int length2 = path.getBytes("UTF-8").length;
-            message.Write(length2);
-            message.Write(path, length2);
+            if (b){
+                int length2 = path.getBytes("UTF-8").length;
+                message.Write(length2);
+                message.Write(path, length2);
+            }
+
             client.getTransceiver().send(message);
         } catch (Exception e) {
             e.printStackTrace();
@@ -1179,7 +1182,7 @@ public class MsgHandleUtil {
                                     public void handleFail(int code, String data) {
                                         logger.debug(TAG, "上传snap失败！" + data);
                                         for (String s : OpenList21) {
-                                            yingda(0xE515, false, deviceId, s);
+                                            yingda(0xE515, false, deviceId, null, s, 1);
                                         }
                                         OpenList21.clear();
                                     }
@@ -1195,7 +1198,7 @@ public class MsgHandleUtil {
                             public void onError() {
                                 logger.debug(TAG, "压缩失败！");
                                 for (String s : OpenList21) {
-                                    yingda(0xE515, false, deviceId, s);
+                                    yingda(0xE515, false, deviceId, null, s, 1);
                                 }
                                 OpenList21.clear();
                             }
@@ -1211,7 +1214,7 @@ public class MsgHandleUtil {
                         }
                         logger.debug(TAG, "摄像头截屏获取失败！");
                         for (String s : OpenList21) {
-                            yingda(0xE515, false, deviceId, s);
+                            yingda(0xE515, false, deviceId, null, s, 1);
                         }
                         OpenList21.clear();
                     }
@@ -1227,7 +1230,7 @@ public class MsgHandleUtil {
         } else {
             logger.debug(TAG, "未获取到摄像头信息");
             for (String s : OpenList21) {
-                yingda(0xE515, false, deviceId, s);
+                yingda(0xE515, false, deviceId, null, s, 1);
             }
             OpenList21.clear();
         }
@@ -1308,7 +1311,7 @@ public class MsgHandleUtil {
                             retry = 1;
                             logger.debug(TAG, "摄像头截屏获取失败重试中。。。！");
                             CameraInfo cameraInfo = mCameraInfos.get(0);
-                            dahuaModel3.logout();
+//                            dahuaModel3.logout();
                             dahuaModel3.LoginToSnap(cameraInfo.getIp(), cameraInfo.getPort(), cameraInfo.getUsername(), cameraInfo.getPsw());
                             return;
                         }

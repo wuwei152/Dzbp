@@ -12,6 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import cn.finalteam.toolsfinal.StringUtils;
+
 /**
  * Created by Administrator on 2017/8/15.
  * 获取时间,并每隔一秒实时更新时间
@@ -315,6 +317,10 @@ public class TimeUtils {
      * @return
      */
     public static double getpercentageTime(String startTime, String endTime) {
+        if (StringUtils.isBlank(startTime) || StringUtils.isBlank(endTime)){
+            return 0;
+        }
+
         try {
             String currentTime1 = getCurrentTime1();
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");

@@ -7,6 +7,7 @@ import androidx.multidex.MultiDex;
 
 import com.apkfuns.logutils.LogLevel;
 import com.apkfuns.logutils.LogUtils;
+import com.company.NetSDK.INetSDK;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.md.dzbp.model.NetSDKLib;
 import com.md.dzbp.model.TimeUtils;
@@ -50,7 +51,7 @@ public class ClientApp extends Application {
         OkHttpFinalConfiguration.Builder builder = new OkHttpFinalConfiguration.Builder();
         OkHttpFinal.getInstance().init(builder.build());
 
-        NetSDKLib.getInstance().init();
+        NetSDKLib.getInstance().init(this);
         try {
             deleteCache();
         } catch (Exception e) {
@@ -60,6 +61,19 @@ public class ClientApp extends Application {
 
 //        mAcache.put("DeviceId","ab0f2b4e-9c71-45fe-a717-efcd59223cd9");
 //        mAcache.put("CameraType", "2");
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        boolean retLogout = INetSDK.Logout(NetSDKLib.loginSessionId);
+        if (retLogout) {
+            NetSDKLib.loginSessionId = 0;
+            logger.debug("摄像头退出登录！");
+        }
+        else {
+            logger.debug("摄像头退出失败！");
+        }
     }
 
     public static ClientApp getInstance() {
