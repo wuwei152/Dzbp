@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "E:\\code\\Dzbp\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-ko-rKR\\values-ko-rKR.xml",
+            "map": [
+                {
+                    "source": "E:\\gradleRepository\\caches\\transforms-2\\files-2.1\\4f471e9464736f2065afb1ccfb6b25d6\\res\\values-ko-rKR\\values-ko-rKR.xml",
+                    "from": {
+                        "startLines": "2,3,4,5,6,7,8",
+                        "startColumns": "4,4,4,4,4,4,4",
+                        "startOffsets": "55,111,155,199,281,337,396",
+                        "endColumns": "55,43,43,81,55,58,55",
+                        "endOffsets": "106,150,194,276,332,391,447"
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.md.dzbp.ExampleUnitTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2021-04-19T08:50:07" hostname="ZHAO" time="0.001">
+  <properties/>
+  <testcase name="addition_isCorrect" classname="com.md.dzbp.ExampleUnitTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

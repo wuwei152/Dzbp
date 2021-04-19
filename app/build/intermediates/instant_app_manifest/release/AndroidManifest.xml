@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.md.dzbp"
+    android:targetSandboxVersion="2"
+    android:versionCode="27"
+    android:versionName="2.1.2" >
+
+    <uses-sdk
+        android:minSdkVersion="18"
+        android:targetSdkVersion="23" />
+    <!-- [START gcm_permission] -->
+    <permission
+        android:name="com.dahuatech.netsdk.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="com.dahuatech.netsdk.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- [END gcm_permission] -->
+    <!-- android:sharedUserId="android.uid.system" -->
+    <!-- 允许应用程序接受开机广播 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> <!-- 允许应用程序改变网络状态 -->
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" /> <!-- 允许应用程序改变WIFI连接状态 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- 允许应用程序访问有关的网络信息 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" /> <!-- 允许应用程序访问WIFI网卡的网络信息 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 允许应用程序完全使用网络 -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- 允许应用程序设置参数 -->
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.SET_TIME" />
+    <uses-permission android:name="android.permission.SET_TIME_ZONE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:name="android.hardware.autofocus" />
+
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.CAPTURE_AUDIO_OUTPUT" />
+    <uses-permission android:name="android.permission.REORDER_TASKS" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+
+    <!-- 拨打电话 -->
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
+    <application
+        android:name="com.md.dzbp.Base.ClientApp"
+        android:allowBackup="true"
+        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:persistent="true"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.md.dzbp.ui.activity.SplashActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@style/splashTheme" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.md.dzbp.ui.activity.MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity
+            android:name="com.md.dzbp.ui.activity.NoticeActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="com.md.dzbp.ui.activity.ExamActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="com.md.dzbp.ui.activity.TeacherActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <activity
+            android:name="com.md.dzbp.ui.activity.StudentActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="com.md.dzbp.ui.activity.PatrolActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="com.md.dzbp.ui.activity.MeetingActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="com.md.dzbp.ui.activity.InterestClassActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="com.md.dzbp.ui.activity.SettingActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="com.md.dzbp.ui.activity.ShowBigImageActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="standard"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="com.md.dzbp.ui.activity.SignActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="com.md.dzbp.ui.activity.VideoShowActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="com.md.dzbp.ui.activity.AttendanceActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name="com.md.dzbp.ui.activity.LooperImgPlayActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="stateHidden" />
+
+        <service
+            android:name="com.md.dzbp.tcp.TcpService"
+            android:enabled="true" >
+
+            <!-- <intent-filter android:priority="1000"></intent-filter> -->
+        </service> <!-- 运行在新进程 -->
+        <service
+            android:name="com.md.dzbp.tcp.RemoteService"
+            android:process=".remoteservice" />
+
+        <receiver
+            android:name="com.md.dzbp.tcp.TcpServiceInstalledReceiver"
+            android:exported="true" >
+            <intent-filter android:priority="1000" >
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.media.AUDIO_BECOMING_NOISY" />
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name="com.md.dzbp.service.UploadService"
+            android:enabled="true" />
+
+        <receiver android:name="com.md.dzbp.service.BootCompletedReceiver" >
+            <intent-filter>
+
+                <!-- 开机广播 -->
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <!-- 关机广播 -->
+                <action android:name="android.intent.action.ACTION_SHUTDOWN" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

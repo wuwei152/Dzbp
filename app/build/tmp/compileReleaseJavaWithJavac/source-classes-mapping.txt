@@ -1,0 +1,1074 @@
+com/md/dzbp/data/EaseEmojicon.java
+ com.md.dzbp.data.EaseEmojicon
+ com.md.dzbp.data.EaseEmojicon$Type
+com/md/dzbp/ui/view/dropdownmenu/DropdownAdapter.java
+ com.md.dzbp.ui.view.dropdownmenu.DropdownAdapter
+androidx/lifecycle/livedata/core/R.java
+ androidx.lifecycle.livedata.core.R
+com/facebook/imagepipeline/R.java
+ com.facebook.imagepipeline.R
+com/md/dzbp/data/ClassManagerBean.java
+ com.md.dzbp.data.ClassManagerBean
+com/md/dzbp/ui/view/myToast.java
+ com.md.dzbp.ui.view.myToast
+com/md/dzbp/ui/view/dropdownmenu/OnDropdownItemClickListener.java
+ com.md.dzbp.ui.view.dropdownmenu.OnDropdownItemClickListener
+com/facebook/drawee/backends/pipeline/R.java
+ com.facebook.drawee.backends.pipeline.R
+ com.facebook.drawee.backends.pipeline.R$attr
+ com.facebook.drawee.backends.pipeline.R$id
+ com.facebook.drawee.backends.pipeline.R$styleable
+com/md/dzbp/tcp/TcpClient.java
+ com.md.dzbp.tcp.TcpClient
+ com.md.dzbp.tcp.TcpClient$1
+androidx/savedstate/R.java
+ androidx.savedstate.R
+com/md/dzbp/utils/MyJzvdStd.java
+ com.md.dzbp.utils.MyJzvdStd
+com/md/dzbp/data/ImgFile.java
+ com.md.dzbp.data.ImgFile
+com/md/dzbp/Manifest.java
+ com.md.dzbp.Manifest
+ com.md.dzbp.Manifest$permission
+androidx/asynclayoutinflater/R.java
+ androidx.asynclayoutinflater.R
+ androidx.asynclayoutinflater.R$attr
+ androidx.asynclayoutinflater.R$color
+ androidx.asynclayoutinflater.R$dimen
+ androidx.asynclayoutinflater.R$drawable
+ androidx.asynclayoutinflater.R$id
+ androidx.asynclayoutinflater.R$integer
+ androidx.asynclayoutinflater.R$layout
+ androidx.asynclayoutinflater.R$string
+ androidx.asynclayoutinflater.R$style
+ androidx.asynclayoutinflater.R$styleable
+com/md/dzbp/ui/activity/PatrolActivity.java
+ com.md.dzbp.ui.activity.PatrolActivity
+ com.md.dzbp.ui.activity.PatrolActivity$1
+ com.md.dzbp.ui.activity.PatrolActivity$2
+ com.md.dzbp.ui.activity.PatrolActivity$3
+ com.md.dzbp.ui.activity.PatrolActivity$4
+ com.md.dzbp.ui.activity.PatrolActivity$5
+ com.md.dzbp.ui.activity.PatrolActivity$5$1
+ com.md.dzbp.ui.activity.PatrolActivity$6
+com/md/dzbp/utils/ACache.java
+ com.md.dzbp.utils.ACache
+ com.md.dzbp.utils.ACache$1
+ com.md.dzbp.utils.ACache$ACacheManager
+ com.md.dzbp.utils.ACache$ACacheManager$1
+ com.md.dzbp.utils.ACache$Utils
+com/md/dzbp/ui/view/AudioRecorder/AudioRecorderButton.java
+ com.md.dzbp.ui.view.AudioRecorder.AudioRecorderButton
+ com.md.dzbp.ui.view.AudioRecorder.AudioRecorderButton$1
+ com.md.dzbp.ui.view.AudioRecorder.AudioRecorderButton$2
+ com.md.dzbp.ui.view.AudioRecorder.AudioRecorderButton$3
+ com.md.dzbp.ui.view.AudioRecorder.AudioRecorderButton$4
+ com.md.dzbp.ui.view.AudioRecorder.AudioRecorderButton$AudioFinishRecorderListener
+com/md/dzbp/ui/view/dropdownmenu/widget/FixedPopupWindow.java
+ com.md.dzbp.ui.view.dropdownmenu.widget.FixedPopupWindow
+com/md/dzbp/data/NoticeBean.java
+ com.md.dzbp.data.NoticeBean
+com/md/dzbp/utils/GlideZBImageLoader.java
+ com.md.dzbp.utils.GlideZBImageLoader
+com/md/dzbp/ui/activity/MeetingActivity.java
+ com.md.dzbp.ui.activity.MeetingActivity
+ com.md.dzbp.ui.activity.MeetingActivity$1
+ com.md.dzbp.ui.activity.MeetingActivity$2
+ com.md.dzbp.ui.activity.MeetingActivity$3
+ com.md.dzbp.ui.activity.MeetingActivity$4
+com/md/dzbp/ui/activity/VideoShowActivity.java
+ com.md.dzbp.ui.activity.VideoShowActivity
+ com.md.dzbp.ui.activity.VideoShowActivity$1
+ com.md.dzbp.ui.activity.VideoShowActivity$2
+ com.md.dzbp.ui.activity.VideoShowActivity$3
+ com.md.dzbp.ui.activity.VideoShowActivity$4
+ com.md.dzbp.ui.activity.VideoShowActivity$5
+top/zibin/luban/R.java
+ top.zibin.luban.R
+ top.zibin.luban.R$string
+androidx/multidex/R.java
+ androidx.multidex.R
+com/md/dzbp/ui/activity/LooperImgPlayActivity.java
+ com.md.dzbp.ui.activity.LooperImgPlayActivity
+ com.md.dzbp.ui.activity.LooperImgPlayActivity$1
+com/md/dzbp/ui/activity/ExamActivity.java
+ com.md.dzbp.ui.activity.ExamActivity
+ com.md.dzbp.ui.activity.ExamActivity$1
+ com.md.dzbp.ui.activity.ExamActivity$2
+ com.md.dzbp.ui.activity.ExamActivity$3
+ com.md.dzbp.ui.activity.ExamActivity$4
+ com.md.dzbp.ui.activity.ExamActivity$5
+com/md/dzbp/ui/view/dropdownmenu/DropdownMenu.java
+ com.md.dzbp.ui.view.dropdownmenu.DropdownMenu
+ com.md.dzbp.ui.view.dropdownmenu.DropdownMenu$1
+ com.md.dzbp.ui.view.dropdownmenu.DropdownMenu$2
+ com.md.dzbp.ui.view.dropdownmenu.DropdownMenu$3
+ com.md.dzbp.ui.view.dropdownmenu.DropdownMenu$4
+ com.md.dzbp.ui.view.dropdownmenu.DropdownMenu$5
+com/md/dzbp/ui/activity/InterestClassActivity.java
+ com.md.dzbp.ui.activity.InterestClassActivity
+ com.md.dzbp.ui.activity.InterestClassActivity$1
+ com.md.dzbp.ui.activity.InterestClassActivity$2
+ com.md.dzbp.ui.activity.InterestClassActivity$3
+ com.md.dzbp.ui.activity.InterestClassActivity$4
+ com.md.dzbp.ui.activity.InterestClassActivity$5
+com/md/dzbp/Base/ExitUtils.java
+ com.md.dzbp.Base.ExitUtils
+com/md/dzbp/model/DahuaModel.java
+ com.md.dzbp.model.DahuaModel
+ com.md.dzbp.model.DahuaModel$1
+ com.md.dzbp.model.DahuaModel$2
+ com.md.dzbp.model.DahuaModel$LoginAndPlayTask
+ com.md.dzbp.model.DahuaModel$LoginAndSnapTask
+ com.md.dzbp.model.DahuaModel$TestfSnapRev
+com/bumptech/glide/R.java
+ com.bumptech.glide.R
+ com.bumptech.glide.R$attr
+ com.bumptech.glide.R$bool
+ com.bumptech.glide.R$color
+ com.bumptech.glide.R$dimen
+ com.bumptech.glide.R$drawable
+ com.bumptech.glide.R$id
+ com.bumptech.glide.R$integer
+ com.bumptech.glide.R$layout
+ com.bumptech.glide.R$string
+ com.bumptech.glide.R$style
+ com.bumptech.glide.R$styleable
+com/md/dzbp/data/Meetingbean.java
+ com.md.dzbp.data.Meetingbean
+ com.md.dzbp.data.Meetingbean$MeetingUserListBean
+com/bumptech/glide/gifdecoder/R.java
+ com.bumptech.glide.gifdecoder.R
+androidx/swiperefreshlayout/R.java
+ androidx.swiperefreshlayout.R
+ androidx.swiperefreshlayout.R$attr
+ androidx.swiperefreshlayout.R$color
+ androidx.swiperefreshlayout.R$dimen
+ androidx.swiperefreshlayout.R$drawable
+ androidx.swiperefreshlayout.R$id
+ androidx.swiperefreshlayout.R$integer
+ androidx.swiperefreshlayout.R$layout
+ androidx.swiperefreshlayout.R$string
+ androidx.swiperefreshlayout.R$style
+ androidx.swiperefreshlayout.R$styleable
+com/md/dzbp/adapter/MyBaseAdapter.java
+ com.md.dzbp.adapter.MyBaseAdapter
+androidx/appcompat/R.java
+ androidx.appcompat.R
+ androidx.appcompat.R$anim
+ androidx.appcompat.R$attr
+ androidx.appcompat.R$bool
+ androidx.appcompat.R$color
+ androidx.appcompat.R$dimen
+ androidx.appcompat.R$drawable
+ androidx.appcompat.R$id
+ androidx.appcompat.R$integer
+ androidx.appcompat.R$interpolator
+ androidx.appcompat.R$layout
+ androidx.appcompat.R$string
+ androidx.appcompat.R$style
+ androidx.appcompat.R$styleable
+androidx/legacy/coreui/R.java
+ androidx.legacy.coreui.R
+ androidx.legacy.coreui.R$attr
+ androidx.legacy.coreui.R$color
+ androidx.legacy.coreui.R$dimen
+ androidx.legacy.coreui.R$drawable
+ androidx.legacy.coreui.R$id
+ androidx.legacy.coreui.R$integer
+ androidx.legacy.coreui.R$layout
+ androidx.legacy.coreui.R$string
+ androidx.legacy.coreui.R$style
+ androidx.legacy.coreui.R$styleable
+com/md/dzbp/data/Migration3.java
+ com.md.dzbp.data.Migration3
+com/md/dzbp/tcp/DigitalUtils.java
+ com.md.dzbp.tcp.DigitalUtils
+com/md/dzbp/tcp/TcpService.java
+ com.md.dzbp.tcp.TcpService
+ com.md.dzbp.tcp.TcpService$LocalBinder
+ com.md.dzbp.tcp.TcpService$LocalConn
+com/md/dzbp/ui/activity/SettingActivity.java
+ com.md.dzbp.ui.activity.SettingActivity
+ com.md.dzbp.ui.activity.SettingActivity$1
+ com.md.dzbp.ui.activity.SettingActivity$2
+ com.md.dzbp.ui.activity.SettingActivity$3
+ com.md.dzbp.ui.activity.SettingActivity$4
+com/md/dzbp/utils/BitmapUtils.java
+ com.md.dzbp.utils.BitmapUtils
+ com.md.dzbp.utils.BitmapUtils$BitmapSize
+com/md/dzbp/adapter/StuListAdapter.java
+ com.md.dzbp.adapter.StuListAdapter
+ com.md.dzbp.adapter.StuListAdapter$1
+ com.md.dzbp.adapter.StuListAdapter$OnItemClickLitener
+ com.md.dzbp.adapter.StuListAdapter$ViewHolder
+com/md/dzbp/tcp/TCPMessage.java
+ com.md.dzbp.tcp.TCPMessage
+com/md/dzbp/tcp/TcpServiceInstalledReceiver.java
+ com.md.dzbp.tcp.TcpServiceInstalledReceiver
+com/md/dzbp/data/SendSignEvent.java
+ com.md.dzbp.data.SendSignEvent
+com/md/dzbp/data/ClassInfoBean.java
+ com.md.dzbp.data.ClassInfoBean
+com/md/dzbp/adapter/VoiceMsgSendItem.java
+ com.md.dzbp.adapter.VoiceMsgSendItem
+ com.md.dzbp.adapter.VoiceMsgSendItem$1
+ com.md.dzbp.adapter.VoiceMsgSendItem$1$1
+ com.md.dzbp.adapter.VoiceMsgSendItem$2
+ com.md.dzbp.adapter.VoiceMsgSendItem$3
+ com.md.dzbp.adapter.VoiceMsgSendItem$3$1
+ com.md.dzbp.adapter.VoiceMsgSendItem$4
+com/ToxicBakery/viewpager/transforms/R.java
+ com.ToxicBakery.viewpager.transforms.R
+ com.ToxicBakery.viewpager.transforms.R$attr
+ com.ToxicBakery.viewpager.transforms.R$color
+ com.ToxicBakery.viewpager.transforms.R$dimen
+ com.ToxicBakery.viewpager.transforms.R$drawable
+ com.ToxicBakery.viewpager.transforms.R$id
+ com.ToxicBakery.viewpager.transforms.R$integer
+ com.ToxicBakery.viewpager.transforms.R$layout
+ com.ToxicBakery.viewpager.transforms.R$string
+ com.ToxicBakery.viewpager.transforms.R$style
+ com.ToxicBakery.viewpager.transforms.R$styleable
+com/md/dzbp/utils/SnapUtils.java
+ com.md.dzbp.utils.SnapUtils
+ com.md.dzbp.utils.SnapUtils$1
+ com.md.dzbp.utils.SnapUtils$1$1
+ com.md.dzbp.utils.SnapUtils$2
+ com.md.dzbp.utils.SnapUtils$2$1
+com/md/dzbp/data/TextReceiveMessage.java
+ com.md.dzbp.data.TextReceiveMessage
+com/md/dzbp/utils/hcUtils/HKCameraUtil.java
+ com.md.dzbp.utils.hcUtils.HKCameraUtil
+com/md/dzbp/ftp/ProgressInputStream.java
+ com.md.dzbp.ftp.ProgressInputStream
+com/md/dzbp/data/ExamBean.java
+ com.md.dzbp.data.ExamBean
+ com.md.dzbp.data.ExamBean$ExaminationBean
+com/zhy/base/adapter/R.java
+ com.zhy.base.adapter.R
+ com.zhy.base.adapter.R$attr
+ com.zhy.base.adapter.R$dimen
+ com.zhy.base.adapter.R$id
+ com.zhy.base.adapter.R$styleable
+com/md/dzbp/task/SwitchTask.java
+ com.md.dzbp.task.SwitchTask
+ com.md.dzbp.task.SwitchTask$1
+ com.md.dzbp.task.SwitchTask$2
+ com.md.dzbp.task.SwitchTask$3
+com/md/dzbp/utils/MainGestureDetector.java
+ com.md.dzbp.utils.MainGestureDetector
+ com.md.dzbp.utils.MainGestureDetector$1
+com/md/dzbp/ui/view/dropdownmenu/FixedHeightListView.java
+ com.md.dzbp.ui.view.dropdownmenu.FixedHeightListView
+androidx/viewpager2/R.java
+ androidx.viewpager2.R
+ androidx.viewpager2.R$attr
+ androidx.viewpager2.R$color
+ androidx.viewpager2.R$dimen
+ androidx.viewpager2.R$drawable
+ androidx.viewpager2.R$id
+ androidx.viewpager2.R$integer
+ androidx.viewpager2.R$layout
+ androidx.viewpager2.R$string
+ androidx.viewpager2.R$style
+ androidx.viewpager2.R$styleable
+com/md/dzbp/tcp/ServerManager.java
+ com.md.dzbp.tcp.ServerManager
+ com.md.dzbp.tcp.ServerManager$1
+ com.md.dzbp.tcp.ServerManager$1$1
+ com.md.dzbp.tcp.ServerManager$1$2
+ com.md.dzbp.tcp.ServerManager$1$3
+ com.md.dzbp.tcp.ServerManager$1$4
+ com.md.dzbp.tcp.ServerManager$2
+ com.md.dzbp.tcp.ServerManager$3
+com/md/dzbp/data/WorkTimePoint.java
+ com.md.dzbp.data.WorkTimePoint
+ com.md.dzbp.data.WorkTimePoint$1
+com/md/dzbp/ui/view/MyRecyclerView.java
+ com.md.dzbp.ui.view.MyRecyclerView
+ com.md.dzbp.ui.view.MyRecyclerView$1
+com/md/dzbp/constants/APIConfig.java
+ com.md.dzbp.constants.APIConfig
+com/md/dzbp/constants/MSGTYPE.java
+ com.md.dzbp.constants.MSGTYPE
+com/md/dzbp/data/LocalNetParamsbean.java
+ com.md.dzbp.data.LocalNetParamsbean
+com/md/dzbp/data/BookBean.java
+ com.md.dzbp.data.BookBean
+com/md/dzbp/utils/GlideImageLoader.java
+ com.md.dzbp.utils.GlideImageLoader
+com/md/dzbp/data/SignInfoBean.java
+ com.md.dzbp.data.SignInfoBean
+ com.md.dzbp.data.SignInfoBean$ClassInfoBean
+ com.md.dzbp.data.SignInfoBean$StudentBean
+com/md/dzbp/data/PatrolEditEvent.java
+ com.md.dzbp.data.PatrolEditEvent
+com/md/dzbp/model/NetSDKLib.java
+ com.md.dzbp.model.NetSDKLib
+ com.md.dzbp.model.NetSDKLib$DeviceDisConnect
+ com.md.dzbp.model.NetSDKLib$DeviceDisConnect$1
+ com.md.dzbp.model.NetSDKLib$DeviceReConnect
+com/md/dzbp/ui/view/MsgDialog.java
+ com.md.dzbp.ui.view.MsgDialog
+ com.md.dzbp.ui.view.MsgDialog$1
+com/md/dzbp/data/ExamPlan.java
+ com.md.dzbp.data.ExamPlan
+com/md/dzbp/utils/hcUtils/HCSdkManager.java
+ com.md.dzbp.utils.hcUtils.HCSdkManager
+androidx/activity/R.java
+ androidx.activity.R
+ androidx.activity.R$attr
+ androidx.activity.R$color
+ androidx.activity.R$dimen
+ androidx.activity.R$drawable
+ androidx.activity.R$id
+ androidx.activity.R$integer
+ androidx.activity.R$layout
+ androidx.activity.R$string
+ androidx.activity.R$style
+ androidx.activity.R$styleable
+com/md/dzbp/adapter/ParentListAdapter.java
+ com.md.dzbp.adapter.ParentListAdapter
+ com.md.dzbp.adapter.ParentListAdapter$1
+ com.md.dzbp.adapter.ParentListAdapter$OnItemClickLitener
+ com.md.dzbp.adapter.ParentListAdapter$ViewHolder
+androidx/recyclerview/R.java
+ androidx.recyclerview.R
+ androidx.recyclerview.R$attr
+ androidx.recyclerview.R$color
+ androidx.recyclerview.R$dimen
+ androidx.recyclerview.R$drawable
+ androidx.recyclerview.R$id
+ androidx.recyclerview.R$integer
+ androidx.recyclerview.R$layout
+ androidx.recyclerview.R$string
+ androidx.recyclerview.R$style
+ androidx.recyclerview.R$styleable
+androidx/drawerlayout/R.java
+ androidx.drawerlayout.R
+ androidx.drawerlayout.R$attr
+ androidx.drawerlayout.R$color
+ androidx.drawerlayout.R$dimen
+ androidx.drawerlayout.R$drawable
+ androidx.drawerlayout.R$id
+ androidx.drawerlayout.R$integer
+ androidx.drawerlayout.R$layout
+ androidx.drawerlayout.R$string
+ androidx.drawerlayout.R$style
+ androidx.drawerlayout.R$styleable
+com/md/dzbp/ui/view/AutoScrollViewPager.java
+ com.md.dzbp.ui.view.AutoScrollViewPager
+ com.md.dzbp.ui.view.AutoScrollViewPager$MyHandler
+androidx/versionedparcelable/R.java
+ androidx.versionedparcelable.R
+com/md/dzbp/adapter/HonorListAdapter.java
+ com.md.dzbp.adapter.HonorListAdapter
+ com.md.dzbp.adapter.HonorListAdapter$1
+ com.md.dzbp.adapter.HonorListAdapter$OnItemClickLitener
+ com.md.dzbp.adapter.HonorListAdapter$ViewHolder
+com/md/dzbp/data/StudentInfoBean.java
+ com.md.dzbp.data.StudentInfoBean
+ com.md.dzbp.data.StudentInfoBean$HonorBean
+ com.md.dzbp.data.StudentInfoBean$HonorBean$ImagelistBean
+ com.md.dzbp.data.StudentInfoBean$ParentsBean
+ com.md.dzbp.data.StudentInfoBean$StudentBean
+com/md/dzbp/ui/view/ProgressCustomView.java
+ com.md.dzbp.ui.view.ProgressCustomView
+com/md/dzbp/data/PatrolBean.java
+ com.md.dzbp.data.PatrolBean
+ com.md.dzbp.data.PatrolBean$AttendanceBean
+ com.md.dzbp.data.PatrolBean$InspectionParametersBean
+ com.md.dzbp.data.PatrolBean$TeacherBean
+com/zk/banner/R.java
+ com.zk.banner.R
+ com.zk.banner.R$animator
+ com.zk.banner.R$attr
+ com.zk.banner.R$color
+ com.zk.banner.R$dimen
+ com.zk.banner.R$drawable
+ com.zk.banner.R$id
+ com.zk.banner.R$integer
+ com.zk.banner.R$layout
+ com.zk.banner.R$mipmap
+ com.zk.banner.R$string
+ com.zk.banner.R$style
+ com.zk.banner.R$styleable
+com/md/dzbp/ui/activity/TeacherActivity.java
+ com.md.dzbp.ui.activity.TeacherActivity
+ com.md.dzbp.ui.activity.TeacherActivity$1
+ com.md.dzbp.ui.activity.TeacherActivity$2
+ com.md.dzbp.ui.activity.TeacherActivity$3
+ com.md.dzbp.ui.activity.TeacherActivity$4
+ com.md.dzbp.ui.activity.TeacherActivity$5
+ com.md.dzbp.ui.activity.TeacherActivity$6
+ com.md.dzbp.ui.activity.TeacherActivity$7
+ com.md.dzbp.ui.activity.TeacherActivity$8
+ com.md.dzbp.ui.activity.TeacherActivity$9
+androidx/cursoradapter/R.java
+ androidx.cursoradapter.R
+androidx/lifecycle/livedata/R.java
+ androidx.lifecycle.livedata.R
+androidx/documentfile/R.java
+ androidx.documentfile.R
+com/md/dzbp/ui/view/MainDialog.java
+ com.md.dzbp.ui.view.MainDialog
+ com.md.dzbp.ui.view.MainDialog$1
+ com.md.dzbp.ui.view.MainDialog$10
+ com.md.dzbp.ui.view.MainDialog$11
+ com.md.dzbp.ui.view.MainDialog$12
+ com.md.dzbp.ui.view.MainDialog$13
+ com.md.dzbp.ui.view.MainDialog$2
+ com.md.dzbp.ui.view.MainDialog$3
+ com.md.dzbp.ui.view.MainDialog$4
+ com.md.dzbp.ui.view.MainDialog$5
+ com.md.dzbp.ui.view.MainDialog$6
+ com.md.dzbp.ui.view.MainDialog$7
+ com.md.dzbp.ui.view.MainDialog$8
+ com.md.dzbp.ui.view.MainDialog$9
+com/md/dzbp/utils/hcUtils/TimeStruct.java
+ com.md.dzbp.utils.hcUtils.TimeStruct
+ com.md.dzbp.utils.hcUtils.TimeStruct$1
+androidx/loader/R.java
+ androidx.loader.R
+ androidx.loader.R$attr
+ androidx.loader.R$color
+ androidx.loader.R$dimen
+ androidx.loader.R$drawable
+ androidx.loader.R$id
+ androidx.loader.R$integer
+ androidx.loader.R$layout
+ androidx.loader.R$string
+ androidx.loader.R$style
+ androidx.loader.R$styleable
+cn/finalteam/okhttpfinal/R.java
+ cn.finalteam.okhttpfinal.R
+com/google/android/material/R.java
+ com.google.android.material.R
+ com.google.android.material.R$anim
+ com.google.android.material.R$animator
+ com.google.android.material.R$attr
+ com.google.android.material.R$bool
+ com.google.android.material.R$color
+ com.google.android.material.R$dimen
+ com.google.android.material.R$drawable
+ com.google.android.material.R$id
+ com.google.android.material.R$integer
+ com.google.android.material.R$interpolator
+ com.google.android.material.R$layout
+ com.google.android.material.R$plurals
+ com.google.android.material.R$string
+ com.google.android.material.R$style
+ com.google.android.material.R$styleable
+ com.google.android.material.R$xml
+androidx/annotation/experimental/R.java
+ androidx.annotation.experimental.R
+com/md/dzbp/model/TimeListener.java
+ com.md.dzbp.model.TimeListener
+androidx/constraintlayout/widget/R.java
+ androidx.constraintlayout.widget.R
+ androidx.constraintlayout.widget.R$attr
+ androidx.constraintlayout.widget.R$id
+ androidx.constraintlayout.widget.R$styleable
+com/facebook/imagepipeline/backends/okhttp/R.java
+ com.facebook.imagepipeline.backends.okhttp.R
+androidx/slidingpanelayout/R.java
+ androidx.slidingpanelayout.R
+ androidx.slidingpanelayout.R$attr
+ androidx.slidingpanelayout.R$color
+ androidx.slidingpanelayout.R$dimen
+ androidx.slidingpanelayout.R$drawable
+ androidx.slidingpanelayout.R$id
+ androidx.slidingpanelayout.R$integer
+ androidx.slidingpanelayout.R$layout
+ androidx.slidingpanelayout.R$string
+ androidx.slidingpanelayout.R$style
+ androidx.slidingpanelayout.R$styleable
+com/md/dzbp/data/SignBean.java
+ com.md.dzbp.data.SignBean
+com/md/dzbp/data/ImageReceiveMessage.java
+ com.md.dzbp.data.ImageReceiveMessage
+com/apkfuns/logutils/R.java
+ com.apkfuns.logutils.R
+ com.apkfuns.logutils.R$string
+com/md/dzbp/data/CameraInfo.java
+ com.md.dzbp.data.CameraInfo
+com/md/dzbp/ui/view/dropdownmenu/widget/FontIcon.java
+ com.md.dzbp.ui.view.dropdownmenu.widget.FontIcon
+com/md/dzbp/ui/view/AudioRecorder/AudioDialogManage.java
+ com.md.dzbp.ui.view.AudioRecorder.AudioDialogManage
+com/md/dzbp/utils/RoundRectImageView.java
+ com.md.dzbp.utils.RoundRectImageView
+com/md/dzbp/ui/activity/NoticeActivity.java
+ com.md.dzbp.ui.activity.NoticeActivity
+ com.md.dzbp.ui.activity.NoticeActivity$1
+ com.md.dzbp.ui.activity.NoticeActivity$2
+ com.md.dzbp.ui.activity.NoticeActivity$3
+ com.md.dzbp.ui.activity.NoticeActivity$4
+ com.md.dzbp.ui.activity.NoticeActivity$5
+ com.md.dzbp.ui.activity.NoticeActivity$6
+ com.md.dzbp.ui.activity.NoticeActivity$7
+ com.md.dzbp.ui.activity.NoticeActivity$8
+ com.md.dzbp.ui.activity.NoticeActivity$9
+androidx/transition/R.java
+ androidx.transition.R
+ androidx.transition.R$attr
+ androidx.transition.R$color
+ androidx.transition.R$dimen
+ androidx.transition.R$drawable
+ androidx.transition.R$id
+ androidx.transition.R$integer
+ androidx.transition.R$layout
+ androidx.transition.R$string
+ androidx.transition.R$style
+ androidx.transition.R$styleable
+androidx/print/R.java
+ androidx.print.R
+com/md/dzbp/tcp/ResolveResult.java
+ com.md.dzbp.tcp.ResolveResult
+cn/jzvd/R.java
+ cn.jzvd.R
+ cn.jzvd.R$anim
+ cn.jzvd.R$attr
+ cn.jzvd.R$color
+ cn.jzvd.R$dimen
+ cn.jzvd.R$drawable
+ cn.jzvd.R$id
+ cn.jzvd.R$integer
+ cn.jzvd.R$layout
+ cn.jzvd.R$string
+ cn.jzvd.R$style
+ cn.jzvd.R$styleable
+ cn.jzvd.R$xml
+androidx/appcompat/resources/R.java
+ androidx.appcompat.resources.R
+ androidx.appcompat.resources.R$attr
+ androidx.appcompat.resources.R$color
+ androidx.appcompat.resources.R$dimen
+ androidx.appcompat.resources.R$drawable
+ androidx.appcompat.resources.R$id
+ androidx.appcompat.resources.R$integer
+ androidx.appcompat.resources.R$layout
+ androidx.appcompat.resources.R$string
+ androidx.appcompat.resources.R$style
+ androidx.appcompat.resources.R$styleable
+androidx/arch/core/R.java
+ androidx.arch.core.R
+androidx/fragment/R.java
+ androidx.fragment.R
+ androidx.fragment.R$attr
+ androidx.fragment.R$color
+ androidx.fragment.R$dimen
+ androidx.fragment.R$drawable
+ androidx.fragment.R$id
+ androidx.fragment.R$integer
+ androidx.fragment.R$layout
+ androidx.fragment.R$string
+ androidx.fragment.R$style
+ androidx.fragment.R$styleable
+com/raizlabs/android/dbflow/R.java
+ com.raizlabs.android.dbflow.R
+com/md/dzbp/tcp/SocketTransceiver.java
+ com.md.dzbp.tcp.SocketTransceiver
+com/md/dzbp/ui/activity/MainActivity.java
+ com.md.dzbp.ui.activity.MainActivity
+ com.md.dzbp.ui.activity.MainActivity$1
+ com.md.dzbp.ui.activity.MainActivity$10
+ com.md.dzbp.ui.activity.MainActivity$11
+ com.md.dzbp.ui.activity.MainActivity$12
+ com.md.dzbp.ui.activity.MainActivity$2
+ com.md.dzbp.ui.activity.MainActivity$3
+ com.md.dzbp.ui.activity.MainActivity$4
+ com.md.dzbp.ui.activity.MainActivity$5
+ com.md.dzbp.ui.activity.MainActivity$6
+ com.md.dzbp.ui.activity.MainActivity$7
+ com.md.dzbp.ui.activity.MainActivity$8
+ com.md.dzbp.ui.activity.MainActivity$9
+com/md/dzbp/ProcessService.java
+ com.md.dzbp.ProcessService
+ com.md.dzbp.ProcessService$Stub
+ com.md.dzbp.ProcessService$Stub$Proxy
+com/md/dzbp/tcp/FileHandle.java
+ com.md.dzbp.tcp.FileHandle
+com/md/dzbp/adapter/TxtMsgSendItem.java
+ com.md.dzbp.adapter.TxtMsgSendItem
+androidx/interpolator/R.java
+ androidx.interpolator.R
+androidx/core/R.java
+ androidx.core.R
+ androidx.core.R$attr
+ androidx.core.R$color
+ androidx.core.R$dimen
+ androidx.core.R$drawable
+ androidx.core.R$id
+ androidx.core.R$integer
+ androidx.core.R$layout
+ androidx.core.R$string
+ androidx.core.R$style
+ androidx.core.R$styleable
+com/md/dzbp/ui/activity/AttendanceActivity.java
+ com.md.dzbp.ui.activity.AttendanceActivity
+ com.md.dzbp.ui.activity.AttendanceActivity$1
+ com.md.dzbp.ui.activity.AttendanceActivity$2
+ com.md.dzbp.ui.activity.AttendanceActivity$3
+ com.md.dzbp.ui.activity.AttendanceActivity$4
+ com.md.dzbp.ui.activity.AttendanceActivity$5
+ com.md.dzbp.ui.activity.AttendanceActivity$6
+ com.md.dzbp.ui.activity.AttendanceActivity$7
+ com.md.dzbp.ui.activity.AttendanceActivity$8
+ com.md.dzbp.ui.activity.AttendanceActivity$9
+com/md/dzbp/data/WorkTimePeriod.java
+ com.md.dzbp.data.WorkTimePeriod
+com/md/dzbp/data/AppDatabase.java
+ com.md.dzbp.data.AppDatabase
+com/md/dzbp/data/VoiceSendMessage.java
+ com.md.dzbp.data.VoiceSendMessage
+com/md/dzbp/data/SchoolBean.java
+ com.md.dzbp.data.SchoolBean
+com/md/dzbp/utils/hcUtils/PlayerCallback.java
+ com.md.dzbp.utils.hcUtils.PlayerCallback
+com/md/dzbp/data/ScreenShotEvent.java
+ com.md.dzbp.data.ScreenShotEvent
+com/md/dzbp/ui/view/AudioRecorder/AudioManage.java
+ com.md.dzbp.ui.view.AudioRecorder.AudioManage
+ com.md.dzbp.ui.view.AudioRecorder.AudioManage$1
+ com.md.dzbp.ui.view.AudioRecorder.AudioManage$AudioStateListener
+ com.md.dzbp.ui.view.AudioRecorder.AudioManage$OnAudioStatusUpdateListener
+com/md/dzbp/data/MsgSendStatus.java
+ com.md.dzbp.data.MsgSendStatus
+androidx/media/R.java
+ androidx.media.R
+ androidx.media.R$attr
+ androidx.media.R$color
+ androidx.media.R$dimen
+ androidx.media.R$drawable
+ androidx.media.R$id
+ androidx.media.R$integer
+ androidx.media.R$layout
+ androidx.media.R$string
+ androidx.media.R$style
+ androidx.media.R$styleable
+androidx/core/ktx/R.java
+ androidx.core.ktx.R
+ androidx.core.ktx.R$attr
+ androidx.core.ktx.R$color
+ androidx.core.ktx.R$dimen
+ androidx.core.ktx.R$drawable
+ androidx.core.ktx.R$id
+ androidx.core.ktx.R$integer
+ androidx.core.ktx.R$layout
+ androidx.core.ktx.R$string
+ androidx.core.ktx.R$style
+ androidx.core.ktx.R$styleable
+com/md/dzbp/utils/GlideImgManager.java
+ com.md.dzbp.utils.GlideImgManager
+com/md/dzbp/service/BootCompletedReceiver.java
+ com.md.dzbp.service.BootCompletedReceiver
+com/md/dzbp/model/DahuaListener.java
+ com.md.dzbp.model.DahuaListener
+com/md/dzbp/utils/BannerVideoLoader.java
+ com.md.dzbp.utils.BannerVideoLoader
+com/md/dzbp/ui/view/CustomDurationScroller.java
+ com.md.dzbp.ui.view.CustomDurationScroller
+com/md/dzbp/data/SignEvent.java
+ com.md.dzbp.data.SignEvent
+com/md/dzbp/utils/FileUtils.java
+ com.md.dzbp.utils.FileUtils
+androidx/customview/R.java
+ androidx.customview.R
+ androidx.customview.R$attr
+ androidx.customview.R$color
+ androidx.customview.R$dimen
+ androidx.customview.R$drawable
+ androidx.customview.R$id
+ androidx.customview.R$integer
+ androidx.customview.R$layout
+ androidx.customview.R$string
+ androidx.customview.R$style
+ androidx.customview.R$styleable
+com/md/dzbp/data/MessageBase.java
+ com.md.dzbp.data.MessageBase
+com/md/dzbp/ui/view/dropdownmenu/MenuManager.java
+ com.md.dzbp.ui.view.dropdownmenu.MenuManager
+ com.md.dzbp.ui.view.dropdownmenu.MenuManager$1
+com/md/dzbp/Base/BaseActivity.java
+ com.md.dzbp.Base.BaseActivity
+com/md/dzbp/tcp/RemoteService.java
+ com.md.dzbp.tcp.RemoteService
+ com.md.dzbp.tcp.RemoteService$RemoteBinder
+ com.md.dzbp.tcp.RemoteService$RemoteConn
+com/md/dzbp/ui/view/MultiScroll.java
+ com.md.dzbp.ui.view.MultiScroll
+ com.md.dzbp.ui.view.MultiScroll$YScrollDetector
+com/md/dzbp/data/Attendance.java
+ com.md.dzbp.data.Attendance
+ com.md.dzbp.data.Attendance$AttendancedataBean
+ com.md.dzbp.data.Attendance$AttendancedataBean$StuBean
+com/md/dzbp/data/UpdateDate.java
+ com.md.dzbp.data.UpdateDate
+androidx/legacy/coreutils/R.java
+ androidx.legacy.coreutils.R
+ androidx.legacy.coreutils.R$attr
+ androidx.legacy.coreutils.R$color
+ androidx.legacy.coreutils.R$dimen
+ androidx.legacy.coreutils.R$drawable
+ androidx.legacy.coreutils.R$id
+ androidx.legacy.coreutils.R$integer
+ androidx.legacy.coreutils.R$layout
+ androidx.legacy.coreutils.R$string
+ androidx.legacy.coreutils.R$style
+ androidx.legacy.coreutils.R$styleable
+com/md/dzbp/utils/GetCardNumUtils.java
+ com.md.dzbp.utils.GetCardNumUtils
+ com.md.dzbp.utils.GetCardNumUtils$1
+ com.md.dzbp.utils.GetCardNumUtils$2
+ com.md.dzbp.utils.GetCardNumUtils$SetNum
+com/facebook/drawee/R.java
+ com.facebook.drawee.R
+ com.facebook.drawee.R$attr
+ com.facebook.drawee.R$id
+ com.facebook.drawee.R$styleable
+com/md/dzbp/ui/activity/StudentActivity.java
+ com.md.dzbp.ui.activity.StudentActivity
+ com.md.dzbp.ui.activity.StudentActivity$1
+ com.md.dzbp.ui.activity.StudentActivity$10
+ com.md.dzbp.ui.activity.StudentActivity$2
+ com.md.dzbp.ui.activity.StudentActivity$3
+ com.md.dzbp.ui.activity.StudentActivity$4
+ com.md.dzbp.ui.activity.StudentActivity$5
+ com.md.dzbp.ui.activity.StudentActivity$6
+ com.md.dzbp.ui.activity.StudentActivity$7
+ com.md.dzbp.ui.activity.StudentActivity$8
+ com.md.dzbp.ui.activity.StudentActivity$9
+com/md/dzbp/data/FtpParams.java
+ com.md.dzbp.data.FtpParams
+com/md/dzbp/data/TextSendMessage.java
+ com.md.dzbp.data.TextSendMessage
+butterknife/R.java
+ butterknife.R
+ butterknife.R$attr
+ butterknife.R$color
+ butterknife.R$dimen
+ butterknife.R$drawable
+ butterknife.R$id
+ butterknife.R$integer
+ butterknife.R$layout
+ butterknife.R$string
+ butterknife.R$style
+ butterknife.R$styleable
+com/md/dzbp/utils/GlideRoundTransform.java
+ com.md.dzbp.utils.GlideRoundTransform
+androidx/localbroadcastmanager/R.java
+ androidx.localbroadcastmanager.R
+com/md/dzbp/data/SchoolAreaBean.java
+ com.md.dzbp.data.SchoolAreaBean
+com/md/dzbp/task/CheckAppRunningForegroundTask.java
+ com.md.dzbp.task.CheckAppRunningForegroundTask
+ com.md.dzbp.task.CheckAppRunningForegroundTask$1
+com/md/dzbp/ui/view/HorizontalListView.java
+ com.md.dzbp.ui.view.HorizontalListView
+ com.md.dzbp.ui.view.HorizontalListView$1
+ com.md.dzbp.ui.view.HorizontalListView$2
+ com.md.dzbp.ui.view.HorizontalListView$3
+androidx/vectordrawable/animated/R.java
+ androidx.vectordrawable.animated.R
+ androidx.vectordrawable.animated.R$attr
+ androidx.vectordrawable.animated.R$color
+ androidx.vectordrawable.animated.R$dimen
+ androidx.vectordrawable.animated.R$drawable
+ androidx.vectordrawable.animated.R$id
+ androidx.vectordrawable.animated.R$integer
+ androidx.vectordrawable.animated.R$layout
+ androidx.vectordrawable.animated.R$string
+ androidx.vectordrawable.animated.R$style
+ androidx.vectordrawable.animated.R$styleable
+com/md/dzbp/adapter/ChatAdapter.java
+ com.md.dzbp.adapter.ChatAdapter
+com/facebook/fbcore/R.java
+ com.facebook.fbcore.R
+androidx/vectordrawable/R.java
+ androidx.vectordrawable.R
+ androidx.vectordrawable.R$attr
+ androidx.vectordrawable.R$color
+ androidx.vectordrawable.R$dimen
+ androidx.vectordrawable.R$drawable
+ androidx.vectordrawable.R$id
+ androidx.vectordrawable.R$integer
+ androidx.vectordrawable.R$layout
+ androidx.vectordrawable.R$string
+ androidx.vectordrawable.R$style
+ androidx.vectordrawable.R$styleable
+com/facebook/imagepipelinebase/R.java
+ com.facebook.imagepipelinebase.R
+com/nanchen/compresshelper/R.java
+ com.nanchen.compresshelper.R
+ com.nanchen.compresshelper.R$anim
+ com.nanchen.compresshelper.R$attr
+ com.nanchen.compresshelper.R$bool
+ com.nanchen.compresshelper.R$color
+ com.nanchen.compresshelper.R$dimen
+ com.nanchen.compresshelper.R$drawable
+ com.nanchen.compresshelper.R$id
+ com.nanchen.compresshelper.R$integer
+ com.nanchen.compresshelper.R$layout
+ com.nanchen.compresshelper.R$string
+ com.nanchen.compresshelper.R$style
+ com.nanchen.compresshelper.R$styleable
+com/md/dzbp/tcp/MessageHandle.java
+ com.md.dzbp.tcp.MessageHandle
+ com.md.dzbp.tcp.MessageHandle$1
+ com.md.dzbp.tcp.MessageHandle$2
+ com.md.dzbp.tcp.MessageHandle$3
+ com.md.dzbp.tcp.MessageHandle$4
+ com.md.dzbp.tcp.MessageHandle$5
+ com.md.dzbp.tcp.MessageHandle$6
+ com.md.dzbp.tcp.MessageHandle$7
+com/md/dzbp/model/TimeUtils.java
+ com.md.dzbp.model.TimeUtils
+ com.md.dzbp.model.TimeUtils$1
+ com.md.dzbp.model.TimeUtils$TimeThread
+com/md/dzbp/ui/view/MyProgressDialog.java
+ com.md.dzbp.ui.view.MyProgressDialog
+ com.md.dzbp.ui.view.MyProgressDialog$1
+com/md/dzbp/adapter/TxtMsgReceiveItem.java
+ com.md.dzbp.adapter.TxtMsgReceiveItem
+com/md/dzbp/adapter/MyViewPagerAdapter.java
+ com.md.dzbp.adapter.MyViewPagerAdapter
+ com.md.dzbp.adapter.MyViewPagerAdapter$1
+ com.md.dzbp.adapter.MyViewPagerAdapter$OnItemClickPosition
+com/md/dzbp/ui/activity/SignActivity.java
+ com.md.dzbp.ui.activity.SignActivity
+ com.md.dzbp.ui.activity.SignActivity$1
+ com.md.dzbp.ui.activity.SignActivity$2
+ com.md.dzbp.ui.activity.SignActivity$2$1
+ com.md.dzbp.ui.activity.SignActivity$3
+ com.md.dzbp.ui.activity.SignActivity$4
+ com.md.dzbp.ui.activity.SignActivity$5
+ com.md.dzbp.ui.activity.SignActivity$6
+ com.md.dzbp.ui.activity.SignActivity$7
+ com.md.dzbp.ui.activity.SignActivity$8
+com/md/dzbp/data/BaseBean.java
+ com.md.dzbp.data.BaseBean
+com/md/dzbp/BuildConfig.java
+ com.md.dzbp.BuildConfig
+com/md/dzbp/data/CourseBean.java
+ com.md.dzbp.data.CourseBean
+com/md/dzbp/ui/view/dropdownmenu/ArrayDropdownAdapter.java
+ com.md.dzbp.ui.view.dropdownmenu.ArrayDropdownAdapter
+com/md/dzbp/data/LoginEvent.java
+ com.md.dzbp.data.LoginEvent
+com/md/dzbp/utils/GlideCircleTransform.java
+ com.md.dzbp.utils.GlideCircleTransform
+com/md/dzbp/utils/hcUtils/HCSdk.java
+ com.md.dzbp.utils.hcUtils.HCSdk
+ com.md.dzbp.utils.hcUtils.HCSdk$1
+ com.md.dzbp.utils.hcUtils.HCSdk$2
+ com.md.dzbp.utils.hcUtils.HCSdk$3
+ com.md.dzbp.utils.hcUtils.HCSdk$4
+ com.md.dzbp.utils.hcUtils.HCSdk$PlaybackRunnable
+com/md/dzbp/data/FileInfo.java
+ com.md.dzbp.data.FileInfo
+com/md/dzbp/service/UploadService.java
+ com.md.dzbp.service.UploadService
+ com.md.dzbp.service.UploadService$1
+ com.md.dzbp.service.UploadService$1$1
+ com.md.dzbp.service.UploadService$2
+com/md/dzbp/ftp/FTP.java
+ com.md.dzbp.ftp.FTP
+ com.md.dzbp.ftp.FTP$DeleteFileProgressListener
+ com.md.dzbp.ftp.FTP$DownLoadProgressListener
+ com.md.dzbp.ftp.FTP$UploadProgressListener
+com/md/dzbp/tcp/DatagramR.java
+ com.md.dzbp.tcp.DatagramR
+com/md/dzbp/R.java
+ com.md.dzbp.R
+ com.md.dzbp.R$anim
+ com.md.dzbp.R$animator
+ com.md.dzbp.R$attr
+ com.md.dzbp.R$bool
+ com.md.dzbp.R$color
+ com.md.dzbp.R$dimen
+ com.md.dzbp.R$drawable
+ com.md.dzbp.R$id
+ com.md.dzbp.R$integer
+ com.md.dzbp.R$interpolator
+ com.md.dzbp.R$layout
+ com.md.dzbp.R$mipmap
+ com.md.dzbp.R$plurals
+ com.md.dzbp.R$raw
+ com.md.dzbp.R$string
+ com.md.dzbp.R$style
+ com.md.dzbp.R$styleable
+ com.md.dzbp.R$xml
+com/md/dzbp/utils/EaseSmileUtils.java
+ com.md.dzbp.utils.EaseSmileUtils
+androidx/lifecycle/viewmodel/R.java
+ androidx.lifecycle.viewmodel.R
+com/md/dzbp/ui/view/dropdownmenu/widget/CascadeView.java
+ com.md.dzbp.ui.view.dropdownmenu.widget.CascadeView
+com/md/dzbp/utils/CrashHandler.java
+ com.md.dzbp.utils.CrashHandler
+ com.md.dzbp.utils.CrashHandler$1
+androidx/legacy/v4/R.java
+ androidx.legacy.v4.R
+ androidx.legacy.v4.R$attr
+ androidx.legacy.v4.R$color
+ androidx.legacy.v4.R$dimen
+ androidx.legacy.v4.R$drawable
+ androidx.legacy.v4.R$id
+ androidx.legacy.v4.R$integer
+ androidx.legacy.v4.R$layout
+ androidx.legacy.v4.R$string
+ androidx.legacy.v4.R$style
+ androidx.legacy.v4.R$styleable
+com/md/dzbp/ui/activity/SplashActivity.java
+ com.md.dzbp.ui.activity.SplashActivity
+ com.md.dzbp.ui.activity.SplashActivity$1
+com/md/dzbp/adapter/VoiceMsgReceiveItem.java
+ com.md.dzbp.adapter.VoiceMsgReceiveItem
+ com.md.dzbp.adapter.VoiceMsgReceiveItem$1
+ com.md.dzbp.adapter.VoiceMsgReceiveItem$1$1
+ com.md.dzbp.adapter.VoiceMsgReceiveItem$2
+ com.md.dzbp.adapter.VoiceMsgReceiveItem$2$1
+ com.md.dzbp.adapter.VoiceMsgReceiveItem$3
+com/md/dzbp/Base/ClientApp.java
+ com.md.dzbp.Base.ClientApp
+ com.md.dzbp.Base.ClientApp$1
+androidx/cardview/R.java
+ androidx.cardview.R
+ androidx.cardview.R$attr
+ androidx.cardview.R$color
+ androidx.cardview.R$dimen
+ androidx.cardview.R$style
+ androidx.cardview.R$styleable
+androidx/coordinatorlayout/R.java
+ androidx.coordinatorlayout.R
+ androidx.coordinatorlayout.R$attr
+ androidx.coordinatorlayout.R$color
+ androidx.coordinatorlayout.R$dimen
+ androidx.coordinatorlayout.R$drawable
+ androidx.coordinatorlayout.R$id
+ androidx.coordinatorlayout.R$integer
+ androidx.coordinatorlayout.R$layout
+ androidx.coordinatorlayout.R$string
+ androidx.coordinatorlayout.R$style
+ androidx.coordinatorlayout.R$styleable
+androidx/lifecycle/R.java
+ androidx.lifecycle.R
+com/md/dzbp/data/HistoryMsg.java
+ com.md.dzbp.data.HistoryMsg
+com/md/dzbp/utils/GlideZBImageLoader2.java
+ com.md.dzbp.utils.GlideZBImageLoader2
+com/md/dzbp/tcp/HC_Camera_TakePic_Handle.java
+ com.md.dzbp.tcp.HC_Camera_TakePic_Handle
+ com.md.dzbp.tcp.HC_Camera_TakePic_Handle$1
+ com.md.dzbp.tcp.HC_Camera_TakePic_Handle$1$1
+ com.md.dzbp.tcp.HC_Camera_TakePic_Handle$2
+ com.md.dzbp.tcp.HC_Camera_TakePic_Handle$2$1
+ com.md.dzbp.tcp.HC_Camera_TakePic_Handle$3
+ com.md.dzbp.tcp.HC_Camera_TakePic_Handle$3$1
+ com.md.dzbp.tcp.HC_Camera_TakePic_Handle$4
+ com.md.dzbp.tcp.HC_Camera_TakePic_Handle$4$1
+butterknife/runtime/R.java
+ butterknife.runtime.R
+ butterknife.runtime.R$attr
+ butterknife.runtime.R$color
+ butterknife.runtime.R$dimen
+ butterknife.runtime.R$drawable
+ butterknife.runtime.R$id
+ butterknife.runtime.R$integer
+ butterknife.runtime.R$layout
+ butterknife.runtime.R$string
+ butterknife.runtime.R$style
+ butterknife.runtime.R$styleable
+com/md/dzbp/data/EmojiconDatas.java
+ com.md.dzbp.data.EmojiconDatas
+com/md/dzbp/ui/activity/ShowBigImageActivity.java
+ com.md.dzbp.ui.activity.ShowBigImageActivity
+ com.md.dzbp.ui.activity.ShowBigImageActivity$1
+com/md/dzbp/ui/view/ListViewForScrollView.java
+ com.md.dzbp.ui.view.ListViewForScrollView
+com/md/dzbp/constants/ERRORTYPE.java
+ com.md.dzbp.constants.ERRORTYPE
+com/md/dzbp/model/NetWorkRequest.java
+ com.md.dzbp.model.NetWorkRequest
+ com.md.dzbp.model.NetWorkRequest$1
+ com.md.dzbp.model.NetWorkRequest$1$1
+ com.md.dzbp.model.NetWorkRequest$2
+ com.md.dzbp.model.NetWorkRequest$2$1
+ com.md.dzbp.model.NetWorkRequest$3
+ com.md.dzbp.model.NetWorkRequest$3$1
+com/md/dzbp/data/VoiceReceiveMessage.java
+ com.md.dzbp.data.VoiceReceiveMessage
+com/md/dzbp/data/MainUpdateEvent.java
+ com.md.dzbp.data.MainUpdateEvent
+com/md/dzbp/adapter/PicMsgReceiveItem.java
+ com.md.dzbp.adapter.PicMsgReceiveItem
+ com.md.dzbp.adapter.PicMsgReceiveItem$1
+com/md/dzbp/utils/hcUtils/FileInfo.java
+ com.md.dzbp.utils.hcUtils.FileInfo
+ com.md.dzbp.utils.hcUtils.FileInfo$1
+com/md/dzbp/data/MainData.java
+ com.md.dzbp.data.MainData
+ com.md.dzbp.data.MainData$AttendanceBean
+ com.md.dzbp.data.MainData$ChatBean
+ com.md.dzbp.data.MainData$CourseBean
+ com.md.dzbp.data.MainData$MoralScoreBean
+ com.md.dzbp.data.MainData$NoticeBean
+ com.md.dzbp.data.MainData$PhotosBean
+com/md/dzbp/constants/Constant.java
+ com.md.dzbp.constants.Constant
+com/md/dzbp/data/CheckDelayEvent.java
+ com.md.dzbp.data.CheckDelayEvent
+androidx/viewpager/R.java
+ androidx.viewpager.R
+ androidx.viewpager.R$attr
+ androidx.viewpager.R$color
+ androidx.viewpager.R$dimen
+ androidx.viewpager.R$drawable
+ androidx.viewpager.R$id
+ androidx.viewpager.R$integer
+ androidx.viewpager.R$layout
+ androidx.viewpager.R$string
+ androidx.viewpager.R$style
+ androidx.viewpager.R$styleable
+com/md/dzbp/model/OnCompressListener.java
+ com.md.dzbp.model.OnCompressListener
+com/md/dzbp/model/UIDataListener.java
+ com.md.dzbp.model.UIDataListener
+com/md/dzbp/tcp/MsgHandleUtil.java
+ com.md.dzbp.tcp.MsgHandleUtil
+ com.md.dzbp.tcp.MsgHandleUtil$1
+ com.md.dzbp.tcp.MsgHandleUtil$1$1
+ com.md.dzbp.tcp.MsgHandleUtil$10
+ com.md.dzbp.tcp.MsgHandleUtil$10$1
+ com.md.dzbp.tcp.MsgHandleUtil$10$2
+ com.md.dzbp.tcp.MsgHandleUtil$11
+ com.md.dzbp.tcp.MsgHandleUtil$11$1
+ com.md.dzbp.tcp.MsgHandleUtil$11$1$1
+ com.md.dzbp.tcp.MsgHandleUtil$12
+ com.md.dzbp.tcp.MsgHandleUtil$12$1
+ com.md.dzbp.tcp.MsgHandleUtil$12$1$1
+ com.md.dzbp.tcp.MsgHandleUtil$13
+ com.md.dzbp.tcp.MsgHandleUtil$13$1
+ com.md.dzbp.tcp.MsgHandleUtil$13$1$1
+ com.md.dzbp.tcp.MsgHandleUtil$14
+ com.md.dzbp.tcp.MsgHandleUtil$14$1
+ com.md.dzbp.tcp.MsgHandleUtil$14$1$1
+ com.md.dzbp.tcp.MsgHandleUtil$15
+ com.md.dzbp.tcp.MsgHandleUtil$2
+ com.md.dzbp.tcp.MsgHandleUtil$2$1
+ com.md.dzbp.tcp.MsgHandleUtil$3
+ com.md.dzbp.tcp.MsgHandleUtil$3$1
+ com.md.dzbp.tcp.MsgHandleUtil$3$2
+ com.md.dzbp.tcp.MsgHandleUtil$4
+ com.md.dzbp.tcp.MsgHandleUtil$5
+ com.md.dzbp.tcp.MsgHandleUtil$5$1
+ com.md.dzbp.tcp.MsgHandleUtil$6
+ com.md.dzbp.tcp.MsgHandleUtil$7
+ com.md.dzbp.tcp.MsgHandleUtil$8
+ com.md.dzbp.tcp.MsgHandleUtil$9
+cn/finalteam/toolsfinal/R.java
+ cn.finalteam.toolsfinal.R
+com/md/dzbp/utils/hcUtils/LoginInfo.java
+ com.md.dzbp.utils.hcUtils.LoginInfo

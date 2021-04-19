@@ -1,0 +1,6 @@
+# Referenced at E:\code\Dzbp\app\build\intermediates\merged_manifests\release\AndroidManifest.xml:52
+-keep class androidx.core.app.CoreComponentFactory { <init>(); }
+# Referenced at E:\code\Dzbp\app\build\intermediates\merged_manifests\release\AndroidManifest.xml:52
+-keep class com.md.dzbp.Base.ClientApp { <init>(); }
+# Referenced at E:\code\Dzbp\app\build\intermediates\merged_manifests\release\AndroidManifest.xml:149
+-keep class com.md.dzbp.tcp.RemoteService { <init>(); }
