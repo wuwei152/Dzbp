@@ -153,4 +153,6 @@ dependencies {
 
     implementation 'cn.jzvd:jiaozivideoplayer:7.5.0'
     implementation 'com.ToxicBakery.viewpager.transforms:view-pager-transforms:2.0.24'
+
+    implementation 'com.hjq:xxpermissions:10.6'
 }

@@ -24,6 +24,8 @@ import com.alibaba.fastjson.TypeReference;
 import com.apkfuns.logutils.LogUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.material.tabs.TabLayout;
+import com.hjq.permissions.OnPermissionCallback;
+import com.hjq.permissions.XXPermissions;
 import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
 import com.md.dzbp.adapter.MyViewPagerAdapter;
@@ -231,6 +233,8 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         new TimeUtils(MainActivity.this, this);
 
         getCardNum();
+
+        initPermission();
     }
 
     @Override
@@ -266,6 +270,8 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         }
         getUIdata();
 //        logger.debug(Tag,"");
+
+
     }
 
     /**
@@ -304,6 +310,32 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         if (EventBus.getDefault().isRegistered(this))//加上判断
             EventBus.getDefault().unregister(this);
     }
+
+    private void initPermission() {
+        XXPermissions.with(this)
+                .request(new OnPermissionCallback() {
+
+                    @Override
+                    public void onGranted(List<String> permissions, boolean all) {
+                        if (all) {
+//                            myToast.toast(MainActivity.this, "获取权限成功");
+                        } else {
+                            myToast.toast(MainActivity.this, "获取部分权限成功，但部分权限未正常授予");
+                        }
+                    }
+
+                    @Override
+                    public void onDenied(List<String> permissions, boolean never) {
+                        if (never) {
+                            myToast.toast(MainActivity.this, "被永久拒绝授权，请手动授予权限");
+                            XXPermissions.startPermissionActivity(MainActivity.this, permissions);
+                        } else {
+                            myToast.toast(MainActivity.this, "获取权限失败，请同意全部权限，否则程序将被限制使用！");
+                        }
+                    }
+                });
+    }
+
 
     /**
      * 获取通知列表

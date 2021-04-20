@@ -137,3 +137,5 @@
 -keep class com.zk.banner.** {
     *;
  }
+
+ -dontwarn com.hjq.permissions.**

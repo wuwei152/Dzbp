@@ -8,11 +8,14 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
+
+import androidx.core.content.FileProvider;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -626,8 +629,20 @@ public class MsgHandleUtil {
 //                                smdtManager.smdtSilentInstall(FileUtils.getDiskCacheDir(context) + "Apk/dzbp.apk", context);
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setDataAndType(Uri.fromFile(new File(FileUtils.getDiskCacheDir(context) + "Apk/dzbp.apk")),
-                        "application/vnd.android.package-archive");
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    // 7.0 以上
+                    Uri apkUri = FileProvider.getUriForFile(context, "com.md.dzbp.provider", new File(FileUtils.getDiskCacheDir(context) + "Apk/dzbp.apk"));
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+                } else {
+                    // 7.0以下
+                    intent.setDataAndType(Uri.fromFile(new File(FileUtils.getDiskCacheDir(context) + "Apk/dzbp.apk")),
+                            "application/vnd.android.package-archive");
+                }
+
+//                intent.setDataAndType(Uri.fromFile(new File(FileUtils.getDiskCacheDir(context) + "Apk/dzbp.apk")),
+//                        "application/vnd.android.package-archive");
                 context.startActivity(intent);
             }
 
