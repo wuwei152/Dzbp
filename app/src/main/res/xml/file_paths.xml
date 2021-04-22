@@ -5,7 +5,11 @@
         <external-path
             name="download"
             path="" />
-        <cache-path path="" />
-        <external-cache-path path="" />
+        <cache-path
+            name="Apk"
+            path="" />
+        <external-cache-path
+            name="Apk"
+            path="" />
     </paths>
 </resources>

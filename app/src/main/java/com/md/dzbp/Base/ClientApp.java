@@ -60,6 +60,7 @@ public class ClientApp extends Application {
         }
 
 //        mAcache.put("DeviceId","ab0f2b4e-9c71-45fe-a717-efcd59223cd9");
+//        mAcache.put("DeviceId","b01efd04-048f-47c7-97f2-4fc58d313b1a");
 //        mAcache.put("CameraType", "2");
     }
 
@@ -70,8 +71,7 @@ public class ClientApp extends Application {
         if (retLogout) {
             NetSDKLib.loginSessionId = 0;
             logger.debug("摄像头退出登录！");
-        }
-        else {
+        } else {
             logger.debug("摄像头退出失败！");
         }
     }
@@ -83,7 +83,7 @@ public class ClientApp extends Application {
 
     private void initLogs() {
         LogUtils.getLogConfig()
-                .configAllowLog(false)
+                .configAllowLog(true)
                 .configTagPrefix("MyApp")
                 .configShowBorders(true)
                 .configLevel(LogLevel.TYPE_VERBOSE);
@@ -134,13 +134,13 @@ public class ClientApp extends Application {
                             if (files2 != null && files2.length > 0) {
                                 for (int i = 0; i < files2.length; i++) {
                                     if (files2[i].exists()) {
-                                        if (j == 0){//保留最近的Log文件
+                                        if (j == 0) {//保留最近的Log文件
                                             String name = files2[i].getName();
                                             name = name.substring(0, name.indexOf("l") - 1);
-                                            if (!cureentDate.equals(name)){
+                                            if (!cureentDate.equals(name)) {
                                                 files2[i].delete();
                                             }
-                                        }else {
+                                        } else {
                                             files2[i].delete();
                                         }
                                     }
@@ -155,6 +155,7 @@ public class ClientApp extends Application {
 
     /**
      * 分割 Dex 支持
+     *
      * @param base
      */
     @Override

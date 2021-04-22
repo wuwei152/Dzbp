@@ -68,6 +68,8 @@ public class SettingActivity extends BaseActivity implements UIDataListener {
     EditText mPsw;
     @BindView(R.id.set_cameratype)
     RadioGroup cameratype;
+    @BindView(R.id.set_devicetype)
+    RadioGroup devicetype;
     private NetWorkRequest netWorkRequest;
     private Dialog dialog;
     private ArrayList<SchoolBean> schoolList;
@@ -159,6 +161,12 @@ public class SettingActivity extends BaseActivity implements UIDataListener {
                     mAcache.put("CameraType", "1");
                 } else {
                     mAcache.put("CameraType", "2");
+                }
+
+                if (devicetype.getCheckedRadioButtonId() == R.id.set_typed2) {
+                    mAcache.put("DeviceType", "1");
+                } else {
+                    mAcache.put("DeviceType", "0");
                 }
 
 

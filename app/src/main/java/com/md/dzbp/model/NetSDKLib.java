@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.apkfuns.logutils.LogUtils;
 import com.company.NetSDK.CB_fDisConnect;
 import com.company.NetSDK.CB_fHaveReConnect;
 import com.company.NetSDK.EM_LOGIN_SPAC_CAP_TYPE;
@@ -67,7 +68,12 @@ public final class NetSDKLib {
         /// Init NetSDK, and set disconnect callback.
         /// 初始化接口在所有的SDK函数之前调用 并设置断线回调 :当app和设备端网络断开时，会触发回调
         /// 该接口仅需调用一次
-        boolean zRet = INetSDK.Init(mDisconnect);
+        boolean zRet = false;
+        try {
+            zRet = INetSDK.Init(mDisconnect);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (!zRet) {
             Log.e(TAG, "init NetSDK error!");
             return;
@@ -91,16 +97,21 @@ public final class NetSDKLib {
         INetSDK.SetConnectTime(10000, Integer.MAX_VALUE);
 
         ArrayList<CameraInfo> mCameraInfos = (ArrayList<CameraInfo>) mACache.getAsObject("CameraInfo");
-        CameraInfo cameraInfo = mCameraInfos.get(0);
+        if (mCameraInfos != null && mCameraInfos.size() > 0) {
+            CameraInfo cameraInfo = mCameraInfos.get(0);
 
-        NET_DEVICEINFO_Ex mDeviceInfo = new NET_DEVICEINFO_Ex();
-        Integer err = new Integer(0);
-        loginSessionId = INetSDK.LoginEx2(cameraInfo.getIp(), Integer.parseInt(cameraInfo.getPort()), cameraInfo.getUsername(), cameraInfo.getPsw(), EM_LOGIN_SPAC_CAP_TYPE.EM_LOGIN_SPEC_CAP_MOBILE, null, mDeviceInfo, err);
-        logger.debug("登录值为：{}", loginSessionId);
-        if (0 == loginSessionId) {
-            int mErrorCode = INetSDK.GetLastError();
-            logger.debug("登录失败！" + mErrorCode + "/" + cameraInfo.getIp());
+            NET_DEVICEINFO_Ex mDeviceInfo = new NET_DEVICEINFO_Ex();
+            Integer err = new Integer(0);
+            loginSessionId = INetSDK.LoginEx2(cameraInfo.getIp(), Integer.parseInt(cameraInfo.getPort()), cameraInfo.getUsername(), cameraInfo.getPsw(), EM_LOGIN_SPAC_CAP_TYPE.EM_LOGIN_SPEC_CAP_MOBILE, null, mDeviceInfo, err);
+            logger.debug("登录值为：{}", loginSessionId);
+            if (0 == loginSessionId) {
+                int mErrorCode = INetSDK.GetLastError();
+                logger.debug("登录失败！" + mErrorCode + "/" + cameraInfo.getIp());
+            }
+        } else {
+            LogUtils.e("未配置摄像头IP");
         }
+
     }
 
     /// Cleanup NetSDK library's resources.

@@ -1,12 +1,12 @@
 package com.md.dzbp.ui.activity;
 
 import android.app.Dialog;
-import android.app.smdt.SmdtManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.EditText;
@@ -41,10 +41,12 @@ import com.md.dzbp.data.MainData;
 import com.md.dzbp.data.MainUpdateEvent;
 import com.md.dzbp.data.MessageBase;
 import com.md.dzbp.data.UpdateDate;
+import com.md.dzbp.model.DeviceCtrlUtils;
 import com.md.dzbp.model.NetWorkRequest;
 import com.md.dzbp.model.TimeListener;
 import com.md.dzbp.model.TimeUtils;
 import com.md.dzbp.model.UIDataListener;
+import com.md.dzbp.serial.SerialControl;
 import com.md.dzbp.tcp.RemoteService;
 import com.md.dzbp.tcp.TcpService;
 import com.md.dzbp.ui.view.AutoScrollViewPager;
@@ -177,6 +179,18 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         startService(new Intent(this, RemoteService.class));
         mAcache = ACache.get(this);
 
+        SerialControl serialControl = new SerialControl(MainActivity.this);
+
+        try
+        {
+            serialControl.open();
+            LogUtils.e("打开串口!");
+        } catch (Exception e) {
+            LogUtils.e(TAG, "打开串口失败!"+e.toString());
+        }
+
+        mAcache.put("DeviceType", "1");
+
         dialog = MyProgressDialog.createLoadingDialog(MainActivity.this, "", this);
         netWorkRequest = new NetWorkRequest(this, this);
 
@@ -188,10 +202,8 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         mStuListRecycler.setEmptyView(mRecyclerEmpty);
 
         logger = LoggerFactory.getLogger(MainActivity.class);
-
-        SmdtManager smdt = SmdtManager.create(this);
 //        //隐藏状态栏
-        smdt.smdtSetStatusBar(MainActivity.this, false);
+        DeviceCtrlUtils.getInstance(MainActivity.this).SetStatusBar(false);
 
 //        ArrayList<CameraInfo> mCameraInfos = new ArrayList<>();
 //        mCameraInfos.add(new CameraInfo("192.168.0.112", "37777", "admin", "yc123456"));//测试

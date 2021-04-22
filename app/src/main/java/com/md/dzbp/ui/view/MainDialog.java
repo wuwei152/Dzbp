@@ -2,7 +2,6 @@ package com.md.dzbp.ui.view;
 
 
 import android.app.Dialog;
-import android.app.smdt.SmdtManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +18,7 @@ import android.widget.TextView;
 import com.md.dzbp.R;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.CameraInfo;
+import com.md.dzbp.model.DeviceCtrlUtils;
 import com.md.dzbp.task.CheckAppRunningForegroundTask;
 import com.md.dzbp.tcp.TcpService;
 import com.md.dzbp.ui.activity.ExamActivity;
@@ -44,7 +44,6 @@ public class MainDialog extends Dialog {
     private TextView act1, act2, act3, act4, act5, act6, act7, act8, act9, act10, act11, bt2, bt1;
     private EditText et1, et2,et3;
     private Context context;
-    private final SmdtManager smdt;
     private final ACache mAcache;
     private ArrayList<String> adminNum;
 
@@ -56,7 +55,6 @@ public class MainDialog extends Dialog {
             attr.height = android.view.ViewGroup.LayoutParams.MATCH_PARENT;
             attr.gravity = Gravity.LEFT;
         }
-        smdt = SmdtManager.create(context);
         mAcache = ACache.get(context);
     }
 
@@ -199,7 +197,7 @@ public class MainDialog extends Dialog {
             @Override
             public void onClick(View view) {
                 //隐藏状态栏
-                smdt.smdtSetStatusBar(context, false);
+                DeviceCtrlUtils.getInstance(context).SetStatusBar( false);
                 CheckAppRunningForegroundTask.getInstance(context).TaskChange(0);
                 dismiss();
             }
@@ -228,6 +226,6 @@ public class MainDialog extends Dialog {
     public void show() {
         super.show();
         CheckAppRunningForegroundTask.getInstance(context).TaskChange(1);
-        smdt.smdtSetStatusBar(context, true);
+        DeviceCtrlUtils.getInstance(context).SetStatusBar( true);
     }
 }

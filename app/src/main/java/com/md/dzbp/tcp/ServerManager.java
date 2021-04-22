@@ -1,6 +1,5 @@
 package com.md.dzbp.tcp;
 
-import android.app.smdt.SmdtManager;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -13,6 +12,7 @@ import android.widget.Toast;
 import com.md.dzbp.R;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.LoginEvent;
+import com.md.dzbp.model.DeviceCtrlUtils;
 import com.md.dzbp.utils.ACache;
 
 import org.greenrobot.eventbus.EventBus;
@@ -26,7 +26,6 @@ public class ServerManager {
     private static final String TAG = "ServerManager-->{}";
     private static ServerManager instance = null;
     private final Logger logger;
-    private final SmdtManager smdtManager;
     private Context context;
     private static int retryTime = 20000;
     private Handler handler = new Handler(Looper.getMainLooper());
@@ -52,7 +51,6 @@ public class ServerManager {
         mACache = ACache.get(context);
         logger = LoggerFactory.getLogger(context.getClass());
         deviceId = Constant.getDeviceId(context);
-        smdtManager = SmdtManager.create(context);
         client = new TcpClient() {
 
             @Override
@@ -151,7 +149,7 @@ public class ServerManager {
     }
 
     public void reboot() {
-        smdtManager.smdtReboot("reboot");
+        DeviceCtrlUtils.getInstance(context).Reboot();
     }
 
     public boolean isNetworkConnected() {

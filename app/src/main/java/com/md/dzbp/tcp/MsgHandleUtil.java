@@ -1,6 +1,5 @@
 package com.md.dzbp.tcp;
 
-import android.app.smdt.SmdtManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -32,6 +31,7 @@ import com.md.dzbp.data.VoiceSendMessage;
 import com.md.dzbp.ftp.FTP;
 import com.md.dzbp.model.DahuaListener;
 import com.md.dzbp.model.DahuaModel;
+import com.md.dzbp.model.DeviceCtrlUtils;
 import com.md.dzbp.model.TimeUtils;
 import com.md.dzbp.service.UploadService;
 import com.md.dzbp.ui.activity.ExamActivity;
@@ -78,7 +78,6 @@ public class MsgHandleUtil {
     private TcpClient client;
     private String deviceId = "";
     private final ACache mACache;
-    private SmdtManager smdtManager;
     private MediaPlayer mp;
     private DahuaModel dahuaModel;
     private final ArrayList<CameraInfo> mCameraInfos;
@@ -92,7 +91,6 @@ public class MsgHandleUtil {
         this.client = client;
         mACache = ACache.get(context);
         deviceId = Constant.getDeviceId(context);
-        smdtManager = SmdtManager.create(context);
         logger = LoggerFactory.getLogger(context.getClass());
         mCameraInfos = (ArrayList<CameraInfo>) mACache.getAsObject("CameraInfo");
     }
@@ -555,7 +553,6 @@ public class MsgHandleUtil {
 //            if (!filedir.exists()) {
 //                filedir.mkdirs();
 //            }
-//            smdtManager.smdtTakeScreenshot(FileUtils.getDiskCacheDir(context) + "Screenshot/", "screenshot_" + timeStr + ".png", context);
 //
 ////            BitmapUtils.getScreenViewBitmap(new MainActivity());
 //
@@ -626,7 +623,6 @@ public class MsgHandleUtil {
             public void handleSuccess(int code, String data) {
                 logger.debug(TAG, "-----xiazai-apk-successful" + FileUtils.getDiskCacheDir(context) + "Apk/dzbp.apk");
                 yingda(xyh, true, deviceId, id);
-//                                smdtManager.smdtSilentInstall(FileUtils.getDiskCacheDir(context) + "Apk/dzbp.apk", context);
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
@@ -673,19 +669,19 @@ public class MsgHandleUtil {
      * 发送版本信息
      */
     public void sendVersionInfo(int xyh, boolean b, String diviceId, int id) {
-        String androidModel = smdtManager.getAndroidModel();//获取目前设备的型号。
-        String AndroidDisplay = smdtManager.getAndroidDisplay();//固件系统版本和编译日期
-        String apiversion = smdtManager.smdtGetAPIVersion();//获取目前API的平台-版本-日期信息。
-        String androidVersion = smdtManager.getAndroidVersion();//获取目前设备的android系统的版本
-        String FirmwareVersion = smdtManager.getFirmwareVersion();//设备的固件SDK版本
-        String FormattedKernelVersion = smdtManager.getFormattedKernelVersion();//设备的固件内核版本
-        String runningMemory = smdtManager.getRunningMemory();//获取设备的硬件内存大小容量
-        String InternalStorageMemory = smdtManager.getInternalStorageMemory();//获取设备的硬件内部存储大小容量。
+        String androidModel = DeviceCtrlUtils.getInstance(context).getAndroidModel();//获取目前设备的型号。
+        String AndroidDisplay = DeviceCtrlUtils.getInstance(context).getAndroidDisplay();//固件系统版本和编译日期
+        String apiversion = DeviceCtrlUtils.getInstance(context).smdtGetAPIVersion();//获取目前API的平台-版本-日期信息。
+        String androidVersion = DeviceCtrlUtils.getInstance(context).getAndroidVersion();//获取目前设备的android系统的版本
+        String FirmwareVersion = DeviceCtrlUtils.getInstance(context).getFirmwareVersion();//设备的固件SDK版本
+        String FormattedKernelVersion = DeviceCtrlUtils.getInstance(context).getFormattedKernelVersion();//设备的固件内核版本
+        String runningMemory = DeviceCtrlUtils.getInstance(context).getRunningMemory();//获取设备的硬件内存大小容量
+        String InternalStorageMemory = DeviceCtrlUtils.getInstance(context).getInternalStorageMemory();//获取设备的硬件内部存储大小容量。
         String Appversion = ManifestUtils.getVersionName(context);
 
-        int LcdLightStatus = smdtManager.smdtGetLcdLightStatus();//1开屏  0关屏
-        int ScreenBrightness = smdtManager.getScreenBrightness(context);//亮度大小
-        int Volume = smdtManager.smdtGetVolume(context);//声音大小
+        int LcdLightStatus = DeviceCtrlUtils.getInstance(context).GetLcdLightStatus();//1开屏  0关屏
+        int ScreenBrightness = DeviceCtrlUtils.getInstance(context).getScreenBrightness();//亮度大小
+        int Volume = DeviceCtrlUtils.getInstance(context).GetVolume();//声音大小
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
         String dateTime = df.format(new Date());//系统时间
 

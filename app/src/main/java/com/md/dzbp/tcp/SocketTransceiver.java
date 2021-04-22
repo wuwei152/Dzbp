@@ -84,19 +84,25 @@ public abstract class SocketTransceiver implements Runnable {
 	 */
 	public boolean send(TCPMessage message){
 		if (out != null) {
-			try {
-				// out.writeUTF(s);
-				// out.flush();
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						// out.writeUTF(s);
+						// out.flush();
 
-				byte[] data = message.GetByte();
-				out.write(data);
-				out.flush();
-				return true;
-			} catch (Exception e) {
-				e.printStackTrace();
-				logger.error(TAG,e.getMessage());
-				runFlag = false;
-			}
+						byte[] data = message.GetByte();
+						out.write(data);
+						out.flush();
+//						return true;
+					} catch (Exception e) {
+						e.printStackTrace();
+						logger.error(TAG,e.getMessage());
+						runFlag = false;
+					}
+				}
+			}).start();
+
 		}
 		return false;
 	}

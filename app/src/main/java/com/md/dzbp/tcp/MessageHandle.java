@@ -1,6 +1,5 @@
 package com.md.dzbp.tcp;
 
-import android.app.smdt.SmdtManager;
 import android.content.Context;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -22,6 +21,7 @@ import com.md.dzbp.data.UpdateDate;
 import com.md.dzbp.data.VoiceReceiveMessage;
 import com.md.dzbp.data.WorkTimePeriod;
 import com.md.dzbp.data.WorkTimePoint;
+import com.md.dzbp.model.DeviceCtrlUtils;
 import com.md.dzbp.model.TimeUtils;
 import com.md.dzbp.task.SwitchTask;
 import com.md.dzbp.ui.view.myToast;
@@ -50,7 +50,6 @@ public class MessageHandle {
     private TcpClient client;
     private Handler x_handler;
     private static int xintiaoTime = 10000;
-    private SmdtManager smdtManager;
     public boolean IsEnable = false;
     private final ACache mACache;
     private String deviceId = "";
@@ -62,7 +61,6 @@ public class MessageHandle {
     public MessageHandle(Context context, TcpClient client) {
         this.context = context;
         this.client = client;
-        smdtManager = SmdtManager.create(context);
         mACache = ACache.get(context);
         deviceId = Constant.getDeviceId(context);
         logger = LoggerFactory.getLogger(context.getClass());
@@ -108,7 +106,7 @@ public class MessageHandle {
 //                    mACache.put("GUAN",guanji);
 //                    mACache.put("KAI",kaiji);
                     logger.debug(TAG, "0xA002设置开关机指令：关" + guanji + "/开" + kaiji);//更换成开关屏
-                    smdtManager.smdtSetTimingSwitchMachine(guanji, kaiji, "1");
+                    DeviceCtrlUtils.getInstance(context).SetTimingSwitchMachine(guanji, kaiji);
 
 
                     int length3 = tcpMessage.ReadInt();
@@ -158,7 +156,7 @@ public class MessageHandle {
                 String kaiji = tcpMessage.ReadString(length2);
                 int IsEnable = tcpMessage.ReadInt();
                 logger.debug(TAG, "0xA501收到开关机指令：" + guanji + "/" + kaiji + "/" + IsEnable);
-                smdtManager.smdtSetTimingSwitchMachine(guanji, kaiji, IsEnable + "");
+                DeviceCtrlUtils.getInstance(context).SetTimingSwitchMachine(guanji, kaiji);
                 msgHandleUtil.yingda(0xA501, true, deviceId, msgid501);
                 break;
             case 0xA502://关闭系统
@@ -166,7 +164,7 @@ public class MessageHandle {
                 try {
                     logger.debug(TAG, "0xA502收到关机指令");
                     msgHandleUtil.yingda(0xA502, true, deviceId, msgid502);
-                    smdtManager.shutDown();
+                    DeviceCtrlUtils.getInstance(context).shutDown();
                 } catch (Exception e) {
                     logger.debug(TAG, e.getMessage());
                     msgHandleUtil.yingda(0xA502, false, deviceId, msgid502);
@@ -178,7 +176,7 @@ public class MessageHandle {
                 try {
                     logger.debug(TAG, "0xA503收到重启指令");
                     msgHandleUtil.yingda(0xA503, true, deviceId, msgid503);
-                    smdtManager.smdtReboot("reboot");
+                    DeviceCtrlUtils.getInstance(context).Reboot();
                 } catch (Exception e) {
                     logger.debug(TAG, e.getMessage());
                     msgHandleUtil.yingda(0xA503, false, deviceId, msgid503);
@@ -193,7 +191,7 @@ public class MessageHandle {
                 int kMinute = tcpMessage.ReadInt();
                 int IsEnable2 = tcpMessage.ReadInt();
                 logger.debug(TAG, "0xA504收到开关机时间间隔指令" + gHours + "/" + gMinute + "/" + kHours + "/" + kMinute + "/" + IsEnable2);
-                smdtManager.smdtSetPowerOnOff((char) gHours, (char) gMinute, (char) kHours, (char) kMinute, (char) IsEnable2);
+//                DeviceCtrlUtils.getInstance(context).SetPowerOnOff((char) gHours, (char) gMinute, (char) kHours, (char) kMinute, (char) IsEnable2);
                 msgHandleUtil.yingda(0xA504, true, deviceId, msgid504);
                 break;
             case 0xA505://截屏
@@ -207,10 +205,10 @@ public class MessageHandle {
                 boolean result2 = tcpMessage.ReadBool();
                 logger.debug(TAG, "0xA506收到开关屏指令" + result2);
                 if (result2) {
-                    smdtManager.smdtSetLcdBackLight(1);//打开背光
+                    DeviceCtrlUtils.getInstance(context).SetLcdBackLight(1);//打开背光
                     msgHandleUtil.yingda(0xA506, 1, true, deviceId, msgid506);
                 } else {
-                    smdtManager.smdtSetLcdBackLight(0);//关闭背光
+                    DeviceCtrlUtils.getInstance(context).SetLcdBackLight(0);//关闭背光
                     msgHandleUtil.yingda(0xA506, 0, true, deviceId, msgid506);
                 }
                 break;
@@ -218,14 +216,14 @@ public class MessageHandle {
                 int msgid507 = tcpMessage.ReadInt();
                 int result3 = tcpMessage.ReadInt();
                 logger.debug(TAG, "0xA507收到亮度调节指令" + result3);
-                smdtManager.setBrightness(context.getContentResolver(), result3);
+                DeviceCtrlUtils.getInstance(context).setBrightness(result3);
                 msgHandleUtil.yingda(0xA507, true, deviceId, msgid507);
                 break;
             case 0xA508://设置声音
                 int msgid508 = tcpMessage.ReadInt();
                 int voice = tcpMessage.ReadInt();
                 logger.debug(TAG, "0xA508收到设置声音指令" + voice);
-                smdtManager.smdtSetVolume(context, voice);
+                DeviceCtrlUtils.getInstance(context).SetVolume(voice);
                 msgHandleUtil.yingda(0xA508, true, deviceId, msgid508);
                 break;
             case 0xA509://远程升级
@@ -247,7 +245,7 @@ public class MessageHandle {
                 String dns = tcpMessage.ReadString(l4);
                 logger.debug(TAG, "0xA510收到设置以太网IP指令" + ip + "/" + mask + "/" + gateway + "/" + dns);
                 try {
-                    smdtManager.smdtSetEthIPAddress(ip, mask, gateway, dns);
+                    DeviceCtrlUtils.getInstance(context).SetEthIPAddress(ip, mask, gateway, dns);
                     msgHandleUtil.yingda(0xA510, true, deviceId, msgid510);
                     logger.debug(TAG, "设置以太网IP成功！");
                 } catch (Exception e) {
@@ -274,7 +272,7 @@ public class MessageHandle {
                 logger.debug(TAG, "0xA511收到设置系统时间指令" + time);
 //                LogUtils.d(calendar.get(Calendar.YEAR) + "/" + (calendar.get(Calendar.MONTH) + 1) + "/" + (calendar.get(Calendar.DAY_OF_MONTH)) + "/" + calendar.get(Calendar.HOUR_OF_DAY) + "/" + calendar.get(Calendar.MINUTE));
                 try {
-                    smdtManager.setTime(context, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE));
+                    DeviceCtrlUtils.getInstance(context).setTime(calendar);
                     msgHandleUtil.yingda(0xA511, true, deviceId, msgid511);
                     logger.debug(TAG, "设置系统时间成功");
                 } catch (Exception e) {

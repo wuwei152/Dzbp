@@ -149,6 +149,33 @@
                 android:textSize="18sp" />
 
         </RadioGroup>
+        <RadioGroup
+            android:id="@+id/set_devicetype"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/set_typed1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="SMDT"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/set_typed2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50dp"
+                android:checked="false"
+                android:text="天马"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+        </RadioGroup>
 
         <TextView
             android:id="@+id/set_confirm"

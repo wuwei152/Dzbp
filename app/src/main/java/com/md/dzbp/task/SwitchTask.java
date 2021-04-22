@@ -1,11 +1,11 @@
 package com.md.dzbp.task;
 
-import android.app.smdt.SmdtManager;
 import android.content.Context;
 import android.content.Intent;
 
 import com.md.dzbp.data.WorkTimePeriod;
 import com.md.dzbp.data.WorkTimePoint;
+import com.md.dzbp.model.DeviceCtrlUtils;
 import com.md.dzbp.model.TimeUtils;
 import com.md.dzbp.tcp.ServerManager;
 import com.md.dzbp.ui.activity.ExamActivity;
@@ -51,7 +51,6 @@ public class SwitchTask extends Timer {
     private Logger logger;
     private int CheckTag;
     private final ACache mACache;
-    private SmdtManager smdtManager;
     private Timer timer_checkDelay;
 
     private SwitchTask(Context context) {
@@ -59,7 +58,6 @@ public class SwitchTask extends Timer {
         logger = LoggerFactory.getLogger(context.getClass());
         mList = new ArrayList<>();
         mACache = ACache.get(context);
-        smdtManager = SmdtManager.create(context);
         try {
             ArrayList<WorkTimePeriod> list = (ArrayList<WorkTimePeriod>) mACache.getAsObject("Task");
             if (list != null) {
@@ -363,11 +361,11 @@ public class SwitchTask extends Timer {
             case 100://开关屏操作
                 if (level == 0 && point.getStartTask() == 0 && point.getTaskstate() == 0) {
                     //关屏开始
-                    smdtManager.smdtSetLcdBackLight(0);//关闭背光
+                    DeviceCtrlUtils.getInstance(context).SetLcdBackLight(0);//关闭背光
                     point.setTaskstate(1);
                     logger.debug(TAG, "屏幕关屏" + currentTime);
                 } else if (level == 0 && point.getStartTask() == 1 && point.getTaskstate() == 0) {
-                    smdtManager.smdtSetLcdBackLight(1);//打开背光
+                    DeviceCtrlUtils.getInstance(context).SetLcdBackLight(1);//打开背光
                     point.setTaskstate(1);
                     logger.debug(TAG, "屏幕开屏" + currentTime);
                 } else {
