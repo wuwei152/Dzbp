@@ -51,7 +51,7 @@ public class ClientApp extends Application {
         OkHttpFinalConfiguration.Builder builder = new OkHttpFinalConfiguration.Builder();
         OkHttpFinal.getInstance().init(builder.build());
 
-        NetSDKLib.getInstance().init(this);
+//        NetSDKLib.getInstance().init(this);
         try {
             deleteCache();
         } catch (Exception e) {

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.SystemClock;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
@@ -13,6 +14,7 @@ import com.md.dzbp.constants.Constant;
 import com.md.dzbp.constants.ERRORTYPE;
 import com.md.dzbp.data.ScreenShotEvent;
 import com.md.dzbp.ftp.FTP;
+import com.md.dzbp.model.DeviceCtrlUtils;
 import com.md.dzbp.tcp.FileHandle;
 
 import org.greenrobot.eventbus.EventBus;
@@ -34,16 +36,23 @@ import top.zibin.luban.OnCompressListener;
 public class SnapUtils {
 
     private final Logger logger;
+    private final ACache mACache;
     private Context context;
     private static final String TAG = "SnapUtils-->{}";
     private String devId;
     private int msgId;
+    private String deviceType;
 
     public SnapUtils(Context context, String devId, int msgId) {
         this.context = context;
         this.devId = devId;
         this.msgId = msgId;
         logger = LoggerFactory.getLogger(context.getClass());
+        mACache = ACache.get(context);
+        deviceType = mACache.getAsString("DeviceType");
+        if (TextUtils.isEmpty(deviceType)) {
+            deviceType = "";
+        }
     }
     //******************************************************************************************
     //                                                                            屏幕截图
@@ -60,7 +69,7 @@ public class SnapUtils {
 
         DisplayMetrics metric = new DisplayMetrics();
         ((WindowManager) activity.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(metric);
-        return snapShot(activity, 0, statusBarHeight, metric.widthPixels, metric.heightPixels- (statusBarHeight*3));
+        return snapShot(activity, 0, statusBarHeight, metric.widthPixels, metric.heightPixels - (statusBarHeight * 3));
     }
 
     /**
@@ -108,7 +117,7 @@ public class SnapUtils {
     public File saveBitmap2Pic(Bitmap bitmap, String fileName) {
         try {
             File filedir = new File(FileUtils.getDiskCacheDir(context) + "Screenshot");
-            if (!filedir.exists()){
+            if (!filedir.exists()) {
                 filedir.mkdirs();
             }
             File file = new File(FileUtils.getDiskCacheDir(context) + "Screenshot", fileName);
@@ -126,65 +135,78 @@ public class SnapUtils {
 
 
     public void requestScreenShot() {
-        Bitmap bitmap = snapShot((Activity) context);
-        if (bitmap != null) {
-            final File file = saveBitmap2Pic(bitmap, SystemClock.currentThreadTimeMillis() + ".png");
-            if (file != null) {
 
-                CompressImg(file, FileUtils.getDiskCacheDir(context) + "Screenshot", new OnCompressListener() {
-                    @Override
-                    public void onStart() {
-                        logger.debug(TAG, "开始压缩");
-                    }
-
-                    @Override
-                    public void onSuccess(final File cplfile) {
-                        logger.debug(TAG, "压缩截屏文件成功！");
-                        UploadFile(cplfile.getAbsolutePath(), Constant.Ftp_Screenshot, new FileHandle() {
-                            @Override
-                            public void handleSuccess(int code, String data) {
-                                ScreenShotEvent event = new ScreenShotEvent(msgId, devId, data, true);
-                                EventBus.getDefault().post(event);
-                                logger.debug(TAG, data + "-----shanchuan-jietu-successful");
-                            }
-
-                            @Override
-                            public void handleFail(int code, String data) {
-                                ScreenShotEvent event = new ScreenShotEvent(msgId, devId, data, false);
-                                EventBus.getDefault().post(event);
-                                logger.debug(TAG, "-----shangchuan-jietu-fail---");
-                            }
-
-                            @Override
-                            public void handleFinished(int code, String data) {
-                                if (file.exists()) {
-                                    file.delete();
-                                }
-                                if (cplfile.exists()) {
-                                    cplfile.delete();
-                                }
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        logger.debug(TAG, "压缩截屏文件失败！" + e.getMessage());
-                        ScreenShotEvent event = new ScreenShotEvent(msgId, devId, "", false);
-                        EventBus.getDefault().post(event);
-                    }
-                });
-
+        File file = null;
+        if (deviceType.equals("1")) {
+            String dir = FileUtils.getDiskCacheDir(context) + "Screenshot" + File.separator + SystemClock.currentThreadTimeMillis() + ".png";
+            if (DeviceCtrlUtils.getInstance(context).takeScreenshot(dir)) {
+                file = new File(dir);
+            } else {
+                logger.debug(TAG, "获取截屏失败！");
+            }
+        } else if (deviceType.equals("0")) {
+            Bitmap bitmap = snapShot((Activity) context);
+            if (bitmap != null) {
+                file = saveBitmap2Pic(bitmap, SystemClock.currentThreadTimeMillis() + ".png");
             } else {
                 ScreenShotEvent event = new ScreenShotEvent(msgId, devId, "", false);
                 EventBus.getDefault().post(event);
-                logger.debug(TAG, "存储截屏文件失败！");
+                logger.debug(TAG, "获取截屏失败！");
             }
+        }
+
+        if (file != null) {
+            File finalFile = file;
+            CompressImg(file, FileUtils.getDiskCacheDir(context) + "Screenshot", new OnCompressListener() {
+                @Override
+                public void onStart() {
+                    logger.debug(TAG, "开始压缩");
+                }
+
+                @Override
+                public void onSuccess(final File cplfile) {
+                    logger.debug(TAG, "压缩截屏文件成功！");
+                    UploadFile(cplfile.getAbsolutePath(), Constant.Ftp_Screenshot, new FileHandle() {
+                        @Override
+                        public void handleSuccess(int code, String data) {
+                            ScreenShotEvent event = new ScreenShotEvent(msgId, devId, data, true);
+                            EventBus.getDefault().post(event);
+                            logger.debug(TAG, data + "-----shanchuan-jietu-successful");
+                        }
+
+                        @Override
+                        public void handleFail(int code, String data) {
+                            ScreenShotEvent event = new ScreenShotEvent(msgId, devId, data, false);
+                            EventBus.getDefault().post(event);
+                            logger.debug(TAG, "-----shangchuan-jietu-fail---");
+                        }
+
+                        @Override
+                        public void handleFinished(int code, String data) {
+                            if (finalFile.exists()) {
+                                finalFile.delete();
+                            }
+                            if (cplfile.exists()) {
+                                cplfile.delete();
+                            }
+                        }
+                    });
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    logger.debug(TAG, "压缩截屏文件失败！" + e.getMessage());
+                    ScreenShotEvent event = new ScreenShotEvent(msgId, devId, "", false);
+                    EventBus.getDefault().post(event);
+                }
+            });
+
         } else {
             ScreenShotEvent event = new ScreenShotEvent(msgId, devId, "", false);
             EventBus.getDefault().post(event);
-            logger.debug(TAG, "获取截屏失败！");
+            logger.debug(TAG, "存储截屏文件失败！");
         }
+
     }
 
     /**

@@ -5,6 +5,7 @@ android {
 
     sourceSets {
         main {
+            jni.srcDirs = []
             jniLibs.srcDirs = ['libs']
             manifest.srcFile 'src/main/AndroidManifest.xml'
             java.srcDirs = ['src/main/java', 'src/main/aidl']
@@ -25,13 +26,13 @@ android {
     defaultConfig {
         applicationId "com.md.dzbp"
         minSdkVersion 18
-        targetSdkVersion 23
+        targetSdkVersion 22      //>22串口报错has text relocations
         versionCode 27
         versionName "2.1.2"
         multiDexEnabled true
         //推送选择要添加的对应cpu类型的.so库。
         ndk {
-            abiFilters 'armeabi' , 'x86'
+            abiFilters 'armeabi', 'x86'
 
         }
 
@@ -157,5 +158,5 @@ dependencies {
     implementation 'cn.jzvd:jiaozivideoplayer:7.5.0'
     implementation 'com.ToxicBakery.viewpager.transforms:view-pager-transforms:2.0.24'
 
-    implementation 'com.hjq:xxpermissions:10.6'
+    implementation 'com.hjq:xxpermissions:6.0'
 }

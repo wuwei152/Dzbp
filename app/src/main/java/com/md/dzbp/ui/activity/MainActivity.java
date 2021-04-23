@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.EditText;
@@ -15,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager.widget.ViewPager;
@@ -24,7 +24,7 @@ import com.alibaba.fastjson.TypeReference;
 import com.apkfuns.logutils.LogUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.material.tabs.TabLayout;
-import com.hjq.permissions.OnPermissionCallback;
+import com.hjq.permissions.OnPermission;
 import com.hjq.permissions.XXPermissions;
 import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
@@ -181,12 +181,11 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
 
         SerialControl serialControl = new SerialControl(MainActivity.this);
 
-        try
-        {
+        try {
             serialControl.open();
             LogUtils.e("打开串口!");
         } catch (Exception e) {
-            LogUtils.e(TAG, "打开串口失败!"+e.toString());
+            LogUtils.e(TAG, "打开串口失败!" + e.toString());
         }
 
         mAcache.put("DeviceType", "1");
@@ -246,7 +245,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
 
         getCardNum();
 
-        initPermission();
+//        initPermission();
     }
 
     @Override
@@ -324,30 +323,22 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
     }
 
     private void initPermission() {
-        XXPermissions.with(this)
-                .request(new OnPermissionCallback() {
+        XXPermissions.with(MainActivity.this)
+                .request(new OnPermission() {
 
                     @Override
-                    public void onGranted(List<String> permissions, boolean all) {
-                        if (all) {
-//                            myToast.toast(MainActivity.this, "获取权限成功");
-                        } else {
-                            myToast.toast(MainActivity.this, "获取部分权限成功，但部分权限未正常授予");
+                    public void hasPermission(List<String> granted, boolean isAll) {
+                        if (!isAll) {
+//                            Toast.makeText(MainActivity.this, "获取部分权限成功，但部分权限未正常授予", Toast.LENGTH_LONG).show();
                         }
                     }
 
                     @Override
-                    public void onDenied(List<String> permissions, boolean never) {
-                        if (never) {
-                            myToast.toast(MainActivity.this, "被永久拒绝授权，请手动授予权限");
-                            XXPermissions.startPermissionActivity(MainActivity.this, permissions);
-                        } else {
-                            myToast.toast(MainActivity.this, "获取权限失败，请同意全部权限，否则程序将被限制使用！");
-                        }
+                    public void noPermission(List<String> denied, boolean quick) {
+
                     }
                 });
     }
-
 
     /**
      * 获取通知列表

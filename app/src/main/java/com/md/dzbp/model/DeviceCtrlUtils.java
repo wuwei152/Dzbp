@@ -34,10 +34,10 @@ public class DeviceCtrlUtils {
         if (deviceType.equals("1")) {
             type = 1;
             manager = MyManager.getInstance(context.getApplicationContext());
-        } else if (deviceType.equals("0")){
+        } else if (deviceType.equals("0")) {
             type = 0;
             smdt = SmdtManager.create(context.getApplicationContext());
-        }else {
+        } else {
             type = 3;
         }
     }
@@ -69,6 +69,23 @@ public class DeviceCtrlUtils {
     }
 
     /**
+     * @description 截屏
+     * c   Environment.getExternalStorageDirectory().getPath() +"/001.jpg"
+     */
+    public boolean takeScreenshot(String c) {
+
+
+//        if (type == 0) {
+//
+//        } else if (type == 1) {
+        return manager.takeScreenshot(c);
+//        } else {
+//
+//        }
+
+    }
+
+    /**
      * @description 定时开关机
      */
     public void SetTimingSwitchMachine(String guanji, String kaiji) {
@@ -83,9 +100,9 @@ public class DeviceCtrlUtils {
             }
             int[] timeonArray = new int[]{Integer.parseInt(kaiji.substring(0, kaiji.indexOf(":"))), Integer.parseInt(kaiji.substring(kaiji.indexOf(":") + 1))};
             int[] timeoffArray = new int[]{Integer.parseInt(guanji.substring(0, guanji.indexOf(":"))), Integer.parseInt(guanji.substring(guanji.indexOf(":") + 1))};
-            int[] weekdays = new int[] {
-                1, 1, 1, 1, 1, 1, 1
-            } ;//周一到周日工作状态,1 为开机， 0 为不开机
+            int[] weekdays = new int[]{
+                    1, 1, 1, 1, 1, 1, 1
+            };//周一到周日工作状态,1 为开机， 0 为不开机
             manager.setPowerOnOffWithWeekly(timeonArray, timeoffArray, weekdays);
         } else {
 
@@ -146,8 +163,14 @@ public class DeviceCtrlUtils {
     public void setBrightness(int r) {
 
         if (type == 0) {
-            smdt.setBrightness(context.getContentResolver(), r);
+            smdt.setBrightness(context.getContentResolver(), r);//（0--255）
         } else if (type == 1) {
+            if (r > 100) {
+                r = 100;
+            }
+            if (r == 0) {
+                r = 1;
+            }
             manager.changeScreenLight(r);//（1--100）
         } else {
 

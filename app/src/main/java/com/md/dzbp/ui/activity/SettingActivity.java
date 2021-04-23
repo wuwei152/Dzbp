@@ -16,7 +16,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.apkfuns.logutils.LogUtils;
-import com.hjq.permissions.OnPermissionCallback;
+import com.hjq.permissions.OnPermission;
 import com.hjq.permissions.XXPermissions;
 import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
@@ -32,7 +32,6 @@ import com.md.dzbp.ui.view.dropdownmenu.ArrayDropdownAdapter;
 import com.md.dzbp.ui.view.dropdownmenu.DropdownMenu;
 import com.md.dzbp.ui.view.dropdownmenu.MenuManager;
 import com.md.dzbp.ui.view.dropdownmenu.OnDropdownItemClickListener;
-import com.md.dzbp.ui.view.myToast;
 import com.md.dzbp.utils.ACache;
 
 import java.net.InetAddress;
@@ -121,7 +120,7 @@ public class SettingActivity extends BaseActivity implements UIDataListener {
         });
         MenuManager.group(mSchool, mArea);
 
-        initPermission();
+//        initPermission();
     }
 
     @OnClick({R.id.set_back, R.id.set_confirm})
@@ -322,26 +321,19 @@ public class SettingActivity extends BaseActivity implements UIDataListener {
 
 
     private void initPermission() {
-        XXPermissions.with(this)
-                .request(new OnPermissionCallback() {
+        XXPermissions.with(SettingActivity.this)
+                .request(new OnPermission() {
 
                     @Override
-                    public void onGranted(List<String> permissions, boolean all) {
-                        if (all) {
-//                            myToast.toast(SettingActivity.this, "获取权限成功");
-                        } else {
-                            myToast.toast(SettingActivity.this, "获取部分权限成功，但部分权限未正常授予");
+                    public void hasPermission(List<String> granted, boolean isAll) {
+                        if (!isAll) {
+//                            Toast.makeText(SettingActivity.this, "获取部分权限成功，但部分权限未正常授予",Toast.LENGTH_LONG).show();
                         }
                     }
 
                     @Override
-                    public void onDenied(List<String> permissions, boolean never) {
-                        if (never) {
-                            myToast.toast(SettingActivity.this, "被永久拒绝授权，请手动授予权限");
-                            XXPermissions.startPermissionActivity(SettingActivity.this, permissions);
-                        } else {
-                            myToast.toast(SettingActivity.this, "获取权限失败，请同意全部权限，否则程序将被限制使用！");
-                        }
+                    public void noPermission(List<String> denied, boolean quick) {
+
                     }
                 });
     }

@@ -288,7 +288,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
                     //        camera.setDisplayOrientation(90);
                     parameters = camera.getParameters();
                     parameters.setPictureFormat(PixelFormat.JPEG);
-                    parameters.setPictureSize(Pwidth, Phight);  // 部分定制手机，无法正常识别该方法。
+//                    parameters.setPictureSize(Pwidth, Phight);  // 部分定制手机，无法正常识别该方法。
                     parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
                     parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);//1连续对焦
                     camera.setParameters(parameters);
