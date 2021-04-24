@@ -137,14 +137,18 @@ public class SnapUtils {
     public void requestScreenShot() {
 
         File file = null;
-        if (deviceType.equals("1")) {
-            String dir = FileUtils.getDiskCacheDir(context) + "Screenshot" + File.separator + SystemClock.currentThreadTimeMillis() + ".png";
-            if (DeviceCtrlUtils.getInstance(context).takeScreenshot(dir)) {
-                file = new File(dir);
-            } else {
-                logger.debug(TAG, "获取截屏失败！");
-            }
-        } else if (deviceType.equals("0")) {
+//        if (deviceType.equals("1")) {
+//            String dir = FileUtils.getDiskCacheDir(context) + "Screenshot" + File.separator + SystemClock.currentThreadTimeMillis() + ".png";
+//            String dir2 = FileUtils.getDiskCacheDir(context) + "Screenshot";
+//            if (!new File(dir2).exists()){
+//                new File(dir2).mkdirs();
+//            }
+//            if (DeviceCtrlUtils.getInstance(context).takeScreenshot(dir)) {
+//                file = new File(dir);
+//            } else {
+//                logger.debug(TAG, "获取截屏失败！");
+//            }
+//        } else if (deviceType.equals("0")) {
             Bitmap bitmap = snapShot((Activity) context);
             if (bitmap != null) {
                 file = saveBitmap2Pic(bitmap, SystemClock.currentThreadTimeMillis() + ".png");
@@ -153,7 +157,7 @@ public class SnapUtils {
                 EventBus.getDefault().post(event);
                 logger.debug(TAG, "获取截屏失败！");
             }
-        }
+//        }
 
         if (file != null) {
             File finalFile = file;

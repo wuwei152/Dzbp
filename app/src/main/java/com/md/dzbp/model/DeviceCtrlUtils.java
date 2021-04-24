@@ -61,7 +61,7 @@ public class DeviceCtrlUtils {
         if (type == 0) {
             smdt.smdtSetStatusBar(context, c);
         } else if (type == 1) {
-            manager.hideNavBar(c);
+            manager.hideNavBar(!c);
         } else {
 
         }

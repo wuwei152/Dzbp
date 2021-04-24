@@ -287,10 +287,10 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
                     camera.setPreviewDisplay(mSurface.getHolder());
                     //        camera.setDisplayOrientation(90);
                     parameters = camera.getParameters();
-                    parameters.setPictureFormat(PixelFormat.JPEG);
+//                    parameters.setPictureFormat(PixelFormat.JPEG);
 //                    parameters.setPictureSize(Pwidth, Phight);  // 部分定制手机，无法正常识别该方法。
-                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
-                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);//1连续对焦
+//                    parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+//                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);//1连续对焦
                     camera.setParameters(parameters);
                     camera.startPreview();
                     camera.cancelAutoFocus();// 2如果要实现连续的自动对焦，这一句必须加上

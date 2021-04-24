@@ -44,8 +44,8 @@ public class SerialPort extends BaseSerialPort{
 			try {
 				/* Missing read/write permission, trying to chmod the file */
 				Process su;
-//				su = Runtime.getRuntime().exec("/system/bin/su");
-				su = Runtime.getRuntime().exec("/system/xbin/su");
+				su = Runtime.getRuntime().exec("/system/bin/su");
+//				su = Runtime.getRuntime().exec("/system/xbin/su");
 
 				String cmd = "chmod 666 " + device.getAbsolutePath() + "\n"
 						+ "exit\n";

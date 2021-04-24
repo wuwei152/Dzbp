@@ -202,7 +202,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
 
         logger = LoggerFactory.getLogger(MainActivity.class);
 //        //隐藏状态栏
-        DeviceCtrlUtils.getInstance(MainActivity.this).SetStatusBar(false);
+        DeviceCtrlUtils.getInstance(MainActivity.this).SetStatusBar(true);
 
 //        ArrayList<CameraInfo> mCameraInfos = new ArrayList<>();
 //        mCameraInfos.add(new CameraInfo("192.168.0.112", "37777", "admin", "yc123456"));//测试
