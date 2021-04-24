@@ -1,2 +1,0 @@
-com/md/dzbp/ExampleUnitTest.java
- com.md.dzbp.ExampleUnitTest

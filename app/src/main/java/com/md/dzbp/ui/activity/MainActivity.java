@@ -14,7 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.viewpager.widget.ViewPager;
@@ -24,8 +23,6 @@ import com.alibaba.fastjson.TypeReference;
 import com.apkfuns.logutils.LogUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.material.tabs.TabLayout;
-import com.hjq.permissions.OnPermission;
-import com.hjq.permissions.XXPermissions;
 import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
 import com.md.dzbp.adapter.MyViewPagerAdapter;
@@ -322,23 +319,23 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
             EventBus.getDefault().unregister(this);
     }
 
-    private void initPermission() {
-        XXPermissions.with(MainActivity.this)
-                .request(new OnPermission() {
-
-                    @Override
-                    public void hasPermission(List<String> granted, boolean isAll) {
-                        if (!isAll) {
-//                            Toast.makeText(MainActivity.this, "获取部分权限成功，但部分权限未正常授予", Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-                    @Override
-                    public void noPermission(List<String> denied, boolean quick) {
-
-                    }
-                });
-    }
+//    private void initPermission() {
+//        XXPermissions.with(MainActivity.this)
+//                .request(new OnPermission() {
+//
+//                    @Override
+//                    public void hasPermission(List<String> granted, boolean isAll) {
+//                        if (!isAll) {
+////                            Toast.makeText(MainActivity.this, "获取部分权限成功，但部分权限未正常授予", Toast.LENGTH_LONG).show();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void noPermission(List<String> denied, boolean quick) {
+//
+//                    }
+//                });
+//    }
 
     /**
      * 获取通知列表

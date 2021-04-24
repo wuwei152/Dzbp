@@ -1,5 +1,6 @@
 package com.md.dzbp.serial;
 
+import android.util.Log;
 
 import com.apkfuns.logutils.LogUtils;
 
@@ -13,7 +14,7 @@ import java.io.OutputStream;
 
 import android_serialport_api.BaseSerialPort;
 
-public class SerialPort extends BaseSerialPort {
+public class SerialPort extends BaseSerialPort{
 
     private static final String TAG = "SerialPort";
 
@@ -25,6 +26,7 @@ public class SerialPort extends BaseSerialPort {
     private FileOutputStream mFileOutputStream;
 
     public SerialPort(File device, int baudrate, int flags) throws SecurityException, IOException {
+        LogUtils.d("device:" + device.getAbsolutePath());
         /* Check access permission */
         if (!device.canRead() || !device.canWrite()) {
             try {
@@ -45,13 +47,13 @@ public class SerialPort extends BaseSerialPort {
         }
         try {
             mFd = open(device.getAbsolutePath(), baudrate, flags);
-            LogUtils.i("打开串口");
+            LogUtils.d("打开串口");
         }catch (UnsatisfiedLinkError error){
             error.printStackTrace();
-            LogUtils.i("error: "+error.toString());
+            LogUtils.e("error: "+error.toString());
         }
         if (mFd == null) {
-            LogUtils.i("native open returns null");
+            LogUtils.e("native open returns null");
             throw new IOException();
         }
         else

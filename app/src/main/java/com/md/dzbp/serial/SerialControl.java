@@ -27,15 +27,15 @@ public class SerialControl extends SerialHelper {
         sMsg.append("[");
         sMsg.append(ComRecData.sComPort);
         sMsg.append("]");
-        sMsg.append(MyFunc.ByteArrToHex(ComRecData.bRec));
+        sMsg.append(new String(ComRecData.bRec));
         sMsg.append("\r\n");
         LogUtils.i("onDataReceived: " + sMsg.toString());
 //        MyFunc.ByteArrToHex(ComRecData.bRec)
 //        ComRecData.bRec
 
-        if (!TextUtils.isEmpty(MyFunc.ByteArrToHex(ComRecData.bRec))) {
+        if (!TextUtils.isEmpty(new String(ComRecData.bRec))) {
             Intent intent = new Intent(context, TcpService.class);
-            intent.putExtra("Num", MyFunc.ByteArrToHex(ComRecData.bRec));
+            intent.putExtra("Num", new String(ComRecData.bRec));
             intent.putExtra("Act", 0);
             intent.putExtra("ext", "");
             context.startService(intent);

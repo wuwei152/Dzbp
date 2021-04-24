@@ -1,8 +1,10 @@
 package com.md.dzbp.serial;
 
 import android.os.Build;
+import android.os.Looper;
 import android.os.SystemClock;
 
+import com.alibaba.fastjson.util.IOUtils;
 import com.apkfuns.logutils.LogUtils;
 
 import java.io.File;
@@ -11,7 +13,6 @@ import java.io.OutputStream;
 import java.util.Arrays;
 
 import android_serialport_api.BaseSerialPort;
-import android_serialport_api.SerialPort;
 
 /**
  * @author benjaminwan
@@ -29,31 +30,33 @@ public abstract class SerialHelper{
     private byte[] _bLoopData=new byte[]{0x30};
     private int iDelay=500;
     //----------------------------------------------------
-    public SerialHelper(String sPort, int iBaudRate){
+    public SerialHelper(String sPort,int iBaudRate){
         this.sPort = sPort;
         this.iBaudRate=iBaudRate;
     }
     public SerialHelper(){
-        this("/ttyS3",9600);
+        this("/dev/ttyS3",9600);
     }
     public SerialHelper(String sPort){
         this(sPort,9600);
     }
-    public SerialHelper(String sPort, String sBaudRate){
-        this(sPort, Integer.parseInt(sBaudRate));
+    public SerialHelper(String sPort,String sBaudRate){
+        this(sPort,Integer.parseInt(sBaudRate));
     }
     //----------------------------------------------------
     public void open()  {
-        LogUtils.i("open: "+ sPort+"  "+iBaudRate+"  "+android.os.Build.MODEL);
+//        LogUtils.d("open: "+ sPort+"  "+iBaudRate+"  "+android.os.Build.MODEL);
         try {
             if(Build.VERSION.SDK_INT < Build.VERSION_CODES.N){
-                mSerialPort =  new SerialPort(new File(sPort), iBaudRate, 0);
+                mSerialPort =  new android_serialport_api.SerialPort(new File(sPort), iBaudRate, 0);
             }
             else{
                 mSerialPort =  new SerialPort(new File(sPort), iBaudRate, 0);
             }
             mOutputStream = mSerialPort.getOutputStream();
             mInputStream = mSerialPort.getInputStream();
+
+            this.sendHex("AABB0600000001060205");
             mReadThread = new ReadThread();
             mReadThread.start();
             mSendThread = new SendThread();
@@ -61,15 +64,15 @@ public abstract class SerialHelper{
             mSendThread.start();
             _isOpen=true;
         }catch (Exception e){
-            LogUtils.i("打开串口失败: "+e.toString());
+            LogUtils.e("打开串口失败: "+e.toString());
         }catch (Error error){
-            LogUtils.i("打开串口失败: "+error.toString());
+            LogUtils.e("打开串口失败: "+error.toString());
         }
 
     }
     //----------------------------------------------------
     public void close(){
-        LogUtils.i("close: "+ sPort+"  "+iBaudRate);
+        LogUtils.d("close: "+ sPort+"  "+iBaudRate);
         if (mReadThread != null){
             mReadThread.interrupt();
             mReadThread = null;
@@ -84,29 +87,29 @@ public abstract class SerialHelper{
     public void send(byte[] bOutArray){
         try
         {
-            LogUtils.i("write1"+ Arrays.toString(bOutArray));
+            LogUtils.d("write1"+ Arrays.toString(bOutArray));
             if(mOutputStream != null){
                 mOutputStream.write(bOutArray);
                 mOutputStream.flush();
-                LogUtils.i("write2");
+                LogUtils.d("write2");
             }
         } catch (Exception e)
         {
             e.printStackTrace();
-            LogUtils.i("e: "+e.toString());
+            LogUtils.d("e: "+e.toString());
         }
     }
 
     private static final String TAG = "SerialHelper";
     //----------------------------------------------------
     public void sendHex(String sHex){
-        LogUtils.i("sendHex: "+sHex);
+        LogUtils.d("sendHex: "+sHex);
         byte[] bOutArray = MyFunc.HexToByteArr(sHex);
         send(bOutArray);
     }
     //----------------------------------------------------
     public void sendTxt(String sTxt){
-        LogUtils.i("sendTxt: "+sTxt);
+        LogUtils.d("sendTxt: "+sTxt);
         byte[] bOutArray =sTxt.getBytes();
         send(bOutArray);
     }
@@ -114,32 +117,33 @@ public abstract class SerialHelper{
     private class ReadThread extends Thread {
         @Override
         public void run() {
-            super.run();
+            Looper.prepare();
             while(!isInterrupted()) {
                 try
                 {
                     if (mInputStream == null) {
-                        LogUtils.i("mInputStream == null");
+                        LogUtils.d("mInputStream == null");
                         return;
                     }
-                    byte[] buffer = new byte[512];
+                    byte[] buffer = new byte[4096];
 //                    int size = mInputStream.read(buffer);
-//                    LogUtils.i("ReadThread: ");
+//                    LogUtils.d("ReadThread: ");
                     int size = mInputStream.available();
-//                    LogUtils.i("ReadThread: "+size);
+//                    LogUtils.d("ReadThread: "+size);
                     if (size > 0){
+
                         size = mInputStream.read(buffer);
                         ComBean ComRecData = new ComBean(sPort,buffer,size);
                         onDataReceived(ComRecData);
                     }
-                   SystemClock.sleep(50);
+                    SystemClock.sleep(50);
                 } catch (Exception e)
                 {
-                    LogUtils.i("e: "+e.toString());
+                    LogUtils.d("e: "+e.toString());
                     e.printStackTrace();
                     return;
                 }catch (Error error){
-                    LogUtils.i("e: "+error.toString());
+                    LogUtils.d("e: "+error.toString());
                     error.printStackTrace();
                     return;
                 }
@@ -147,7 +151,7 @@ public abstract class SerialHelper{
         }
     }
     //----------------------------------------------------
-    private class SendThread extends Thread {
+    private class SendThread extends Thread{
         public boolean suspendFlag = false;// 控制线程的执行
         @Override
         public void run() {
@@ -155,7 +159,7 @@ public abstract class SerialHelper{
             while(!isInterrupted()) {
                 synchronized (this)
                 {
-                    LogUtils.i("suspendFlag: "+suspendFlag);
+                    LogUtils.d("suspendFlag: "+suspendFlag);
                     while (suspendFlag)
                     {
                         SystemClock.sleep(50);
@@ -190,7 +194,7 @@ public abstract class SerialHelper{
     }
     public boolean setBaudRate(int iBaud)
     {
-        LogUtils.i("设置波特率: "+iBaud+"   "+_isOpen);
+        LogUtils.d("设置波特率: "+iBaud+"   "+_isOpen);
         if (_isOpen)
         {
             return false;

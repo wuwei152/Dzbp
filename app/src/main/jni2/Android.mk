@@ -20,7 +20,7 @@ include $(CLEAR_VARS)
 
 TARGET_PLATFORM := android-3
 LOCAL_MODULE    := serial_port
-LOCAL_SRC_FILES := com_md_dzbp_serial_SerialPort.c
+LOCAL_SRC_FILES := SerialPort.c
 LOCAL_LDLIBS    := -llog
 OCAL_LDFLAGS += -fPIC
 include $(BUILD_SHARED_LIBRARY)

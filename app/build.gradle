@@ -32,8 +32,10 @@ android {
         multiDexEnabled true
         //推送选择要添加的对应cpu类型的.so库。
         ndk {
-            abiFilters 'armeabi', 'x86'
-
+            moduleName 'serial_port'
+            abiFilters 'x86','armeabi-v7a'
+//            abiFilters 'armeabi-v7a'
+//            abiFilters "arm64-v8a"
         }
 
     }
@@ -47,7 +49,7 @@ android {
             signingConfig signingConfigs.config
         }
         debug {
-            debuggable false
+            debuggable true
             minifyEnabled false      // 开启混淆
             shrinkResources false    // 去除无效的资源文件(依赖于minifyEnabled 为true)
             zipAlignEnabled false    // Zipalign优化
@@ -80,6 +82,12 @@ android {
         abortOnError false
         checkReleaseBuilds false
     }
+    ndkVersion '22.1.7171670'
+    externalNativeBuild {
+        ndkBuild {
+            path file('src/main/jni/Android.mk')
+        }
+    }
 }
 
 repositories {
@@ -106,6 +114,8 @@ dependencies {
     implementation files('libs\\AudioEngineSDK.jar')
     implementation 'com.google.android.material:material:1.2.1'
     implementation files('libs\\SINMAR api.jar')
+    implementation files('libs\\poweronoff.jar')
+    implementation files('libs\\Api.jar')
     implementation files('libs\\poweronoff.jar')
     implementation files('libs\\Api.jar')
     testImplementation 'junit:junit:4.12'

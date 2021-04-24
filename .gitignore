@@ -3,3 +3,6 @@
 /.idea
 /Dzbp.iml
 /local.properties
+/app/build/
+/app/build
+/app/release
