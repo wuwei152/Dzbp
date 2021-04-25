@@ -26,15 +26,14 @@ android {
     defaultConfig {
         applicationId "com.md.dzbp"
         minSdkVersion 18
-        targetSdkVersion 22      //>22串口报错has text relocations
+        targetSdkVersion 22      //
         versionCode 27
         versionName "2.1.2"
         multiDexEnabled true
         //推送选择要添加的对应cpu类型的.so库。
         ndk {
-//            moduleName 'serial_port'
-//            abiFilters 'x86','armeabi-v7a'
-            abiFilters  'armeabi-v7a'
+//            abiFilters 'x86','armeabi-v7a', 'arm64-v8a'
+            abiFilters 'armeabi-v7a'
 //            abiFilters "armeabi"
         }
 
@@ -114,10 +113,6 @@ dependencies {
     implementation files('libs\\AudioEngineSDK.jar')
     implementation 'com.google.android.material:material:1.2.1'
     implementation files('libs\\SINMAR api.jar')
-    implementation files('libs\\poweronoff.jar')
-    implementation files('libs\\Api.jar')
-    implementation files('libs\\poweronoff.jar')
-    implementation files('libs\\Api.jar')
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
@@ -168,5 +163,5 @@ dependencies {
     implementation 'cn.jzvd:jiaozivideoplayer:7.5.0'
     implementation 'com.ToxicBakery.viewpager.transforms:view-pager-transforms:2.0.24'
 
-    implementation 'com.hjq:xxpermissions:6.0'
+//    implementation 'com.hjq:xxpermissions:6.0'
 }

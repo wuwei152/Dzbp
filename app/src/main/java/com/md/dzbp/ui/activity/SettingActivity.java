@@ -16,8 +16,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.apkfuns.logutils.LogUtils;
-import com.hjq.permissions.OnPermission;
-import com.hjq.permissions.XXPermissions;
 import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
 import com.md.dzbp.constants.APIConfig;
@@ -320,23 +318,23 @@ public class SettingActivity extends BaseActivity implements UIDataListener {
     }
 
 
-    private void initPermission() {
-        XXPermissions.with(SettingActivity.this)
-                .request(new OnPermission() {
-
-                    @Override
-                    public void hasPermission(List<String> granted, boolean isAll) {
-                        if (!isAll) {
-//                            Toast.makeText(SettingActivity.this, "获取部分权限成功，但部分权限未正常授予",Toast.LENGTH_LONG).show();
-                        }
-                    }
-
-                    @Override
-                    public void noPermission(List<String> denied, boolean quick) {
-
-                    }
-                });
-    }
+//    private void initPermission() {
+//        XXPermissions.with(SettingActivity.this)
+//                .request(new OnPermission() {
+//
+//                    @Override
+//                    public void hasPermission(List<String> granted, boolean isAll) {
+//                        if (!isAll) {
+////                            Toast.makeText(SettingActivity.this, "获取部分权限成功，但部分权限未正常授予",Toast.LENGTH_LONG).show();
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void noPermission(List<String> denied, boolean quick) {
+//
+//                    }
+//                });
+//    }
 
 
 }

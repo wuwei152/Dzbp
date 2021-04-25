@@ -11,6 +11,8 @@ import com.company.NetSDK.INetSDK;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.md.dzbp.model.NetSDKLib;
 import com.md.dzbp.model.TimeUtils;
+import com.md.dzbp.serial.SerialControl;
+import com.md.dzbp.ui.activity.MainActivity;
 import com.md.dzbp.utils.ACache;
 import com.md.dzbp.utils.CrashHandler;
 import com.md.dzbp.utils.FileUtils;
@@ -51,7 +53,17 @@ public class ClientApp extends Application {
         OkHttpFinalConfiguration.Builder builder = new OkHttpFinalConfiguration.Builder();
         OkHttpFinal.getInstance().init(builder.build());
 
-//        NetSDKLib.getInstance().init(this);
+        NetSDKLib.getInstance().init(this);
+
+
+        SerialControl serialControl = new SerialControl(this);
+        try {
+            serialControl.open();
+            logger.debug("打开串口!");
+        } catch (Exception e) {
+            logger.debug("打开串口失败!" + e.toString());
+        }
+
         try {
             deleteCache();
         } catch (Exception e) {

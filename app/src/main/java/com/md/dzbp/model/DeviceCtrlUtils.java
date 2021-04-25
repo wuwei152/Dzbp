@@ -56,6 +56,7 @@ public class DeviceCtrlUtils {
 
     /**
      * @description 显示隐藏状态栏
+     *  隐藏导航栏传入 false， 显示传入 true
      */
     public void SetStatusBar(boolean c) {
         if (type == 0) {

@@ -1,14 +1,11 @@
 package com.md.dzbp.serial;
 
 import android.content.Context;
-import android.content.Intent;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.apkfuns.logutils.LogUtils;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.MainDialogEvent;
-import com.md.dzbp.tcp.TcpService;
 
 import org.greenrobot.eventbus.EventBus;
 

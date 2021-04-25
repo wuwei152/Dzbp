@@ -176,16 +176,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         startService(new Intent(this, RemoteService.class));
         mAcache = ACache.get(this);
 
-        SerialControl serialControl = new SerialControl(MainActivity.this);
-
-        try {
-            serialControl.open();
-            LogUtils.e("打开串口!");
-        } catch (Exception e) {
-            LogUtils.e(TAG, "打开串口失败!" + e.toString());
-        }
-
-        mAcache.put("DeviceType", "1");
+//        mAcache.put("DeviceType", "1");
 
         dialog = MyProgressDialog.createLoadingDialog(MainActivity.this, "", this);
         netWorkRequest = new NetWorkRequest(this, this);
@@ -199,7 +190,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
 
         logger = LoggerFactory.getLogger(MainActivity.class);
 //        //隐藏状态栏
-        DeviceCtrlUtils.getInstance(MainActivity.this).SetStatusBar(true);
+        DeviceCtrlUtils.getInstance(MainActivity.this).SetStatusBar(false);
 
 //        ArrayList<CameraInfo> mCameraInfos = new ArrayList<>();
 //        mCameraInfos.add(new CameraInfo("192.168.0.112", "37777", "admin", "yc123456"));//测试
