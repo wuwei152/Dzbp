@@ -162,6 +162,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
         super.onResume();
         logger.debug(TAG, "会议界面");
         Constant.SCREENTYPE = 6;
+        Act = 6;
         if (!EventBus.getDefault().isRegistered(this)) {//加上判断
             EventBus.getDefault().register(this);
         }
@@ -305,6 +306,7 @@ public class MeetingActivity extends BaseActivity implements TimeListener, UIDat
                 });
                 if (meetingbean != null) {
                     setUIData(meetingbean);
+                    ext=meetingbean.getId();
                 }
             }
         }

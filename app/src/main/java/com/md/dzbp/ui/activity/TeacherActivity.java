@@ -409,6 +409,8 @@ public class TeacherActivity extends BaseActivity implements TimeListener, UIDat
         super.onResume();
         logger.debug(TAG, "上课界面");
         Constant.SCREENTYPE = 1;
+        Act = 1;
+        ext = "";
         if (!EventBus.getDefault().isRegistered(this)) {//加上判断
             EventBus.getDefault().register(this);
         }

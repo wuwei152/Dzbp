@@ -56,6 +56,8 @@ public class ShowBigImageActivity extends BaseActivity {
         super.onResume();
         logger.debug(TAG,"查看图片界面");
         Constant.SCREENTYPE = 111;
+        Act = 111;
+        ext = "";
     }
 
     @Override

@@ -256,6 +256,8 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
         super.onResume();
         logger.debug(TAG, "下课界面");
         Constant.SCREENTYPE = 0;
+        Act = 0;
+        ext = "";
 //        LogUtils.d("注册EventBus");
         if (!EventBus.getDefault().isRegistered(this)) {//加上判断
             EventBus.getDefault().register(this);
@@ -465,6 +467,10 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
                         mStuListRecycler.smoothScrollToPosition(0);
                     }
                 }
+
+//                startActivity(new Intent(this,ComAssistantActivity.class));
+
+
                 break;
             case R.id.main_right:
                 if (mChatList != null && mChatList.size() > 0) {

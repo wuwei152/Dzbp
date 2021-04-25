@@ -179,6 +179,8 @@ public class AttendanceActivity extends BaseActivity implements TimeListener, UI
         super.onResume();
         logger.debug(TAG, "考勤结果界面");
         Constant.SCREENTYPE = 112;
+        Act = 112;
+        ext = "";
         if (!EventBus.getDefault().isRegistered(this)) {//加上判断
             EventBus.getDefault().register(this);
         }

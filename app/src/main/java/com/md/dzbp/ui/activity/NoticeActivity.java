@@ -163,6 +163,8 @@ public class NoticeActivity extends BaseActivity implements UIDataListener, Time
         super.onResume();
         logger.debug(TAG, "通知界面");
         Constant.SCREENTYPE = 5;
+        Act = 5;
+        ext = "";
 
         if (!EventBus.getDefault().isRegistered(this)) {//加上判断
             EventBus.getDefault().register(this);

@@ -22,6 +22,7 @@ import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.CourseBean;
 import com.md.dzbp.data.ExamBean;
 import com.md.dzbp.data.ExamPlan;
+import com.md.dzbp.data.MainDialogEvent;
 import com.md.dzbp.model.NetWorkRequest;
 import com.md.dzbp.model.TimeListener;
 import com.md.dzbp.model.TimeUtils;
@@ -36,6 +37,8 @@ import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -158,7 +161,8 @@ public class ExamActivity extends BaseActivity implements TimeListener, UIDataLi
         super.onResume();
         logger.debug(TAG, "考试界面");
         Constant.SCREENTYPE = 4;
-
+        Act=4;
+        ext = "";
 
     }
 
@@ -198,6 +202,7 @@ public class ExamActivity extends BaseActivity implements TimeListener, UIDataLi
             e.printStackTrace();
         }
     }
+
 
     /**
      * 根据时间判断需显示的考试

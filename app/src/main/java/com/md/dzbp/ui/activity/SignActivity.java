@@ -31,6 +31,7 @@ import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.CheckDelayEvent;
 import com.md.dzbp.data.LoginEvent;
 import com.md.dzbp.data.MainData;
+import com.md.dzbp.data.MainDialogEvent;
 import com.md.dzbp.data.SendSignEvent;
 import com.md.dzbp.data.SignEvent;
 import com.md.dzbp.data.SignInfoBean;
@@ -206,6 +207,8 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
         super.onResume();
         logger.debug(TAG, "签到界面");
         Constant.SCREENTYPE = 7;
+        Act = 7;
+        ext = "";
         LogUtils.d("onResume");
         if (!EventBus.getDefault().isRegistered(this)) {//加上判断
             EventBus.getDefault().register(this);
@@ -355,7 +358,7 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
                         fos.write(data);
                         fos.flush();
                         fos.close();
-
+                        camera.startPreview();
                         logger.debug(TAG, "拍照成功！");
                         compress(fileName);
                     } catch (Exception e) {
@@ -588,4 +591,19 @@ public class SignActivity extends BaseActivity implements TimeListener, UIDataLi
 //    public void onViewClicked() {
 //        mProgress.setProgress(mProgress.getProgress()+100);
 //    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onScreenshotEvent(MainDialogEvent event) {
+        if (event.getType() == 0) {
+            mainDialog.show();
+        } else if (event.getType() == 1 && Act == 7) {
+            String picName = System.currentTimeMillis() + (int) (Math.random() * 1000) + ".jpeg";
+            Intent intent = new Intent(SignActivity.this, TcpService.class);
+            intent.putExtra("Num", event.getNum());
+            intent.putExtra("Act", 7);
+            intent.putExtra("ext", picName);
+            startService(intent);
+            TakePicture(event.getNum(), picName);
+        }
+    }
 }

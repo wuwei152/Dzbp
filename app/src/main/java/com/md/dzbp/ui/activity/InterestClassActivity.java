@@ -19,6 +19,7 @@ import com.md.dzbp.Base.BaseActivity;
 import com.md.dzbp.R;
 import com.md.dzbp.constants.Constant;
 import com.md.dzbp.data.MainData;
+import com.md.dzbp.data.MainDialogEvent;
 import com.md.dzbp.data.Meetingbean;
 import com.md.dzbp.model.NetWorkRequest;
 import com.md.dzbp.model.TimeListener;
@@ -35,6 +36,8 @@ import com.zhy.adapter.abslistview.CommonAdapter;
 import com.zhy.adapter.abslistview.ViewHolder;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -133,7 +136,7 @@ public class InterestClassActivity extends BaseActivity implements TimeListener,
             //获取时间日期
             new TimeUtils(InterestClassActivity.this, this);
 
-            mClassName.setText(gradeName + "\n\n"+ className);
+            mClassName.setText(gradeName + "\n\n" + className);
             mAddr.setText("教室编号:" + address);
             mSchoolName.setText(schoolName);
             GlideImgManager.glideLoader(InterestClassActivity.this, logo, R.drawable.pic_not_found, R.drawable.pic_not_found, mSclIcon, 1);
@@ -177,6 +180,8 @@ public class InterestClassActivity extends BaseActivity implements TimeListener,
         super.onResume();
         logger.debug(TAG, "走班制界面");
         Constant.SCREENTYPE = 9;
+        Act = 9;
+        ext = "";
         if (!EventBus.getDefault().isRegistered(this)) {//加上判断
             EventBus.getDefault().register(this);
         }
@@ -220,9 +225,9 @@ public class InterestClassActivity extends BaseActivity implements TimeListener,
         try {
             photos = (List<MainData.PhotosBean>) mAcache.getAsObject("Photos");
 
-            if (photos!=null&&photos.size()>0){
+            if (photos != null && photos.size() > 0) {
 
-                if (photos.size()>16){
+                if (photos.size() > 16) {
                     photos = photos.subList(0, 16);
                 }
 
@@ -254,7 +259,7 @@ public class InterestClassActivity extends BaseActivity implements TimeListener,
             }
         } catch (Exception e) {
             e.printStackTrace();
-            logger.debug(TAG,e);
+            logger.debug(TAG, e);
         }
     }
 
@@ -305,6 +310,7 @@ public class InterestClassActivity extends BaseActivity implements TimeListener,
             }
         });
     }
+
 
     @Override
     public void getTime(String time) {

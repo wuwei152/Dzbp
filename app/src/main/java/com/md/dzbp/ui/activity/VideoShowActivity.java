@@ -210,7 +210,9 @@ public class VideoShowActivity extends BaseActivity implements SurfaceHolder.Cal
     protected void onResume() {
         super.onResume();
         logger.debug(TAG, "教师视频界面");
-        Constant.SCREENTYPE = 1;
+        Constant.SCREENTYPE = 8;
+        Act = 8;
+        ext = "";
         if (!EventBus.getDefault().isRegistered(this)) {//加上判断
             EventBus.getDefault().register(this);
         }

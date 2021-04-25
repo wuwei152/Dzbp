@@ -251,6 +251,8 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
         super.onResume();
         logger.debug(TAG, "巡查界面");
         Constant.SCREENTYPE = 3;
+        Act = 3;
+        ext = "";
         mSurface.setZOrderOnTop(true);
         mSurface.setZOrderMediaOverlay(true);
         mSurface.getHolder().addCallback(this);
@@ -484,7 +486,7 @@ public class PatrolActivity extends BaseActivity implements SurfaceHolder.Callba
                 dahuaModel.initSurfaceView(mSurface);
                 dahuaModel.LoginToPlay(cameraInfo.getIp(), cameraInfo.getPort(), cameraInfo.getUsername(), cameraInfo.getPsw());
             } else {
-                hcSdk =HCSdkManager.getInstance().initAndLogin(PatrolActivity.this, cameraInfo);
+                hcSdk = HCSdkManager.getInstance().initAndLogin(PatrolActivity.this, cameraInfo);
                 hcSdk.setSurfaceView(mSurface);
                 if (hcSdk != null) {
                     hcSdk.startSinglePreview();
