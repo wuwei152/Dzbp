@@ -55,15 +55,6 @@ public class ClientApp extends Application {
 
         NetSDKLib.getInstance().init(this);
 
-
-        SerialControl serialControl = new SerialControl(this);
-        try {
-            serialControl.open();
-            logger.debug("打开串口!");
-        } catch (Exception e) {
-            logger.debug("打开串口失败!" + e.toString());
-        }
-
         try {
             deleteCache();
         } catch (Exception e) {
@@ -95,7 +86,7 @@ public class ClientApp extends Application {
 
     private void initLogs() {
         LogUtils.getLogConfig()
-                .configAllowLog(true)
+                .configAllowLog(false)
                 .configTagPrefix("MyApp")
                 .configShowBorders(true)
                 .configLevel(LogLevel.TYPE_VERBOSE);

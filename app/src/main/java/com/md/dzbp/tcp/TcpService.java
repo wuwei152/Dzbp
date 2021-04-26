@@ -24,6 +24,7 @@ import com.md.dzbp.data.SignEvent;
 import com.md.dzbp.data.TextSendMessage;
 import com.md.dzbp.data.VoiceSendMessage;
 import com.md.dzbp.model.TimeUtils;
+import com.md.dzbp.serial.SerialControl;
 import com.md.dzbp.task.CheckAppRunningForegroundTask;
 import com.md.dzbp.task.SwitchTask;
 import com.md.dzbp.utils.ACache;
@@ -48,6 +49,8 @@ public class TcpService extends Service {
     public SwitchTask mSwitchTask;
     private ACache mACache;
     private CheckAppRunningForegroundTask checkAppRunningForegroundTask;
+    private boolean open;
+    private SerialControl serialControl;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -76,6 +79,18 @@ public class TcpService extends Service {
 //        list.add(new WorkTimePeriod("544","1",0,"?:?:?:14:48:30","?:?:?:14:49:00"));
 //        list.add(new WorkTimePeriod("555","1",0,"?:?:?:14:49:30","?:?:?:14:00:00"));
 //        list.add(new WorkTimePeriod("666","1",0,"?:?:?:14:00:30","?:?:?:14:01:00"));
+
+        try {
+            serialControl = new SerialControl(this);
+            open = serialControl.open();
+            if (open) {
+                logger.debug("打开串口!");
+            } else {
+                logger.debug("打开串口失败!");
+            }
+        } catch (Exception e) {
+            logger.debug("打开串口失败!" + e.toString());
+        }
 
         mSwitchTask = SwitchTask.getInstance(this);
 //        mSwitchTask.SetTaskList(WorkTimePoint.GetWorkTimePointList(list));
@@ -118,6 +133,12 @@ public class TcpService extends Service {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+
+        if (!open) {
+            logger.debug("重新打开串口!");
+            serialControl = new SerialControl(this);
+            open = serialControl.open();
         }
 
         return super.onStartCommand(intent, flags, startId);
@@ -240,8 +261,8 @@ public class TcpService extends Service {
     public void onCheckDelayEvent(CheckDelayEvent event) {
         if (mSwitchTask != null && event != null) {
             mSwitchTask.CheckCurrentTaskdelay(event.getSeconds());
-        }else {
-            logger.debug("mSwitchTask为空-->{}","空数据！！！！！！");
+        } else {
+            logger.debug("mSwitchTask为空-->{}", "空数据！！！！！！");
         }
     }
 }

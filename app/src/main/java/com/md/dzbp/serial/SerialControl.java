@@ -10,14 +10,12 @@ import com.md.dzbp.data.MainDialogEvent;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class SerialControl extends SerialHelper {
     private static boolean OnClick = false;
     private static final String TAG = "SerialControl";
     private Context context;
     private ArrayList<String> adminNum = Constant.getAdminNum();
-    ;
 
     public SerialControl(Context context) {
         this.context = context;
@@ -25,16 +23,16 @@ public class SerialControl extends SerialHelper {
 
     @Override
     protected void onDataReceived(final ComBean ComRecData) {
-        LogUtils.i("onDataReceived: " + Arrays.toString(ComRecData.bRec));
-        StringBuilder sMsg = new StringBuilder();
-        sMsg.append(ComRecData.sRecTime);
-        sMsg.append("[");
-        sMsg.append(ComRecData.sComPort);
-        sMsg.append("]");
+//        LogUtils.i("onDataReceived: " + Arrays.toString(ComRecData.bRec));
+//        StringBuilder sMsg = new StringBuilder();
+//        sMsg.append(ComRecData.sRecTime);
+//        sMsg.append("[");
+//        sMsg.append(ComRecData.sComPort);
+//        sMsg.append("]");
         String cardNum = new String(ComRecData.bRec).trim();
-        sMsg.append(cardNum);
-        sMsg.append("\r\n");
-        LogUtils.i("onDataReceived: " + sMsg.toString());
+//        sMsg.append(cardNum);
+//        sMsg.append("\r\n");
+        LogUtils.i("收到刷卡onDataReceived: " + cardNum);
 //        MyFunc.ByteArrToHex(ComRecData.bRec)
 //        ComRecData.bRec
 
