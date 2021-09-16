@@ -197,7 +197,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
 //        mAcache.put("CameraInfo", mCameraInfos);
 
         mTab.addTab(mTab.newTab().setText("考勤统计"));
-        mTab.addTab(mTab.newTab().setText("考勤排名"));
+//        mTab.addTab(mTab.newTab().setText("考勤排名"));
 
         mTab.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -284,7 +284,7 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
 //        map.put("deviceId", "3bcf351f-ec26-475a-bd5c-8dab32235b4e");
         netWorkRequest.doGetRequest(0, Constant.getUrl(MainActivity.this, APIConfig.GET_Main), false, map);
         netWorkRequest.doGetRequest(2, Constant.getUrl(MainActivity.this, APIConfig.GET_LOAD_MSG), false, map);
-        netWorkRequest.doGetRequest(4, Constant.getUrl(MainActivity.this, APIConfig.getAllClassAttendanceDetail), false, map);
+//        netWorkRequest.doGetRequest(4, Constant.getUrl(MainActivity.this, APIConfig.getAllClassAttendanceDetail), false, map);
         mDate.setText(TimeUtils.getStringDate());
         mWeek.setText(TimeUtils.getStringWeek());
         mWeek2.setText(TimeUtils.getStringWeek());
@@ -458,9 +458,6 @@ public class MainActivity extends BaseActivity implements TimeListener, UIDataLi
                         mStuListRecycler.smoothScrollToPosition(0);
                     }
                 }
-
-//                startActivity(new Intent(this,ComAssistantActivity.class));
-
 
                 break;
             case R.id.main_right:

@@ -216,10 +216,10 @@ public class StudentActivity extends BaseActivity implements UIDataListener, Tim
 
         mBookListView.setAdapter(null);
 
-        Map map3 = new HashMap();
-        map3.put("studentId", mStuUserId);
-        map3.put("is_lend_history", "1");
-        netWorkRequest.doGetRequest(3, Constant.getUrl(StudentActivity.this, APIConfig.GET_DZLENDLIST), false, map3);
+//        Map map3 = new HashMap();
+//        map3.put("studentId", mStuUserId);
+//        map3.put("is_lend_history", "1");
+//        netWorkRequest.doGetRequest(3, Constant.getUrl(StudentActivity.this, APIConfig.GET_DZLENDLIST), false, map3);
 
 //        List<BookBean> bookBeansList = new ArrayList<>();
 //        bookBeansList.add(new BookBean("我的伯父毛岸英","1","45.6","2020-09-23","2020-10-22"));

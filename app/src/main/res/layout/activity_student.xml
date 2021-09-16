@@ -130,6 +130,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="70dp"
             android:text="图书借阅"
+            android:visibility="gone"
             android:textColor="@color/text_black"
             android:textSize="28sp" />
 
@@ -138,6 +139,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:background="#80AEE291"
+            android:visibility="gone"
             android:orientation="horizontal">
 
             <TextView
@@ -222,6 +224,7 @@
             android:layout_height="wrap_content"
             android:dividerHeight="0dp"
             android:divider="@null"
+            android:visibility="gone"
             android:background="@android:color/transparent"
             android:listSelector="#00000000"
             android:scrollbars="none" />
